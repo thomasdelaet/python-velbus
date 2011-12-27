@@ -41,7 +41,7 @@ class SwitchConfigReader(object):
 		@return: None
 		"""
 		assert isinstance(class_, type)
-		assert isinstance(class_, velbusconfig.VelbusModule)
+		assert issubclass(class_, velbusconfig.VelbusModule)
 		assert velbusconfig.valid_key(address, channel)
 		if not self.controller.has_module(address, channel):
 			module = class_(self.controller, address, channel)

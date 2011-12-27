@@ -51,9 +51,9 @@ class Controller(object):
 					module = self.module(address, channel)
 					if isinstance(module, velbusconfig.Switch):
 						module.toggle_relays()
-					if event.is_closed:
+					if channel in event.closed:
 						module.set_on()
-					if event.is_open:
+					if channel in event.opened:
 						module.set_off()
 	
 	def execute_event(self, event):

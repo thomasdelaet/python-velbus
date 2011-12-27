@@ -24,7 +24,7 @@ class Relay(velbusconfig.VelbusModule):
 		"""
 		message = velbus.SwitchRelayOffMessage()
 		message.populate(velbus.HIGH_PRIORITY, self.address, 
-						velbus.NO_RTR, self.channel)
+						bool(velbus.NO_RTR), str(self.channel))
 		self.controller.execute_event(message)
 		
 	def send_on_message(self):
@@ -33,5 +33,5 @@ class Relay(velbusconfig.VelbusModule):
 		"""
 		message = velbus.SwitchRelayOnMessage()
 		message.populate(velbus.HIGH_PRIORITY, self.address, 
-						velbus.NO_RTR, self.channel)
+						bool(velbus.NO_RTR), str(self.channel))
 		self.controller.execute_event(message)
