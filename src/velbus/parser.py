@@ -46,7 +46,7 @@ class VelbusParser(object):
 		assert len(data) > 0
 		assert len(data) >= velbus.MINIMUM_MESSAGE_SIZE
 		assert ord(data[0]) == velbus.START_BYTE
-		#print " ".join([binascii.hexlify(x) for x in data])
+		print " ".join([binascii.hexlify(x) for x in data])
 		if len(data) > velbus.MAXIMUM_MESSAGE_SIZE:
 			raise ParserError("Velbus messages are maximum " + \
 							str(velbus.MAXIMUM_MESSAGE_SIZE) + \
