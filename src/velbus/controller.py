@@ -2,6 +2,7 @@
 @author: Thomas Delaet <thomas@delaet.org>
 """
 import velbus
+import binascii
 
 class VelbusConnection(object):
 	#pylint: disable-msg=R0921
@@ -61,8 +62,10 @@ class Controller(object):
 		"""
 		@return: None
 		"""
-		print "send " + message
+		print "SENDING MESSAGE " + str(message)
+		print " ".join([binascii.hexlify(x) for x in message.to_binary()])
 		self.connection.send(message)
+		print "DONE SENDING"
 		
 	def send_binary(self, binary_message):
 		"""
@@ -76,5 +79,8 @@ class Controller(object):
 		"""
 		@return: None
 		"""
+		print "RECEIVED MESSAGE " + str(message)
+		print " ".join([binascii.hexlify(x) for x in message.to_binary()])
 		for subscriber in self.__subscribers:
 			subscriber(message)
+		print "DONE RECEIVING"
