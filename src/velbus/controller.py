@@ -61,6 +61,7 @@ class Controller(object):
 		"""
 		@return: None
 		"""
+		print "send " + message
 		self.connection.send(message)
 		
 	def send_binary(self, binary_message):
