@@ -62,10 +62,8 @@ class Controller(object):
 		"""
 		@return: None
 		"""
-		print "SENDING MESSAGE " + str(message)
-		print " ".join([binascii.hexlify(x) for x in message.to_binary()])
+		print "SENDING MESSAGE " + message.to_string()
 		self.connection.send(message)
-		print "DONE SENDING"
 		
 	def send_binary(self, binary_message):
 		"""
@@ -79,8 +77,6 @@ class Controller(object):
 		"""
 		@return: None
 		"""
-		print "RECEIVED MESSAGE " + str(message)
-		print " ".join([binascii.hexlify(x) for x in message.to_binary()])
+		print "RECEIVED MESSAGE " + message.to_string()
 		for subscriber in self.__subscribers:
 			subscriber(message)
-		print "DONE RECEIVING"
