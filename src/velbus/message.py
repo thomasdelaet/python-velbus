@@ -15,7 +15,7 @@ class Message(object):
 		self.priority = None
 		self.address = None
 		self.rtr = False
-		self.wait_after_send = 0
+		self.wait_after_send = 50
 		
 	def set_attributes(self, priority, address, rtr):
 		"""
