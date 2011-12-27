@@ -22,7 +22,8 @@ class Switch(velbusconfig.VelbusModule):
 	def to_string(self):
 		result = binascii.hexlify(chr(self.address)) + " " + str(self.channel) + " : Switch\n"
 		for relay in self.relays:
-			result += relay.to_string() + "\n"
+			result += "  " + relay.to_string() + "\n"
+		return result
 	
 	def controls_relay(self, relay):
 		"""
