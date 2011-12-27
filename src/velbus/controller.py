@@ -75,6 +75,5 @@ class Controller(object):
 		"""
 		@return: None
 		"""
-		print message
 		for subscriber in self.__subscribers:
 			subscriber(message)

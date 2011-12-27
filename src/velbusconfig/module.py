@@ -16,6 +16,9 @@ class VelbusModule(object):
 		self.channel = channel
 		self.is_on = False
 		
+	def to_string(self):
+		raise NotImplementedError	
+		
 	def key(self):
 		"""
 		@return: tuple(int, int)
