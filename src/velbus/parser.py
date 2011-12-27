@@ -46,7 +46,7 @@ class VelbusParser(object):
 		assert len(data) > 0
 		assert len(data) >= velbus.MINIMUM_MESSAGE_SIZE
 		assert ord(data[0]) == velbus.START_BYTE
-		print " ".join([binascii.hexlify(x) for x in data])
+		#print " ".join([binascii.hexlify(x) for x in data])
 		if len(data) > velbus.MAXIMUM_MESSAGE_SIZE:
 			raise ParserError("Velbus messages are maximum " + \
 							str(velbus.MAXIMUM_MESSAGE_SIZE) + \
@@ -60,8 +60,8 @@ class VelbusParser(object):
 		rtr = (ord(data[3]) & velbus.RTR == velbus.RTR)
 		data_size = ord(data[3]) & 0x0F
 		if data_size + velbus.MINIMUM_MESSAGE_SIZE != len(data):
-			raise ParserError("length of data size does not match " + \
-								"actual length of message")
+			msg = " ".join([binascii.hexlify(x) for x in data])
+			raise ParserError(msg + " length of data size does not match actual length of message")
 		if not velbus.checksum(data[:-2]) == data[-2]:
 			raise ParserError("packet has no valid checksum")
 		if data_size >= 1:

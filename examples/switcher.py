@@ -21,7 +21,6 @@ class Controller(object):
         
     def execute_command(self):
         message = None
-        print sys.argv
         if sys.argv[1] == "on":
             message = velbus.SwitchRelayOnMessage()
         elif sys.argv[1] == "off":

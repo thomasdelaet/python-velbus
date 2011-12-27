@@ -89,6 +89,9 @@ class Message(object):
 		json_dict = {'priority': self.priority, 'address': self.address, 
 					'rtr': self.rtr, 'name': self.__class__.__name__ }
 		return json.dumps(json_dict)
+	
+	def to_string(self):
+		return self.to_json()
 
 	def byte_to_channels(self, byte):
 		"""
