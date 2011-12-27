@@ -15,9 +15,11 @@ class Controller(object):
 		self.velbus_service = velbus_service
 		self.velbus_service.subscribe(self.process_event)
 		config_reader = velbusconfig.SwitchConfigReader(self)
+		print "Loading rules ..."
 		config_reader.read_config()
 		for (module_key, module) in self.modules.iteritems():
 			print module.to_string()
+		print "... Rules loaded"
 		
 	def add_module(self, module):
 		"""
