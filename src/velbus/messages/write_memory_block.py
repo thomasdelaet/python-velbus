@@ -12,7 +12,6 @@ class WriteMemoryBlockMessage(velbus.Message):
 	"""	
 	def __init__(self):
 		velbus.Message.__init__(self)
-		self.wait_after_send = 40
 		self.high_address = 0x00
 		self.low_address = 0x00
 		self.data = ""
