@@ -16,6 +16,8 @@ class Controller(object):
 		self.velbus_service.subscribe(self.process_event)
 		config_reader = velbusconfig.SwitchConfigReader(self)
 		config_reader.read_config()
+		for (module_key, module) in self.modules:
+			print module.to_string()
 		
 	def add_module(self, module):
 		"""

@@ -3,11 +3,15 @@
 """
 import velbus
 import velbusconfig
+import binascii
 
 class Relay(velbusconfig.VelbusModule):
 	"""
 	One individual relay as a channel on a relay module
 	"""
+	
+	def to_string(self):
+		return binascii.hexlify(chr(self.address)) + " " + str(self.channel) + " : Relay"
 	
 	def toggle(self):
 		"""

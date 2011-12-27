@@ -3,6 +3,7 @@
 """
 
 import velbusconfig
+import binascii
 
 class Switch(velbusconfig.VelbusModule):
 	"""
@@ -17,6 +18,11 @@ class Switch(velbusconfig.VelbusModule):
 		assert channel <= self.MAX_CHANNELS
 		velbusconfig.module.VelbusModule.__init__(self, controller, address, channel)
 		self.relays = []
+		
+	def to_string(self):
+		result = binascii.hexlify(chr(self.address)) + " " + str(self.channel) + " : Switch\n"
+		for relay in self.relays:
+			result += relay.to_string() + "\n"
 	
 	def controls_relay(self, relay):
 		"""
