@@ -4,6 +4,7 @@
 from twisted.internet.protocol import Protocol, connectionDone
 import logging
 import velbus
+import binascii
 
 class VelbusProtocol(Protocol):
 	"""
@@ -20,6 +21,7 @@ class VelbusProtocol(Protocol):
 		"""
 		#pylint: disable-msg=C0103
 		assert isinstance(data, str)
+		logging.debug("Data Received: %s", " ".join([binascii.hexlify(x) for x in data]))
 		self.connection.split_in_messages(data)
 	
 	def connectionLost(self, reason=connectionDone):

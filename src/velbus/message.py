@@ -81,16 +81,17 @@ class Message(object):
 		"""
 		raise NotImplementedError
 	
+	def to_json_basic(self):
+		return {'name': self.__class__.__name__ , 'priority': self.priority, 'address': self.address, 
+					'rtr': self.rtr}
 	def to_json(self):
 		"""
 		@return: str
 		"""
 		#FIXME: Implement in subclasses
-		json_dict = {'priority': self.priority, 'address': self.address, 
-					'rtr': self.rtr, 'name': self.__class__.__name__ }
-		return json.dumps(json_dict)
+		return json.dumps(self.to_json_basic())
 	
-	def to_string(self):
+	def __str__(self):
 		return self.to_json()
 
 	def byte_to_channels(self, byte):

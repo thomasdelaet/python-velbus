@@ -6,6 +6,7 @@
 import twisted.internet.reactor
 import velbus
 import sys
+import logging
 
 class Controller(object):
     #pylint: disable-msg=R0903
@@ -33,4 +34,5 @@ class Controller(object):
         twisted.internet.reactor.stop()
     
 if __name__ == "__main__":
+    logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
     Controller()
