@@ -33,7 +33,8 @@ class VelbusParser(object):
 			size = ord(data[3]) & 0x0F
 			message = data[0:velbus.MINIMUM_MESSAGE_SIZE+size]
 			message_object = self.parse(message)
-			self.controller.new_message(message_object)
+			if message_object != None:
+				self.controller.new_message(message_object)
 			data = data[velbus.MINIMUM_MESSAGE_SIZE+size:]
 		if len(data) > 0:
 			logging.warning("first byte of incoming data is not start byte, ignoring inputs")
