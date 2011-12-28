@@ -21,7 +21,7 @@ class VelbusProtocol(Protocol):
 		"""
 		#pylint: disable-msg=C0103
 		assert isinstance(data, str)
-		logging.debug("Data Received: %s", " ".join([binascii.hexlify(x) for x in data]))
+		logging.warning("Data Received: %s", " ".join([binascii.hexlify(x) for x in data]))
 		self.connection.split_in_messages(data)
 	
 	def connectionLost(self, reason=connectionDone):
@@ -29,14 +29,14 @@ class VelbusProtocol(Protocol):
 		@return: None
 		"""
 		#pylint: disable-msg=C0103
-		logging.debug("Connection Lost %s", reason)
+		logging.warning("Connection Lost %s", reason)
 
 	def connectionMade(self):
 		"""
 		@return: None
 		"""
 		#pylint: disable-msg=C0103
-		logging.debug("Connection made!")
+		logging.warning("Connection made!")
 		
 	def write(self, data):
 		"""

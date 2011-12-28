@@ -48,7 +48,7 @@ class VelbusParser(object):
 		assert len(data) > 0
 		assert len(data) >= velbus.MINIMUM_MESSAGE_SIZE
 		assert ord(data[0]) == velbus.START_BYTE
-		logging.debug("Processing message %s", " ".join([binascii.hexlify(x) for x in data]))
+		logging.warning("Processing message %s", " ".join([binascii.hexlify(x) for x in data]))
 		if len(data) > velbus.MAXIMUM_MESSAGE_SIZE:
 			logging.warning("Velbus message are maximum %s bytes, this one is %s", str(velbus.MAXIMUM_MESSAGE_SIZE), str(len(data)))
 			return
