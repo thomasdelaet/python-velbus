@@ -5,6 +5,8 @@ import twisted.internet.serialport
 from velbus.connections.usb.protocol import VelbusProtocol
 import time
 import velbus
+import logging
+import binascii
 
 class VelbusUSBConnection(velbus.VelbusConnection):
 		#pylint: disable-msg=R0903
@@ -58,6 +60,7 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 			@return: None
 			"""
 			assert isinstance(message, velbus.Message)
+			logging.debug("Sending message on USB bus: %s, %s", str(message), " ".join([binascii.hexlify(x) for x in message.to_binary()]))
 			self.protocol.write(message.to_binary())
 			time.sleep(float(message.wait_after_send) / float(1000))
 			self.controller.new_message(message)

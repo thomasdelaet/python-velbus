@@ -2,6 +2,7 @@
 @author: Thomas Delaet <thomas@delaet.org>
 """
 import velbus
+import simplejson as json
 
 COMMAND_CODE = 0x00
 
@@ -28,6 +29,16 @@ class PushButtonStatusMessage(velbus.Message):
 		self.closed = self.byte_to_channels(data[0])
 		self.opened = self.byte_to_channels(data[1])
 		self.closed_long = self.byte_to_channels(data[2])
+
+	def to_json(self):
+		"""
+		@return: str
+		"""
+		json_dict = self.to_json_basic()
+		json_dict['closed_channels'] = self.closed
+		json_dict['opened_channels'] = self.opened
+		json_dict['closed_long_channels'] = self.closed_long		
+		return json.dumps(json_dict)
 		
 	def get_channels(self):
 		"""

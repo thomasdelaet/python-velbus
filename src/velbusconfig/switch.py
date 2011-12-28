@@ -44,7 +44,7 @@ class Switch(velbusconfig.VelbusModule):
 		"""
 		@return: None
 		"""
-		print "Toggle Relays from switch " + binascii.hexlify(chr(self.address)) + " " + str(self.channel)
+		#print "Toggle Relays from switch " + binascii.hexlify(chr(self.address)) + " " + str(self.channel)
 		for relay in self.relays:
-			print "  " + relay.to_string()
+			#print "  " + relay.to_string()
 			relay.toggle()

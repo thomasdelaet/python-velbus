@@ -62,7 +62,6 @@ class Controller(object):
 		"""
 		@return: None
 		"""
-		print "SENDING MESSAGE " + message.to_string()
 		self.connection.send(message)
 		
 	def send_binary(self, binary_message):
@@ -77,6 +76,5 @@ class Controller(object):
 		"""
 		@return: None
 		"""
-		print "RECEIVED MESSAGE " + message.to_string()
 		for subscriber in self.__subscribers:
 			subscriber(message)

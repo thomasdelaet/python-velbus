@@ -2,6 +2,7 @@
 @author: Thomas Delaet <thomas@delaet.org>
 """
 import velbus
+import simplejson as json
 
 COMMAND_CODE = 0x02
 
@@ -25,6 +26,14 @@ class SwitchRelayOnMessage(velbus.Message):
 		self.needs_data(data, 1)
 		self.set_attributes(priority, address, rtr)
 		self.relay_channels = self.byte_to_channels(data)
+
+	def to_json(self):
+		"""
+		@return: str
+		"""
+		json_dict = self.to_json_basic()
+		json_dict['channels'] = self.relay_channels
+		return json.dumps(json_dict)
 
 	def set_defaults(self, address):
 		self.set_address(address)

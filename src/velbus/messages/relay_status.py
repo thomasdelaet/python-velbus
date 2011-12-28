@@ -3,6 +3,7 @@
 """
 import velbus
 import struct
+import simplejson as json
 
 COMMAND_CODE = 0xfb
 
@@ -60,6 +61,18 @@ class RelayStatusMessage(velbus.Message):
 		self.status = ord(data[2])
 		self.led_status = ord(data[3])
 		(self.delay_time,) = struct.unpack('>L', chr(0) + data[4:])
+	
+	def to_json(self):
+		"""
+		@return: str
+		"""
+		json_dict = self.to_json_basic()
+		json_dict['channel'] = self.channel
+		json_dict['disable_inhibit_forced'] = self.disable_inhibit_forced
+		json_dict['status'] = self.status
+		json_dict['led_status'] = self.led_status
+		json_dict['delay_time'] = self.delay_time
+		return json.dumps(json_dict)
 	
 	def is_normal(self):
 		"""
