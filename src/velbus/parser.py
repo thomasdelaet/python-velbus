@@ -46,7 +46,7 @@ class VelbusParser(object):
 			result = True
 			result = result and self.buffer[packet_size-1] == velbus.END_BYTE
 			result = result and velbus.checksum(self.buffer[0:packet_size-2]) == self.buffer[packet_size-2]
-		logging.warning("Valid Body Waiting: %s", result)
+		logging.warning("Valid Body Waiting: %s (%s)", result, " ".join([binascii.hexlify(x) for x in self.buffer]))
 		return result
 	
 	def next_packet(self):
