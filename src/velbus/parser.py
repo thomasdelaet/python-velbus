@@ -39,7 +39,7 @@ class VelbusParser(object):
 			result = result and (self.buffer[1] == chr(velbus.HIGH_PRIORITY) or self.buffer[1] == chr(velbus.LOW_PRIORITY)) 
 			if not result:
 				logging.warning("Priority not recognized")
-			result = result and (ord(self.buffer[3]) & 0x0F < 8)
+			result = result and (ord(self.buffer[3]) & 0x0F <= 8)
 			if not result:
 				logging.warning("Message size not recognized")
 		logging.warning("Valid Header Waiting: %s(%s)", result, " ".join([binascii.hexlify(x) for x in self.buffer]))
