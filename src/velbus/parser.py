@@ -29,13 +29,20 @@ class VelbusParser(object):
 
 	def valid_header_waiting(self):
 		if len(self.buffer) < 4:
+			logging.warning("Buffer does not yet contain full header")
 			result = False
 		else:
 			result = True
 			result = result and self.buffer[0] == chr(velbus.START_BYTE)
+			if not result:
+				logging.warning("Start byte not recognized")
 			result = result and (self.buffer[1] == chr(velbus.HIGH_PRIORITY) or self.buffer[1] == chr(velbus.LOW_PRIORITY)) 
+			if not result:
+				logging.warning("Priority not recognized")
 			result = result and (ord(self.buffer[3]) & 0x0F < 8)
-		logging.warning("Valid Header Waiting: %s", result)
+			if not result:
+				logging.warning("Message size not recognized")
+		logging.warning("Valid Header Waiting: %s(%s)", result, " ".join([binascii.hexlify(x) for x in self.buffer]))
 		return result
 	
 	def valid_body_waiting(self):
