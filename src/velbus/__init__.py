@@ -79,7 +79,7 @@ from controller import Controller, VelbusConnection
 
 if not on_app_engine():
 	try:
-		from connections.usb.usb import VelbusUSBConnection
+		from connections.usb import VelbusUSBConnection
 	except ImportError:
 		pass
 	from connections.netstring import NetstringConnection
