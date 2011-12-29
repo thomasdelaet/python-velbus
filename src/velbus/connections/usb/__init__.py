@@ -32,8 +32,7 @@ class VelbusUSBConnection(velbus.VelbusConnection):
             self.reactor = reactor
             self.serial = serial.Serial(port=self.DEVICE_NAME, baudrate=self.BAUD_RATE, bytesize=self.BYTE_SIZE,
                                         parity=self.PARITY, stopbits=self.STOPBITS, xonxoff=self.XONXOFF,
-                                        rtscts=self.RTSCTS)
-            self.serial.open()          
+                                        rtscts=self.RTSCTS)         
             velbus.VelbusConnection.__init__(self)
             reactor.callInThread(self.__read_data)
         
