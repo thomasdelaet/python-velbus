@@ -7,6 +7,7 @@ import logging
 import binascii
 import threading
 import serial
+import sys
 
 class VelbusUSBConnection(velbus.VelbusConnection):
         #pylint: disable-msg=R0903
@@ -39,7 +40,8 @@ class VelbusUSBConnection(velbus.VelbusConnection):
         def __read_data(self):
             while 1:
                 data = self.serial.read()
-                self.reactor.callFromThread(self.split_in_messages, data)
+                sys.stdout.write(binascii.hexlify(data))
+                #self.reactor.callFromThread(self.split_in_messages, data)
         
         def __write_message(self):
             pass
