@@ -34,7 +34,7 @@ class VelbusParser(object):
 			result = True
 			result = result and self.buffer[0] == chr(velbus.START_BYTE)
 			result = result and (self.buffer[1] == chr(velbus.HIGH_PRIORITY) or self.buffer[1] == chr(velbus.LOW_PRIORITY)) 
-			result = result and (self.buffer[3] & 0x0F < 8)
+			result = result and (ord(self.buffer[3]) & 0x0F < 8)
 		logging.warning("Valid Header Waiting: %s", result)
 		return result
 	
