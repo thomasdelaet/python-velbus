@@ -20,7 +20,7 @@ class VelbusParser(object):
 	def __init__(self, controller):
 		assert isinstance(controller, velbus.Controller)
 		self.controller = controller
-		self.buffer = []
+		self.buffer = ''
 		self.event = threading.Event()
 	
 	def feed(self, data):
@@ -59,7 +59,7 @@ class VelbusParser(object):
 		try:
 			start_byte_index = self.buffer.index(chr(velbus.START_BYTE))
 		except ValueError:
-			self.buffer = []
+			self.buffer = ''
 			return
 		if start_byte_index >= 0:
 			self.buffer = self.buffer[start_byte_index:]
