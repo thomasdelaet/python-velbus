@@ -14,7 +14,7 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 		Wrapper for SerialPort connection configuration
 		"""
 	
-		DEVICE_NAME = "/dev/usb/cuaU0"
+		DEVICE_NAME = "/dev/cuaU0"
 		
 		BAUD_RATE = 38400
 		
