@@ -41,6 +41,7 @@ class VelbusUSBConnection(velbus.VelbusConnection):
             while 1:
                 data = self.serial.read()
                 sys.stdout.write(binascii.hexlify(data))
+                sys.stdout.flush()
                 #self.reactor.callFromThread(self.split_in_messages, data)
         
         def __write_message(self):
