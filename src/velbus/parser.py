@@ -24,10 +24,8 @@ class VelbusParser(object):
 		self.event = threading.Event()
 	
 	def feed(self, data):
-		self.event.wait()
-		self.event.set()
 		self.buffer += data
-		self.event.clear()
+		self.next_packet()
 
 	def valid_header_waiting(self):
 		if len(self.buffer) < 4:
@@ -52,8 +50,6 @@ class VelbusParser(object):
 		return result
 	
 	def next_packet(self):
-		self.event.wait()
-		self.event.set()
 		start_byte_index = self.buffer.find(chr(velbus.START_BYTE))
 		if start_byte_index >= 0:
 			self.buffer = self.buffer[start_byte_index:]
@@ -61,7 +57,6 @@ class VelbusParser(object):
 			next_packet = self.extract_packet()
 			self.buffer = self.buffer[len(next_packet):]
 			self.parse(next_packet)
-		self.event.clear()
 	
 	def extract_packet(self):
 		packet_size = velbus.MINIMUM_MESSAGE_SIZE + (ord(self.buffer[3]) & 0x0F)
