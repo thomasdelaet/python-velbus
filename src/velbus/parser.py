@@ -4,6 +4,7 @@
 import binascii
 import velbus
 import logging
+import threading
 
 class ParserError(Exception):
 	"""
@@ -19,6 +20,53 @@ class VelbusParser(object):
 	def __init__(self, controller):
 		assert isinstance(controller, velbus.Controller)
 		self.controller = controller
+		self.buffer = []
+		self.event = threading.Event()
+	
+	def feed(self, data):
+		self.event.wait()
+		self.event.set()
+		self.buffer += data
+		self.event.clear()
+
+	def valid_header_waiting(self):
+		if len(self.buffer) < 4:
+			result = False
+		else:
+			result = True
+			result = result and self.buffer[0] == chr(velbus.START_BYTE)
+			result = result and (self.buffer[1] == chr(velbus.HIGH_PRIORITY) or self.buffer[1] == chr(velbus.LOW_PRIORITY)) 
+			result = result and (self.buffer[3] & 0x0F < 8)
+		logging.warning("Valid Header Waiting: %s", result)
+		return result
+	
+	def valid_body_waiting(self):
+		packet_size = velbus.MINIMUM_MESSAGE_SIZE + (ord(self.buffer[3]) & 0x0F)
+		if len(self.buffer) < packet_size:
+			result = False
+		else:
+			result = True
+			result = result and self.buffer[packet_size-1] == velbus.END_BYTE
+			result = result and velbus.checksum(self.buffer[0:packet_size-2]) == self.buffer[packet_size-2]
+		logging.warning("Valid Body Waiting: %s", result)
+		return result
+	
+	def next_packet(self):
+		self.event.wait()
+		self.event.set()
+		start_byte_index = self.buffer.find(chr(velbus.START_BYTE))
+		if start_byte_index >= 0:
+			self.buffer = self.buffer[start_byte_index:]
+		if self.valid_header_waiting() and self.valid_body_waiting():
+			next_packet = self.extract_packet()
+			self.buffer = self.buffer[len(next_packet):]
+			self.parse(next_packet)
+		self.event.clear()
+	
+	def extract_packet(self):
+		packet_size = velbus.MINIMUM_MESSAGE_SIZE + (ord(self.buffer[3]) & 0x0F)
+		packet = self.buffer[0:packet_size]
+		return packet
 	
 	def split_in_messages(self, data):
 		"""
@@ -73,13 +121,13 @@ class VelbusParser(object):
 			if velbus.CommandRegistry.has_key(ord(data[4])):
 				message = velbus.CommandRegistry[ord(data[4])]()
 				message.populate(priority, address, rtr, data[5:-2])
-				return message
+				self.controller.new_message(message)
 			else:
 				logging.warning("received unrecognized command %s", str(binascii.hexlify(data[4])))
 		else:
 			if rtr:
 				message = velbus.ModuleTypeRequestMessage()
 				message.populate(priority, address, rtr, "")
-				return message
+				self.controller.new_message(message)
 			else:
 				logging.warning("zero sized message received without rtr set")
