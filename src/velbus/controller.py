@@ -37,6 +37,10 @@ class Controller(object):
 		self.__subscribers = []
 		self.connection.set_controller(self)
 		
+	def feed_parser(self, data):
+		assert isinstance(data, str)
+		self.parser.feed(data)	
+		
 	def split_in_messages(self, data):
 		"""
 		@return: None
