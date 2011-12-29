@@ -50,7 +50,11 @@ class VelbusParser(object):
 		return result
 	
 	def next_packet(self):
-		start_byte_index = self.buffer.find(chr(velbus.START_BYTE))
+		try:
+			start_byte_index = self.buffer.index(chr(velbus.START_BYTE))
+		except ValueError:
+			self.buffer = []
+			return
 		if start_byte_index >= 0:
 			self.buffer = self.buffer[start_byte_index:]
 		if self.valid_header_waiting() and self.valid_body_waiting():
