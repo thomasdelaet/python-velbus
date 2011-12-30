@@ -31,14 +31,19 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 	
 		def __init__(self, reactor):
 			self.reactor = reactor
+			self.shutdown_initiated = False
 			self.serial = serial.Serial(port=self.DEVICE_NAME, baudrate=self.BAUD_RATE, bytesize=self.BYTE_SIZE,
 										parity=self.PARITY, stopbits=self.STOPBITS, xonxoff=self.XONXOFF,
 										rtscts=self.RTSCTS)		 
 			velbus.VelbusConnection.__init__(self)
 			reactor.callInThread(self.__read_data)
+			reactor.addSystemEventTrigger("before", "shutdown", self.stop)
+		
+		def stop(self):
+			self.shutdown_initiated = True
 		
 		def __read_data(self):
-			while 1:
+			while not self.shutdown_initiated:
 				data = self.serial.read()
 				self.reactor.callFromThread(self.feed_parser, data)				
 		
