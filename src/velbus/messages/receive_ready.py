@@ -15,7 +15,7 @@ class ReceiveReadyMessage(velbus.Message):
 		"""
 		@return: None
 		"""
-		self.needs_low_priority(priority)
+		#self.needs_low_priority(priority)
 		self.needs_no_rtr(rtr)
 		self.needs_no_data(data)
 		self.set_attributes(priority, address, rtr)
