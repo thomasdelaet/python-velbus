@@ -41,6 +41,7 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 		
 		def stop(self):
 			self.shutdown_initiated = True
+			self.serial.close()
 		
 		def __read_data(self):
 			while not self.shutdown_initiated:
