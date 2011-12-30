@@ -40,8 +40,10 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 			reactor.addSystemEventTrigger("before", "shutdown", self.stop)
 		
 		def stop(self):
+			logging.warning("Stop thread executed")
 			self.shutdown_initiated = True
 			self.serial.close()
+			time.sleep(1)
 		
 		def __read_data(self):
 			while not self.shutdown_initiated:
