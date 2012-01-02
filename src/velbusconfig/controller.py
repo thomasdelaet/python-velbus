@@ -55,6 +55,15 @@ class Controller(object):
 						module.set_on()
 					if channel in event.opened:
 						module.set_off()
+		if isinstance(event, velbus.RelayStatusMessage):
+			address = event.address
+			if self.has_module(address, event.channel):
+				module = self.module(address, event.channel)
+				if isinstance(module, velbusconfig.Relay):
+					if event.status:
+						module.set_on()
+					else:
+						module.set_off()
 	
 	def execute_event(self, event):
 		"""
