@@ -13,8 +13,6 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 		"""
 		Wrapper for SerialPort connection configuration
 		"""
-	
-		DEVICE_NAME = "/dev/cuaU0"
 		
 		BAUD_RATE = 38400
 		
@@ -28,10 +26,12 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 		
 		RTSCTS = 1
 	
-		def __init__(self, reactor):
+		def __init__(self, reactor, config):
 			self.reactor = reactor
+			self.config = config
+			device = self.config.get('bus_connection', 'device')
 			self.shutdown_initiated = False
-			self.serial = serial.Serial(port=self.DEVICE_NAME, baudrate=self.BAUD_RATE, bytesize=self.BYTE_SIZE,
+			self.serial = serial.Serial(port=device, baudrate=self.BAUD_RATE, bytesize=self.BYTE_SIZE,
 										parity=self.PARITY, stopbits=self.STOPBITS, xonxoff=self.XONXOFF,
 										rtscts=self.RTSCTS)		 
 			velbus.VelbusConnection.__init__(self)
