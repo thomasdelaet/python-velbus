@@ -77,6 +77,6 @@ class Controller(object):
 		"""
 		@return: None
 		"""
-		velbug.logger.info("New message: " + str(message))
+		velbus.logger.info("New message: " + str(message))
 		for subscriber in self.__subscribers:
 			subscriber(message)

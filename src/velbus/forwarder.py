@@ -32,7 +32,7 @@ class VelbusForwarderProtocol(twisted.protocols.basic.NetstringReceiver):
 		"""
 		@return: None
 		"""
-		velbug.logger.info("connection lost")
+		velbus.logger.info("connection lost")
 		self.factory.unregister(self)
 
 class VelbusForwarderFactory(twisted.internet.protocol.Factory):
