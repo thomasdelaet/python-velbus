@@ -41,16 +41,6 @@ class Controller(object):
 		assert isinstance(data, str)
 		self.parser.feed(data)	
 		
-	def split_in_messages(self, data):
-		"""
-		@return: None
-		"""
-		assert isinstance(data, str)
-		try:
-			self.parser.split_in_messages(data)
-		except velbus.ParserError, exception:
-			print str(exception)
-		
 	def subscribe(self, subscriber):
 		"""
 		@return: None
@@ -75,7 +65,8 @@ class Controller(object):
 		"""
 		assert isinstance(binary_message, str)
 		message = self.parser.parse(binary_message)
-		self.send(message)	
+		if isinstance(message, velbus.Message):
+			self.send(message)	
 		
 	def new_message(self, message):
 		"""

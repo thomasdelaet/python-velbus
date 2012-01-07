@@ -73,33 +73,15 @@ class VelbusParser(object):
 		if self.valid_header_waiting() and self.valid_body_waiting():
 			next_packet = self.extract_packet()
 			self.buffer = self.buffer[len(next_packet):]
-			self.parse(next_packet)
+			message = self.parse(next_packet)
+			if isinstance(message, velbus.Message):
+				self.controller.new_message(message)
 	
 	def extract_packet(self):
 		packet_size = velbus.MINIMUM_MESSAGE_SIZE + (ord(self.buffer[3]) & 0x0F)
 		packet = self.buffer[0:packet_size]
 		return packet
 	
-	def split_in_messages(self, data):
-		"""
-		@return: None
-		"""
-		assert isinstance(data, str)
-		assert len(data) > 0
-		if len(data) < velbus.MINIMUM_MESSAGE_SIZE:
-			logging.warning("Velbus messages are minimum 6 bytes, this one is only %s",str(len(data)))
-			return
-		while len(data) > 0 and data[0] == chr(velbus.START_BYTE):
-			size = ord(data[3]) & 0x0F
-			message = data[0:velbus.MINIMUM_MESSAGE_SIZE+size]
-			message_object = self.parse(message)
-			if message_object != None:
-				self.controller.new_message(message_object)
-			data = data[velbus.MINIMUM_MESSAGE_SIZE+size:]
-		if len(data) > 0:
-			logging.warning("first byte of incoming data is not start byte, ignoring inputs")
-			return
-		
 	def parse(self, data):
 		"""
 		@return: None
@@ -133,13 +115,13 @@ class VelbusParser(object):
 			if velbus.CommandRegistry.has_key(ord(data[4])):
 				message = velbus.CommandRegistry[ord(data[4])]()
 				message.populate(priority, address, rtr, data[5:-2])
-				self.controller.new_message(message)
+				return message
 			else:
 				logging.warning("received unrecognized command %s", str(binascii.hexlify(data[4])))
 		else:
 			if rtr:
 				message = velbus.ModuleTypeRequestMessage()
 				message.populate(priority, address, rtr, "")
-				self.controller.new_message(message)
+				return message
 			else:
 				logging.warning("zero sized message received without rtr set")

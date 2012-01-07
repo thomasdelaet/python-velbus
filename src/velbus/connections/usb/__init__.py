@@ -53,14 +53,7 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 		def feed_parser(self, data):
 			assert isinstance(data, str)
 			self.controller.feed_parser(data)
-					
-		def split_in_messages(self, data):
-			"""
-			@return: None
-			"""
-			assert isinstance(data, str)
-			self.controller.split_in_messages(data)
-		
+						
 		def send(self, message):
 			"""
 			@return: None
