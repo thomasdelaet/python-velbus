@@ -3,7 +3,6 @@
 """
 import time
 import velbus
-import logging
 import binascii
 import threading
 import serial
@@ -40,7 +39,7 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 			reactor.addSystemEventTrigger("before", "shutdown", self.stop)
 		
 		def stop(self):
-			logging.warning("Stop thread executed")
+			velbus.logger.warning("Stop thread executed")
 			self.shutdown_initiated = True
 			self.serial.close()
 			time.sleep(1)
@@ -59,7 +58,7 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 			@return: None
 			"""
 			assert isinstance(message, velbus.Message)
-			logging.warning("Sending message on USB bus: %s, %s", str(message), " ".join([binascii.hexlify(x) for x in message.to_binary()]))
+			velbus.logger.info("Sending message on USB bus: %s, %s", str(message), " ".join([binascii.hexlify(x) for x in message.to_binary()]))
 			self.serial.write(message.to_binary())
 			self.serial.flush()
 			time.sleep(float(message.wait_after_send) / float(1000))

@@ -3,7 +3,6 @@
 """
 import velbus
 import binascii
-import logging
 
 class VelbusConnection(object):
 	#pylint: disable-msg=R0921
@@ -78,6 +77,6 @@ class Controller(object):
 		"""
 		@return: None
 		"""
-		logging.warning("New message: " + str(message))
+		velbug.logger.info("New message: " + str(message))
 		for subscriber in self.__subscribers:
 			subscriber(message)

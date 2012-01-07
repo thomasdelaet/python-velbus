@@ -3,7 +3,6 @@
 """
 import binascii
 import velbus
-import logging
 import threading
 
 class ParserError(Exception):
@@ -29,37 +28,37 @@ class VelbusParser(object):
 
 	def valid_header_waiting(self):
 		if len(self.buffer) < 4:
-			logging.warning("Buffer does not yet contain full header")
+			velbus.logger.debug("Buffer does not yet contain full header")
 			result = False
 		else:
 			result = True
 			result = result and self.buffer[0] == chr(velbus.START_BYTE)
 			if not result:
-				logging.warning("Start byte not recognized")
+				velbus.logger.warning("Start byte not recognized")
 			result = result and (self.buffer[1] == chr(velbus.HIGH_PRIORITY) or self.buffer[1] == chr(velbus.LOW_PRIORITY)) 
 			if not result:
-				logging.warning("Priority not recognized")
+				velbus.logger.warning("Priority not recognized")
 			result = result and (ord(self.buffer[3]) & 0x0F <= 8)
 			if not result:
-				logging.warning("Message size not recognized")
-		logging.warning("Valid Header Waiting: %s(%s)", result, " ".join([binascii.hexlify(x) for x in self.buffer]))
+				velbus.logger.warning("Message size not recognized")
+		velbus.logger.debug("Valid Header Waiting: %s(%s)", result, " ".join([binascii.hexlify(x) for x in self.buffer]))
 		return result
 	
 	def valid_body_waiting(self):
 		#0f f8 be 04 00 08 00 00 2f 04
 		packet_size = velbus.MINIMUM_MESSAGE_SIZE + (ord(self.buffer[3]) & 0x0F)
 		if len(self.buffer) < packet_size:
-			logging.warning("Buffer does not yet contain full message")
+			velbus.logger.debug("Buffer does not yet contain full message")
 			result = False
 		else:
 			result = True
 			result = result and ord(self.buffer[packet_size-1]) == velbus.END_BYTE
 			if not result:
-				logging.warning("End byte not recognized")
+				velbus.logger.warning("End byte not recognized")
 			result = result and velbus.checksum(self.buffer[0:packet_size-2]) == self.buffer[packet_size-2]
 			if not result:
-				logging.warning("Checksum not recognized")
-		logging.warning("Valid Body Waiting: %s (%s)", result, " ".join([binascii.hexlify(x) for x in self.buffer]))
+				velbus.logger.warning("Checksum not recognized")
+		velbus.logger.debug("Valid Body Waiting: %s (%s)", result, " ".join([binascii.hexlify(x) for x in self.buffer]))
 		return result
 	
 	def next_packet(self):
@@ -91,25 +90,25 @@ class VelbusParser(object):
 		assert len(data) > 0
 		assert len(data) >= velbus.MINIMUM_MESSAGE_SIZE
 		assert ord(data[0]) == velbus.START_BYTE
-		logging.warning("Processing message %s", " ".join([binascii.hexlify(x) for x in data]))
+		velbus.logger.info("Processing message %s", " ".join([binascii.hexlify(x) for x in data]))
 		if len(data) > velbus.MAXIMUM_MESSAGE_SIZE:
-			logging.warning("Velbus message are maximum %s bytes, this one is %s", str(velbus.MAXIMUM_MESSAGE_SIZE), str(len(data)))
+			velbus.logger.warning("Velbus message are maximum %s bytes, this one is %s", str(velbus.MAXIMUM_MESSAGE_SIZE), str(len(data)))
 			return
 		if ord(data[-1]) != velbus.END_BYTE:
-			logging.warning("end byte not correct")
+			velbus.logger.warning("end byte not correct")
 			return
 		priority = ord(data[1])
 		if priority != velbus.LOW_PRIORITY and priority != velbus.HIGH_PRIORITY:
-			logging.warning("unrecognized priority")
+			velbus.logger.warning("unrecognized priority")
 			return
 		address = ord(data[2])
 		rtr = (ord(data[3]) & velbus.RTR == velbus.RTR)
 		data_size = ord(data[3]) & 0x0F
 		if data_size + velbus.MINIMUM_MESSAGE_SIZE != len(data):
-			logging.warning("length of data size does not match actual length of message")
+			velbus.logger.warning("length of data size does not match actual length of message")
 			return
 		if not velbus.checksum(data[:-2]) == data[-2]:
-			logging.warning("Packet has no valid checksum")
+			velbus.logger.warning("Packet has no valid checksum")
 			return
 		if data_size >= 1:
 			if velbus.CommandRegistry.has_key(ord(data[4])):
@@ -117,11 +116,11 @@ class VelbusParser(object):
 				message.populate(priority, address, rtr, data[5:-2])
 				return message
 			else:
-				logging.warning("received unrecognized command %s", str(binascii.hexlify(data[4])))
+				velbus.logger.warning("received unrecognized command %s", str(binascii.hexlify(data[4])))
 		else:
 			if rtr:
 				message = velbus.ModuleTypeRequestMessage()
 				message.populate(priority, address, rtr, "")
 				return message
 			else:
-				logging.warning("zero sized message received without rtr set")
+				velbus.logger.warning("zero sized message received without rtr set")
