@@ -32,7 +32,7 @@ import os
 import logging
 
 logger = logging.getLogger('velbus')
-logger.setLevel(logging.WARNING)
+logger.setLevel(logging.INFO)
 
 def on_app_engine():
 	"""
