@@ -47,6 +47,12 @@ class Controller(object):
 		"""
 		self.__subscribers.append(subscriber)
 	
+	def parse(self, binary_message):
+		"""
+		@return: velbus.Message or None
+		"""
+		return self.parser.parse(binary_message)
+	
 	def unsubscribe(self, subscriber):
 		"""
 		@return: None
