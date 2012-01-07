@@ -7,7 +7,6 @@ import twisted.internet.protocol
 import twisted.protocols.basic
 import os
 import binascii
-import logging
 
 class VelbusForwarderProtocol(twisted.protocols.basic.NetstringReceiver):
 	"""
@@ -26,14 +25,14 @@ class VelbusForwarderProtocol(twisted.protocols.basic.NetstringReceiver):
 		"""
 		@return: None
 		"""
-		logging.debug("connection made")
+		velbus.logger.info("connection made")
 		self.factory.register(self)
 	
 	def connectionLost(self, reason=twisted.internet.protocol.connectionDone):
 		"""
 		@return: None
 		"""
-		logging.debug("connection lost")
+		velbug.logger.info("connection lost")
 		self.factory.unregister(self)
 
 class VelbusForwarderFactory(twisted.internet.protocol.Factory):
@@ -95,7 +94,7 @@ class VelbusForwarderFactory(twisted.internet.protocol.Factory):
 		@return: None
 		"""
 		assert isinstance(protocol, VelbusForwarderProtocol)
-		logging.debug("register connection")
+		velbus.logger.debug("register connection")
 		self.connections.append(protocol)
 		
 	def unregister(self, protocol):
@@ -103,7 +102,7 @@ class VelbusForwarderFactory(twisted.internet.protocol.Factory):
 		@return: None
 		"""
 		assert isinstance(protocol, VelbusForwarderProtocol)
-		logging.debug("unregister connection")
+		velbus.logger.debug("unregister connection")
 		self.connections.remove(protocol)
 
 class VelbusForwarder(object):

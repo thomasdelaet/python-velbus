@@ -29,6 +29,10 @@ VMB4RYLD_TYPE = 0x10
 CommandRegistry = {}
 
 import os
+import logging
+
+logger = logging.getLogger('velbus')
+logger.setLevel(logging.WARNING)
 
 def on_app_engine():
 	"""
