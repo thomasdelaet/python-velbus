@@ -7,6 +7,7 @@ import binascii
 import threading
 import serial
 import sys
+import logging
 
 class VelbusUSBConnection(velbus.VelbusConnection):
 		#pylint: disable-msg=R0903
@@ -39,7 +40,7 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 			reactor.addSystemEventTrigger("before", "shutdown", self.stop)
 		
 		def stop(self):
-			velbus.logger.warning("Stop thread executed")
+			logging.warning("Stop thread executed")
 			self.shutdown_initiated = True
 			self.serial.close()
 			time.sleep(1)
@@ -58,7 +59,7 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 			@return: None
 			"""
 			assert isinstance(message, velbus.Message)
-			velbus.logger.info("Sending message on USB bus: %s, %s", str(message), " ".join([binascii.hexlify(x) for x in message.to_binary()]))
+			logging.info("Sending message on USB bus: %s, %s", str(message), " ".join([binascii.hexlify(x) for x in message.to_binary()]))
 			self.serial.write(message.to_binary())
 			self.serial.flush()
 			time.sleep(float(message.wait_after_send) / float(1000))

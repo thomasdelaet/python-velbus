@@ -3,6 +3,7 @@
 """
 import velbus
 import simplejson as json
+import logging
 
 COMMAND_CODE = 0x02
 
@@ -21,12 +22,12 @@ class SwitchRelayOnMessage(velbus.Message):
 		@return: None
 		"""
 		assert isinstance(data, str)
-		velbus.logger.debug("Populating message: priority %s, address: %s, channels: %s", str(priority), str(address), str(data))
+		logging.debug("Populating message: priority %s, address: %s, channels: %s", str(priority), str(address), str(data))
 		self.needs_high_priority(priority)
 		self.needs_no_rtr(rtr)
 		self.needs_data(data, 1)
 		self.set_attributes(priority, address, rtr)
-		velbus.logger.debug("Setting relay channels to %s", str(self.byte_to_channels(data)))
+		logging.debug("Setting relay channels to %s", str(self.byte_to_channels(data)))
 		self.relay_channels = self.byte_to_channels(data)
 
 	def to_json(self):
