@@ -5,6 +5,7 @@
 import simplejson as json
 import os.path
 import velbusconfig
+import logging
 
 class SwitchConfigReader(object):
 	"""
@@ -32,7 +33,8 @@ class SwitchConfigReader(object):
 			self.create(switch_address, switch_channel, velbusconfig.switch.Switch)
 			switch = self.controller.module(switch_address, switch_channel)
 			if entry.has_key('is_pushbutton'):
-				switch.is_pushbutton = True
+				logging.debug("Setting is_pushbutton to %s for module %s, %s", entry['is_pushbutton'], switch_address, switch_channel)
+				switch.is_pushbutton = entry['is_pushbutton']
 			self.create(relay_address, relay_channel, velbusconfig.relay.Relay)
 			relay = self.controller.module(relay_address, relay_channel)
 			self.controller.module(switch_address, switch_channel).add_relay(relay)
