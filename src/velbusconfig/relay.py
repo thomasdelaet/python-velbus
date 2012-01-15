@@ -4,6 +4,7 @@
 import velbus
 import velbusconfig
 import binascii
+import logging
 
 class Relay(velbusconfig.VelbusModule):
 	"""
@@ -27,6 +28,7 @@ class Relay(velbusconfig.VelbusModule):
 		@return: None
 		"""
 		message = velbus.SwitchRelayOffMessage()
+		logging.debug("Sending off message for channel %s", self.channel)
 		message.populate(velbus.HIGH_PRIORITY, self.address, 
 						bool(velbus.NO_RTR), chr(self.channel))
 		self.controller.execute_event(message)
@@ -36,6 +38,7 @@ class Relay(velbusconfig.VelbusModule):
 		@return: None
 		"""
 		message = velbus.SwitchRelayOnMessage()
+		logging.debug("Sending on message for channel %s", self.channel)
 		message.populate(velbus.HIGH_PRIORITY, self.address, 
 						bool(velbus.NO_RTR), chr(self.channel))
 		self.controller.execute_event(message)
