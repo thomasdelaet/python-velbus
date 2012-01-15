@@ -50,7 +50,8 @@ class Controller(object):
 				if self.has_module(address, channel):
 					module = self.module(address, channel)
 					if isinstance(module, velbusconfig.Switch):
-						module.toggle_relays()
+						if not module.is_pushbutton or len(event.closed) != 0:
+							module.toggle_relays()
 					if channel in event.closed:
 						module.set_on()
 					if channel in event.opened:

@@ -30,6 +30,9 @@ class SwitchConfigReader(object):
 			relay_address = entry['relay'][0]
 			relay_channel = entry['relay'][1]
 			self.create(switch_address, switch_channel, velbusconfig.switch.Switch)
+			switch = self.controller.module(switch_address, switch_channel)
+			if entry.has_key('is_pushbutton'):
+				switch.is_pushbutton = True
 			self.create(relay_address, relay_channel, velbusconfig.relay.Relay)
 			relay = self.controller.module(relay_address, relay_channel)
 			self.controller.module(switch_address, switch_channel).add_relay(relay)

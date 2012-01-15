@@ -18,6 +18,7 @@ class Switch(velbusconfig.VelbusModule):
 		assert channel <= self.MAX_CHANNELS
 		velbusconfig.module.VelbusModule.__init__(self, controller, address, channel)
 		self.relays = []
+		self.is_pushbutton = False
 		
 	def to_string(self):
 		result = binascii.hexlify(chr(self.address)) + " " + str(self.channel) + " : Switch\n"
