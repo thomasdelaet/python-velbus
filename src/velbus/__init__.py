@@ -82,5 +82,3 @@ if not on_app_engine():
 		from connections.usb import VelbusUSBConnection
 	except ImportError:
 		pass
-	from connections.netstring import NetstringConnection
-	from forwarder import VelbusForwarder
