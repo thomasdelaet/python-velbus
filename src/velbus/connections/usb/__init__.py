@@ -6,6 +6,7 @@ import velbus
 import binascii
 import threading
 import serial
+import serial.serialutil
 import sys
 import logging
 
@@ -30,13 +31,16 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 		def __init__(self, reactor, device):
 			self.reactor = reactor
 			self.shutdown_initiated = False
-			self.serial = serial.Serial(port=device, baudrate=self.BAUD_RATE, bytesize=self.BYTE_SIZE,
+			try: 
+				self.serial = serial.Serial(port=device, baudrate=self.BAUD_RATE, bytesize=self.BYTE_SIZE,
 										parity=self.PARITY, stopbits=self.STOPBITS, xonxoff=self.XONXOFF,
 										rtscts=self.RTSCTS)		 
-			velbus.VelbusConnection.__init__(self)
-			reactor.callInThread(self.__read_data)
-			reactor.addSystemEventTrigger("before", "shutdown", self.stop)
-		
+				velbus.VelbusConnection.__init__(self)
+				reactor.callInThread(self.__read_data)
+				reactor.addSystemEventTrigger("before", "shutdown", self.stop)
+			except serial.serialutil.SerialException:
+				logging.error("Could not open serial port, no messages are read or written to bus")
+			
 		def stop(self):
 			logging.warning("Stop thread executed")
 			self.shutdown_initiated = True
