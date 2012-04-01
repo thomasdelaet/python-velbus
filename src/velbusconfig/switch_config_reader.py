@@ -2,7 +2,7 @@
 @author: Thomas Delaet <thomas@delaet.org>
 """
 
-import simplejson as json
+import json
 import os.path
 import velbusconfig
 import logging

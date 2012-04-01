@@ -2,7 +2,7 @@
 @author: Thomas Delaet <thomas@delaet.org>
 """
 import velbus
-import simplejson as json
+import json
 import logging
 
 COMMAND_CODE = 0x01
