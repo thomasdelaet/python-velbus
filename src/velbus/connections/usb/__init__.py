@@ -29,7 +29,6 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 	
 		def __init__(self, reactor, device):
 			self.reactor = reactor
-			self.config = config
 			self.shutdown_initiated = False
 			self.serial = serial.Serial(port=device, baudrate=self.BAUD_RATE, bytesize=self.BYTE_SIZE,
 										parity=self.PARITY, stopbits=self.STOPBITS, xonxoff=self.XONXOFF,
