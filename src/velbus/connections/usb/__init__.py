@@ -27,10 +27,9 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 		
 		RTSCTS = 1
 	
-		def __init__(self, reactor, config):
+		def __init__(self, reactor, device):
 			self.reactor = reactor
 			self.config = config
-			device = self.config.get('bus_connection', 'device')
 			self.shutdown_initiated = False
 			self.serial = serial.Serial(port=device, baudrate=self.BAUD_RATE, bytesize=self.BYTE_SIZE,
 										parity=self.PARITY, stopbits=self.STOPBITS, xonxoff=self.XONXOFF,
