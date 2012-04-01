@@ -2,7 +2,7 @@
 @author: Thomas Delaet <thomas@delaet.org>
 """
 import velbus
-import simplejson as json
+import json
 import base64
 
 class Message(object):

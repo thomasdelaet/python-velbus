@@ -3,7 +3,7 @@
 """
 import velbus
 import struct
-import simplejson as json
+import json
 
 COMMAND_CODE = 0xfb
 
