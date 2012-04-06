@@ -61,8 +61,12 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 			@return: None
 			"""
 			assert isinstance(message, velbus.Message)
+			#self.reactor.callLater(0, self.__write_message, message)
+			self.__write_message(message)
+			
+		def __write_message(self, message):
 			logging.info("Sending message on USB bus: %s, %s", str(message), " ".join([binascii.hexlify(x) for x in message.to_binary()]))
 			self.serial.write(message.to_binary())
-			self.serial.flush()
+			#self.serial.flush()
 			time.sleep(float(message.wait_after_send) / float(1000))
 			self.controller.new_message(message)
