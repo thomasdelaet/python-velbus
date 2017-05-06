@@ -8,15 +8,16 @@ from switch_config_reader import SwitchConfigReader
 from controller import Controller
 
 LOW_ADDRESS = 0x00
-	
+
 HIGH_ADDRESS = 0xff
 
+
 def valid_key(address, channel):
-	"""
-	@return: bool
-	"""
-	return isinstance(address, int) and \
-			isinstance(channel, int) and \
-			channel > 0 and \
-			address >= LOW_ADDRESS and \
-			address <= HIGH_ADDRESS
+    """
+    @return: bool
+    """
+    return isinstance(address, int) and \
+        isinstance(channel, int) and \
+        channel > 0 and \
+        address >= LOW_ADDRESS and \
+        address <= HIGH_ADDRESS
