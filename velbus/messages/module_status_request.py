@@ -15,6 +15,7 @@ class ModuleStatusRequestMessage(velbus.Message):
     def __init__(self):
         velbus.Message.__init__(self)
         self.channels = []
+        self.wait_after_send = 500
 
     def populate(self, priority, address, rtr, data):
         """

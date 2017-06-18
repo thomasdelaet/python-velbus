@@ -20,6 +20,7 @@ class VelbusParser(object):
 
     def __init__(self, controller):
         assert isinstance(controller, velbus.Controller)
+        self.logger = logging.getLogger('velbus')
         self.controller = controller
         self.buffer = bytes([])
         self.event = threading.Event()
@@ -30,21 +31,21 @@ class VelbusParser(object):
 
     def valid_header_waiting(self):
         if len(self.buffer) < 4:
-            logging.debug("Buffer does not yet contain full header")
+            self.logger.debug("Buffer does not yet contain full header")
             result = False
         else:
             result = True
             result = result and self.buffer[0] == velbus.START_BYTE
             if not result:
-                logging.warning("Start byte not recognized")
+                self.logger.warning("Start byte not recognized")
             result = result and (self.buffer[1] == velbus.HIGH_PRIORITY
                                  or self.buffer[1] == velbus.LOW_PRIORITY)
             if not result:
-                logging.warning("Priority not recognized")
+                self.logger.warning("Priority not recognized")
             result = result and (self.buffer[3] & 0x0F <= 8)
             if not result:
-                logging.warning("Message size not recognized")
-        logging.debug("Valid Header Waiting: %s(%s)", result, str(self.buffer))
+                self.logger.warning("Message size not recognized")
+        self.logger.debug("Valid Header Waiting: %s(%s)", result, str(self.buffer))
         return result
 
     def valid_body_waiting(self):
@@ -52,18 +53,18 @@ class VelbusParser(object):
         packet_size = velbus.MINIMUM_MESSAGE_SIZE + \
             (self.buffer[3] & 0x0F)
         if len(self.buffer) < packet_size:
-            logging.debug("Buffer does not yet contain full message")
+            self.logger.debug("Buffer does not yet contain full message")
             result = False
         else:
             result = True
             result = result and self.buffer[packet_size - 1] == velbus.END_BYTE
             if not result:
-                logging.warning("End byte not recognized")
+                self.logger.warning("End byte not recognized")
             result = result and velbus.checksum(
-                self.buffer[0:packet_size - 2]) == self.buffer[packet_size - 2]
+                self.buffer[0:packet_size - 2])[0] == self.buffer[packet_size - 2]
             if not result:
-                logging.warning("Checksum not recognized")
-        logging.debug("Valid Body Waiting: %s (%s)", result, str(self.buffer))
+                self.logger.warning("Checksum not recognized")
+        self.logger.debug("Valid Body Waiting: %s (%s)", result, str(self.buffer))
         return result
 
     def next_packet(self):
@@ -96,27 +97,27 @@ class VelbusParser(object):
         assert len(data) > 0
         assert len(data) >= velbus.MINIMUM_MESSAGE_SIZE
         assert data[0] == velbus.START_BYTE
-        logging.info("Processing message %s", str(data))
+        self.logger.info("Processing message %s", str(data))
         if len(data) > velbus.MAXIMUM_MESSAGE_SIZE:
-            logging.warning("Velbus message are maximum %s bytes, this one is %s", str(
+            self.logger.warning("Velbus message are maximum %s bytes, this one is %s", str(
                 velbus.MAXIMUM_MESSAGE_SIZE), str(len(data)))
             return
         if data[-1] != velbus.END_BYTE:
-            logging.warning("end byte not correct")
+            self.logger.warning("end byte not correct")
             return
         priority = data[1]
         if priority != velbus.LOW_PRIORITY and priority != velbus.HIGH_PRIORITY:
-            logging.warning("unrecognized priority")
+            self.logger.warning("unrecognized priority")
             return
         address = data[2]
         rtr = data[3] & velbus.RTR == velbus.RTR
         data_size = data[3] & 0x0F
         if data_size + velbus.MINIMUM_MESSAGE_SIZE != len(data):
-            logging.warning(
+            self.logger.warning(
                 "length of data size does not match actual length of message")
             return
-        if not velbus.checksum(data[:-2]) == data[-2]:
-            logging.warning("Packet has no valid checksum")
+        if not velbus.checksum(data[:-2])[0] == data[-2]:
+            self.logger.warning("Packet has no valid checksum")
             return
         if data_size >= 1:
             if data[4] in velbus.CommandRegistry:
@@ -124,11 +125,11 @@ class VelbusParser(object):
                 message.populate(priority, address, rtr, data[5:-2])
                 return message
             else:
-                logging.warning("received unrecognized command %s", str(data[4]))
+                self.logger.warning("received unrecognized command %s", str(data[4]))
         else:
             if rtr:
                 message = velbus.ModuleTypeRequestMessage()
                 message.populate(priority, address, rtr, "")
                 return message
             else:
-                logging.warning("zero sized message received without rtr set")
+                self.logger.warning("zero sized message received without rtr set")

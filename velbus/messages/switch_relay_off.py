@@ -18,20 +18,21 @@ class SwitchRelayOffMessage(velbus.Message):
     def __init__(self):
         velbus.Message.__init__(self)
         self.relay_channels = []
+        self.logger = logging.getLogger('velbus')
 
     def populate(self, priority, address, rtr, data):
         """
         @return: None
         """
         assert isinstance(data, bytes)
-        logging.debug("Populating message: priority %s, address: %s, channels: %s", str(
+        self.logger.debug("Populating message: priority %s, address: %s, channels: %s", str(
             priority), str(address), str(data))
         self.needs_high_priority(priority)
         self.needs_no_rtr(rtr)
         self.needs_data(data, 1)
         self.set_attributes(priority, address, rtr)
-        logging.debug("Setting relay channels to %s",
-                      str(self.byte_to_channels(data)))
+        self.logger.debug("Setting relay channels to %s",
+                          str(self.byte_to_channels(data)))
         self.relay_channels = self.byte_to_channels(data)
 
     def to_json(self):
