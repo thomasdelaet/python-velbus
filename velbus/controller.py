@@ -2,7 +2,6 @@
 @author: Thomas Delaet <thomas@delaet.org>
 """
 import velbus
-import binascii
 import logging
 
 
@@ -34,6 +33,7 @@ class Controller(object):
     """
 
     def __init__(self, connection):
+        self.logger = logging.getLogger('velbus')
         self.connection = connection
         self.parser = velbus.VelbusParser(self)
         self.__subscribers = []
@@ -80,6 +80,14 @@ class Controller(object):
         """
         @return: None
         """
-        logging.info("New message: " + str(message))
+        self.logger.info("New message: " + str(message))
+        if isinstance(message, velbus.BusActiveMessage):
+            self.logger.info("Velbus active message received")
+        if isinstance(message, velbus.ReceiveReadyMessage):
+            self.logger.info("Velbus receive ready message received")
+        if isinstance(message, velbus.BusOffMessage):
+            self.logger.error("Velbus bus off message received")
+        if isinstance(message, velbus.ReceiveBufferFullMessage):
+            self.logger.error("Velbus receive buffer full message received")
         for subscriber in self.__subscribers:
             subscriber(message)

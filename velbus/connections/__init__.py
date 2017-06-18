@@ -3,7 +3,6 @@
 """
 import time
 import velbus
-import binascii
 import serial
 import serial_asyncio
 import logging
@@ -14,6 +13,7 @@ class Output(asyncio.Protocol):
 
     def __init__(self):
         super().__init__()
+        self.logger = logging.getLogger('velbus')
 
     def set_connection(self, connection):
         self._connection = connection
@@ -32,10 +32,8 @@ class Output(asyncio.Protocol):
         self._connection.setup()
 
     def write_message(self, message):
-        logging.info("Sending message on USB bus: %s, %s", str(message), " ".join(
-            [binascii.hexlify(x) for x in message.to_binary()]))
+        self.logger.info("Sending message on USB bus: %s", str(message))
         self._transport.write(message.to_binary())
-        time.sleep(float(message.wait_after_send) / float(1000))
         self._connection.controller.new_message(message)
 
 
@@ -57,9 +55,15 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 
     RTSCTS = 1
 
+    SLEEP_TIME = 60 / 1000
+
     def __init__(self, device):
         velbus.VelbusConnection.__init__(self)
+        self.logger = logging.getLogger('velbus')
         self._device = device
+        self._loop = asyncio.get_event_loop()
+        self._can_send = True
+        self._queue = []
         self.setup()
 
     def setup(self):
@@ -82,9 +86,8 @@ class VelbusUSBConnection(velbus.VelbusConnection):
         self._protocol = protocol
 
     def stop(self):
-        logging.warning("Stop executed")
-        self._protocol._transport.serial().close()
-        time.sleep(1)
+        self.logger.warning("Stop executed")
+        self._protocol._transport.serial.close()
 
     def feed_parser(self, data):
         assert isinstance(data, bytes)
@@ -95,4 +98,18 @@ class VelbusUSBConnection(velbus.VelbusConnection):
         @return: None
         """
         assert isinstance(message, velbus.Message)
+        if self._can_send:
+            self._send(message)
+        else:
+            self._queue.append(message)
+
+    def _pop_queue(self):
+        self._can_send = True
+        if len(self._queue) > 0:
+            message = self._queue.pop(0)
+            self._send(message)
+
+    def _send(self, message):
         self._protocol.write_message(message)
+        self._can_send = False
+        self._loop.call_later(self.SLEEP_TIME, self._pop_queue)

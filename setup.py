@@ -1,17 +1,17 @@
-from distutils.core import setup
+from setuptools import setup
 
-with open('README.txt') as file:
+with open('README.md') as file:
     long_description = file.read()
 
 setup(name='python-velbus',
-      version='1.0',
-      py_modules=[''],
-      description="Python Library for the Velbus protocol",
-      author='Thomas Delaet',
-      author_email='thomas@delaet.org',
+      version='2.0.6',
       url='https://bitbucket.org/tdelaet/python-velbus/',
-      package_dir={'': 'src'},
-      packages=['velbus', 'velbusconfig', "velbus.messages",
-                'velbus.connections.netstring', 'velbus.connections.usb'],
-      long_description=long_description
+      license='MIT',
+      author='Thomas Delaet',
+      install_requires=["pyserial==3.3", "pyserial-asyncio==0.4.0"],
+      author_email='thomas@delaet.org',
+      description="Python Library for the Velbus protocol",
+      long_description=long_description,
+      packages=['velbus', 'velbus.config', 'velbus.connections', 'velbus.messages'],
+      platforms='any',
       )
