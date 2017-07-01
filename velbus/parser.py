@@ -2,7 +2,6 @@
 @author: Thomas Delaet <thomas@delaet.org>
 """
 import velbus
-import threading
 import logging
 
 
@@ -23,7 +22,6 @@ class VelbusParser(object):
         self.logger = logging.getLogger('velbus')
         self.controller = controller
         self.buffer = bytes([])
-        self.event = threading.Event()
 
     def feed(self, data):
         self.buffer += data
