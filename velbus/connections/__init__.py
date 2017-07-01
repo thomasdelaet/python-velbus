@@ -4,37 +4,26 @@
 import time
 import velbus
 import serial
-import serial_asyncio
+import serial.threaded
+import threading
 import logging
-import asyncio
+from Queue import Queue
 
-class Output(asyncio.Protocol):
-    """Protocol class."""
 
-    def __init__(self):
-        super().__init__()
-        self.logger = logging.getLogger('velbus')
-
-    def set_connection(self, connection):
-        self._connection = connection
-        self._connection.set_protocol(self)
-
-    def connection_made(self, transport):
-        """Initiate."""
-        self._transport = transport
+class Protocol(serial.threaded.Protocol):
 
     def data_received(self, data):
-        """On read."""
-        self._connection.feed_parser(data)
+        self.parser(data)
 
-    def connection_lost(self, exc):
-        """On termination."""
-        self._connection.setup()
 
-    def write_message(self, message):
-        self.logger.info("Sending message on USB bus: %s", str(message))
-        self._transport.write(message.to_binary())
-        self._connection.controller.new_message(message)
+class VelbusException(Exception):
+    """Velbus Exception."""
+    def __init__(self, value):
+        Exception.__init__(self)
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
 
 
 class VelbusUSBConnection(velbus.VelbusConnection):
@@ -61,55 +50,52 @@ class VelbusUSBConnection(velbus.VelbusConnection):
         velbus.VelbusConnection.__init__(self)
         self.logger = logging.getLogger('velbus')
         self._device = device
-        self._loop = asyncio.get_event_loop()
-        self._can_send = True
-        self._queue = []
-        self.setup()
-
-    def setup(self):
-        loop = asyncio.get_event_loop()
-        connection = self
-
-        def coro_done(ftr):
-            ftr.result()[1].set_connection(connection)
-        coro = serial_asyncio.create_serial_connection(loop, Output,
-                                                       self._device,
-                                                       baudrate=self.BAUD_RATE,
-                                                       bytesize=self.BYTE_SIZE,
-                                                       parity=self.PARITY,
-                                                       stopbits=self.STOPBITS,
-                                                       xonxoff=self.XONXOFF,
-                                                       rtscts=self.RTSCTS)
-        loop.create_task(coro).add_done_callback(coro_done)
-
-    def set_protocol(self, protocol):
-        self._protocol = protocol
+        try:
+            self.serial = serial.Serial(port=device,
+                                        baudrate=self.BAUD_RATE,
+                                        bytesize=self.BYTE_SIZE,
+                                        parity=self.PARITY,
+                                        stopbits=self.STOPBITS,
+                                        xonxoff=self.XONXOFF,
+                                        rtscts=self.RTSCTS)
+        except serial.serialutil.SerialException:
+            self.logger.error("Could not open serial port, \
+                              no messages are read or written to the bus")
+            raise VelbusException("Could not open serial port")
+        self._reader = serial.threaded.ReaderThread(self.serial, Protocol)
+        self._reader.start()
+        self._reader.protocol.parser = self.feed_parser
+        self._reader.connect()
+        self._write_queue = Queue()
+        self._write_process = threading.Thread(None, self.write_daemon,
+                                               "write_packets_process", (), {})
+        self._write_process.start()
 
     def stop(self):
+        """Close serial port."""
         self.logger.warning("Stop executed")
-        self._protocol._transport.serial.close()
+        try:
+            self._reader.close()
+            self._write_process.stop()
+        except serial.serialutil.SerialException:
+            self.logger.error("Error while closing device")
+            raise VelbusException("Error while closing device")
+        time.sleep(1)
 
     def feed_parser(self, data):
+        """Parse received message."""
         assert isinstance(data, bytes)
         self.controller.feed_parser(data)
 
     def send(self, message):
-        """
-        @return: None
-        """
+        """Add message to write queue."""
         assert isinstance(message, velbus.Message)
-        if self._can_send:
-            self._send(message)
-        else:
-            self._queue.append(message)
+        self._write_queue.put_nowait(message)
 
-    def _pop_queue(self):
-        self._can_send = True
-        if len(self._queue) > 0:
-            message = self._queue.pop(0)
-            self._send(message)
-
-    def _send(self, message):
-        self._protocol.write_message(message)
-        self._can_send = False
-        self._loop.call_later(self.SLEEP_TIME, self._pop_queue)
+    def write_daemon(self):
+        """Write thread."""
+        while True:
+            message = self._write_queue.get(block=True)
+            self.logger.info("Sending message on USB bus: %s", str(message))
+            self._reader.write(message.to_binary())
+            time.sleep(self.SLEEP_TIME)
