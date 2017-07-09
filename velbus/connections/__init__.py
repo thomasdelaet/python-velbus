@@ -7,7 +7,7 @@ import serial
 import serial.threaded
 import threading
 import logging
-from Queue import Queue
+from queue import Queue
 
 
 class Protocol(serial.threaded.Protocol):
@@ -76,7 +76,6 @@ class VelbusUSBConnection(velbus.VelbusConnection):
         self.logger.warning("Stop executed")
         try:
             self._reader.close()
-            self._write_process.stop()
         except serial.serialutil.SerialException:
             self.logger.error("Error while closing device")
             raise VelbusException("Error while closing device")
