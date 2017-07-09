@@ -69,8 +69,11 @@ def checksum(data):
     for data_byte in data:
         __checksum += data_byte
     __checksum = -(__checksum % 256) + 256
-    return bytes([__checksum])
-
+    try:
+        __checksum = bytes([__checksum])
+    except ValueError:
+        __checksum = bytes([0])
+    return __checksum
 
 # pylint: disable-msg=W0401
 from velbus.message import Message
