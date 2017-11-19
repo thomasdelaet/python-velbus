@@ -1,5 +1,5 @@
 """
-@author: Tom Dupré <td8400@gmail.com>
+@author: Tom Dupré <gitd8400@gmail.com>
 """
 import velbus
 import json

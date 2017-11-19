@@ -37,3 +37,5 @@ from velbus.messages.very_fast_blinking_led import VeryFastBlinkingLedMessage
 from velbus.messages.write_data_to_memory import WriteDataToMemoryMessage
 from velbus.messages.write_memory_block import WriteMemoryBlockMessage
 from velbus.messages.write_module_address_and_serial_number import WriteModuleAddressAndSerialNumberMessage
+from velbus.messages.cover_down import CoverDownMessage
+from velbus.messages.cover_up import CoverUpMessage
