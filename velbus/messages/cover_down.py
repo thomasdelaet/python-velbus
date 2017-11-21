@@ -61,4 +61,4 @@ class CoverDownMessage(velbus.Message):
             self.channels_to_byte([self.channel]),
         ]) + struct.pack('>L', self.delay_time)[-3:]
 
-velbus.register_command(COMMAND_CODE, CoverForcedDownMessage)
+velbus.register_command(COMMAND_CODE, CoverDownMessage)
