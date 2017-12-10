@@ -4,6 +4,7 @@
 import velbus
 import json
 import logging
+import struct
 
 COMMAND_CODE = 0x06
 
@@ -17,7 +18,7 @@ class CoverDownMessage(velbus.Message):
 
     def __init__(self):
         velbus.Message.__init__(self)
-        self.channel = 0
+        self.channel = 0 
         self.delay_time = 0
         self.logger = logging.getLogger('velbus')
 
@@ -58,7 +59,8 @@ class CoverDownMessage(velbus.Message):
         """
         return bytes([
             COMMAND_CODE,
-            self.channels_to_byte([self.channel]),
+            self.channels_to_byte([self.channel])
         ]) + struct.pack('>L', self.delay_time)[-3:]
+
 
 velbus.register_command(COMMAND_CODE, CoverDownMessage)
