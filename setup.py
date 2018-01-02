@@ -12,6 +12,6 @@ setup(name='python-velbus',
       author_email='thomas@delaet.org',
       description="Python Library for the Velbus protocol",
       long_description=long_description,
-      packages=['velbus', 'velbus.config', 'velbus.connections', 'velbus.messages'],
+      packages=['velbus', 'velbus.connections', 'velbus.messages'],
       platforms='any',
-      )
+     )
