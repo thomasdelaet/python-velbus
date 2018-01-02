@@ -1,33 +1,86 @@
-This library contains an easy-to-use binding for the Velbus protocol. Currently, all messages of the VMB4RYLD and VMB6IN modules are supported since these are the only two modules I have.
+## python-velbus: A python library to control the Velbus home automation system
 
-Layout of the velbus library is as follows:
- * The connections dir contains two type of connections that can be the source of velbus messages. These are currently the velbus USB controller and a Netstring connection (more on that later)
- * The messages dir contains all supported message types
- 
-Dependencies for this library are the simpjeson package (http://simplejson.readthedocs.org/en/latest/) and twisted (http://www.twistedmatrix.com). Install these first.
+This library was created to support the Velbus protocol in my home automation efforts.
 
-Install this package is as simple as executing 'python setup.py install' on the command-line.
-  
-I have included three example scripts that use this library (see examples dir)
+It is currently being used by the Velbus component in [home assisstant](http://home-assistant.io) but can also be used indepenently.
 
-SCRIPT 1: forwarder.py
+The latest version of the library is *2.0.11* and it is published as a python package on [pypi](https://pypi.python.org/pypi/python-velbus)
 
-The forwarder script captures all Velbus packets from the physical bus through the USB controller and forwards them using a Netstring protocol (see http://cr.yp.to/proto/netstrings.txt for more information on this protocol).
+I would like to extend this module to support all Velbus modules and offer higher-level functionality such as auto-discovery, so feel free to submit pull requests or log issues through [github](http://www.github.com/thomasdelaet/python-velbus) for functionality you like to have included.
 
-You can use the velbus.connections.netstring module to capture the packets on another computer and continue processing. I use this to forward packets to Google App Engine where the processing of my home automation system occurs.
+# Example usage
 
-What you need to be aware of:
-* The forwarder listens on port 8007 (see file forwarder.py in the src/velbus directory to change this)
-* To change the device name of your usb controller, see file src/velbus/connections/usb/usb.py and change DEVICE_NAME
+The library currently only supports a serial connection to the Velbus controller (either through USB module or through RS-232 interface). In order to use the library, you need to first initialize the controller and can then send and receive messages on the Velbus. The library currently does not validate if a message is supported by a certain module (e.g., you can send a blind up message to a relay)
 
-SCRIPT 2: switchconfig.py
+```python
+import velbus
+import time
 
-I have regular pre-home automation switches but want to emulate the behavior of push button switches because my lights are also controlled by other means than switches (for example: the web interface).
+# serial (or USB over serial) device connected to Velbus controller
+port = "/dev/ttyACM0"
 
-To achieve this without buying new switches, I developed the src/velbusconfig python package. 
+connection = velbus.VelbusUSBConnection(port)
+controller = velbus.Controller(connection)
+controller.subscribe(_on_message)
 
-This package reads a file on startup (currently /etc/velbus_switch_config, see src/velbusconfig/switch_config_reader.py to change this) and uses this to link regular switches to relays.
+message = velbus.SwitchRelayOnMessage()
+# set module address
+module_address = 0xdc
 
-SCRIPT 3: combination.py 
+message.set_defaults(module_address)
 
-Different 'services' like the forwarder and switchconfig script can easily be combined because the library uses a publish-subscribe mechanism internally. See combination.py on how the two previous scripts are combined.
+channel_number = 1
+
+message.relay_channels = [channel_number]
+
+controller.send(message)
+
+def _on_message(received_message):
+    print("Velbus message received")
+    print(received_message.address)
+
+time.sleep(5)
+
+connection.stop()
+```
+
+# Installation
+
+You can install the library with pip (*pip install python-velbus*) or by checking out the [github](https://github.com/thomasdelaet/python-velbus) repository and running *python setup.py install* at the root of the repository.
+
+# Supported modules
+
+The following Velbus modules are currently supported by this library:
+
+| Module name | Description | Status | Comments |
+| ----------- | ----------- | ------ | -------- |
+| VMB6IN | 6 channel input module | SUPPORTED | All messages are supported |
+| VMB7IN | 7 channel input module | SUPPORTED | Only messages from VMB6IN are supported |
+| VMB4RYLD | 4 channel relay module | SUPPORTED | All messages are supported |
+| VMB4RYNO | 4 channel relay module | SUPPORTED | All messages are supported |
+| VMB1RS | Serial interface | SUPPORTED | All messages are supported |
+| VMB1USB | USB configuration module | SUPPORTED | All messages are supported |
+| VMBRSUSB | Configuration module with USB and RS-232 interface | SUPPORTED | All messages are supported |
+
+# Adding support for other modules
+
+The [velbus website](http://www.velbus.eu) contains an overview of the different available modules and their protocol documentation. In order to add support for an additional module, read through the protocol documemntation and add support for missing messages (many messages are shared between modules so make sure to check if a message already exists or not)
+
+Steps to add support for an additional module:
+
+- [ ] Look up the protocol documentation of the module you want to include at the [velbus website](https://www.velbus.eu/products/): Select the module, go to *Downloads* and search for the info sheet with protocol information.
+- [ ] Go through the messages directory and look for messages in the protocol information sheet that are not yet supported. Create a new file in the *messages* folder for each unsupported message. Every new message should inherit from the *Message* object and reuse common functionality.
+- [ ] Implement the *populate* and *data_to_binary* methods for each new message
+- [ ] Add new messages to the *__init__.py* file in the *messages* folder
+- [ ] Test and iterate
+- [ ] Update the Supported modules section of the *README.md* file
+- [ ] Submit a pull request on Github
+
+# Further development
+
+The library currently offers only the lowest level of functionality: sending and receiving messages to modules. I plan to extend this library with more higher-level functionality such as:
+
+- [ ] Modeling modules and their supported functions as entities
+- [ ] Only allowing to send supported messages to modules
+- [ ] Auto-discovery of modules
+- [ ] Exposing the velbus controller as an external API so it can be shared between different consumers
