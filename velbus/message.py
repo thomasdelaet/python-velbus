@@ -1,22 +1,23 @@
 """
 @author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
 import json
 import base64
+import velbus
 
 
 class Message(object):
-    # pylint: disable-msg=R0921,R0904
+    # pylint: disable-msg=R0904
     """
     Base Velbus message
     """
 
-    def __init__(self):
+    def __init__(self, address=None):
         self.priority = None
         self.address = None
         self.rtr = False
         self.wait_after_send = 100
+        self.set_defaults(address)
 
     def set_attributes(self, priority, address, rtr):
         """
@@ -39,9 +40,17 @@ class Message(object):
 
     def set_defaults(self, address):
         """
+        Set defaults
+
+        If a message has different than low priority or NO_RTR set,
+        then this method needs override in subclass
+
         @return: None
         """
-        raise NotImplementedError
+        if address is not None:
+            self.set_address(address)
+        self.set_low_priority()
+        self.set_no_rtr()
 
     def set_address(self, address):
         """
@@ -84,14 +93,22 @@ class Message(object):
         raise NotImplementedError
 
     def to_json_basic(self):
+        """
+        Create JSON structure with generic attributes
+
+        @return: dict
+        """
         return {'name': self.__class__.__name__, 'priority': self.priority,
                 'address': self.address, 'rtr': self.rtr}
 
     def to_json(self):
         """
+        Dump object structure to JSON
+
+        This method should be overridden in subclasses to include more than just generic attributes
+
         @return: str
         """
-        # FIXME: Implement in subclasses
         return json.dumps(self.to_json_basic())
 
     def __str__(self):
@@ -103,8 +120,8 @@ class Message(object):
         """
         # pylint: disable-msg=R0201
         assert isinstance(byte, int)
-        assert(byte >= 0)
-        assert(byte < 256)
+        assert byte >= 0
+        assert byte < 256
         result = []
         for offset in range(0, 8):
             if byte & (1 << offset):
@@ -203,11 +220,26 @@ class Message(object):
         """
         self.priority = velbus.HIGH_PRIORITY
 
+    def needs_firmware_priority(self, priority):
+        """
+        @return: None
+        """
+        assert isinstance(priority, int)
+        if priority != velbus.FIRMWARE_PRIORITY:
+            self.parser_error("needs firmware priority set")
+
+    def set_firmware_priority(self):
+        """
+        @return: None
+        """
+        self.priority = velbus.FIRMWARE_PRIORITY
+
     def needs_no_data(self, data):
         """
         @return: None
         """
-        if len(data) != 0:
+        length = len(data)
+        if length != 0:
             self.parser_error("has data included")
 
     def needs_data(self, data, length):

@@ -2,17 +2,19 @@
 @author: Thomas Delaet <thomas@delaet.org>
 """
 import time
-import velbus
-import serial
-import serial.threaded
 import threading
 import logging
 from queue import Queue
+import velbus
+import serial
+import serial.threaded
 
 
 class Protocol(serial.threaded.Protocol):
+    """Serial protocol."""
 
     def data_received(self, data):
+        # pylint: disable-msg=E1101
         self.parser(data)
 
 
@@ -27,7 +29,6 @@ class VelbusException(Exception):
 
 
 class VelbusUSBConnection(velbus.VelbusConnection):
-    # pylint: disable-msg=R0903
     """
     Wrapper for SerialPort connection configuration
     """

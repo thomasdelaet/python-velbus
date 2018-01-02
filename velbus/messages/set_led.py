@@ -12,9 +12,10 @@ class SetLedMessage(velbus.Message):
     received by: VMB6IN
     """
 
-    def __init__(self):
+    def __init__(self, address=None):
         velbus.Message.__init__(self)
         self.leds = []
+        self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
         """

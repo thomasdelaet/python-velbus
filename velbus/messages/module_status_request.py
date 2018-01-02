@@ -12,10 +12,11 @@ class ModuleStatusRequestMessage(velbus.Message):
     received by: VMB6IN, VMB4RYLD
     """
 
-    def __init__(self):
+    def __init__(self, address=None):
         velbus.Message.__init__(self)
         self.channels = []
         self.wait_after_send = 500
+        self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
         """
@@ -27,11 +28,6 @@ class ModuleStatusRequestMessage(velbus.Message):
         self.needs_data(data, 1)
         self.set_attributes(priority, address, rtr)
         self.channels = self.byte_to_channels(data[0])
-
-    def set_defaults(self, address):
-        self.set_address(address)
-        self.set_low_priority()
-        self.set_no_rtr()
 
     def data_to_binary(self):
         """

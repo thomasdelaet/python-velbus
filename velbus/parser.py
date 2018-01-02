@@ -1,8 +1,8 @@
 """
 @author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
 import logging
+import velbus
 
 
 class ParserError(Exception):
@@ -24,10 +24,16 @@ class VelbusParser(object):
         self.buffer = bytes([])
 
     def feed(self, data):
+        """
+        Add new incoming data to buffer and try to process
+        """
         self.buffer += data
         self.next_packet()
 
     def valid_header_waiting(self):
+        """
+        Check if a valid header is waiting in buffer
+        """
         if len(self.buffer) < 4:
             self.logger.debug("Buffer does not yet contain full header")
             result = False
@@ -47,6 +53,9 @@ class VelbusParser(object):
         return result
 
     def valid_body_waiting(self):
+        """
+        Check if a valid body is waiting in buffer
+        """
         # 0f f8 be 04 00 08 00 00 2f 04
         packet_size = velbus.MINIMUM_MESSAGE_SIZE + \
             (self.buffer[3] & 0x0F)
@@ -66,6 +75,9 @@ class VelbusParser(object):
         return result
 
     def next_packet(self):
+        """
+        Process next packet if present
+        """
         try:
             start_byte_index = self.buffer.index(velbus.START_BYTE)
         except ValueError:
@@ -81,6 +93,9 @@ class VelbusParser(object):
                 self.controller.new_message(message)
 
     def extract_packet(self):
+        """
+        Extract packet from buffer
+        """
         packet_size = velbus.MINIMUM_MESSAGE_SIZE + \
             (self.buffer[3] & 0x0F)
         packet = self.buffer[0:packet_size]
@@ -90,7 +105,7 @@ class VelbusParser(object):
         """
         @return: None
         """
-        # pylint: disable-msg=R0201
+        # pylint: disable-msg=R0911,C1801
         assert isinstance(data, bytes)
         assert len(data) > 0
         assert len(data) >= velbus.MINIMUM_MESSAGE_SIZE

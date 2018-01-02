@@ -15,6 +15,8 @@ LOW_PRIORITY = 0xfb
 
 HIGH_PRIORITY = 0xf8
 
+FIRMWARE_PRIORITY = 0xf7
+
 LOW_ADDRESS = 0x00
 
 HIGH_ADDRESS = 0xff
@@ -39,10 +41,8 @@ def on_app_engine():
         if server_software.startswith('Google App Engine') or \
                 server_software.startswith('Development'):
             return True
-        else:
-            return False
-    else:
         return False
+    return False
 
 
 def register_command(command_value, command_class):
@@ -75,7 +75,7 @@ def checksum(data):
         __checksum = bytes([0])
     return __checksum
 
-# pylint: disable-msg=W0401
+# pylint: disable-msg=W0401,C0413
 from velbus.message import Message
 from velbus.messages import *
 

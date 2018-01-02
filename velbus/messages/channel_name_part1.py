@@ -12,10 +12,11 @@ class ChannelNamePart1Message(velbus.Message):
     received by:
     """
 
-    def __init__(self):
+    def __init__(self, address=None):
         velbus.Message.__init__(self)
         self.channel = 0
         self.name = ""
+        self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
         """
@@ -36,9 +37,9 @@ class ChannelNamePart1Message(velbus.Message):
         @return: bytes
         """
         return bytes([
-                COMMAND_CODE,
-                self.channels_to_byte([self.channel])
-                ]) + bytes(self.name, 'utf-8')
+            COMMAND_CODE,
+            self.channels_to_byte([self.channel])
+            ]) + bytes(self.name, 'utf-8')
 
 
 velbus.register_command(COMMAND_CODE, ChannelNamePart1Message)

@@ -12,11 +12,12 @@ class WriteMemoryBlockMessage(velbus.Message):
     received by: VMB4RYLD
     """
 
-    def __init__(self):
+    def __init__(self, address=None):
         velbus.Message.__init__(self)
         self.high_address = 0x00
         self.low_address = 0x00
         self.data = ""
+        self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
         """

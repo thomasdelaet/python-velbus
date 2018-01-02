@@ -1,12 +1,11 @@
 """
 @author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
 import logging
+import velbus
 
 
 class VelbusConnection(object):
-    # pylint: disable-msg=R0921
     """
     Generic Velbus connection
     """
@@ -40,6 +39,11 @@ class Controller(object):
         self.connection.set_controller(self)
 
     def feed_parser(self, data):
+        """
+        Feed parser with new data
+
+        @return: None
+        """
         assert isinstance(data, bytes)
         self.parser.feed(data)
 

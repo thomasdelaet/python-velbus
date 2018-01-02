@@ -12,9 +12,10 @@ class ChannelNameRequestMessage(velbus.Message):
     received by: VMB6IN, VMB4RYLD
     """
 
-    def __init__(self):
+    def __init__(self, address=None):
         velbus.Message.__init__(self)
         self.channels = []
+        self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
         """

@@ -1,9 +1,8 @@
 """
 @author: Tom Dupre
 """
-import velbus
-import struct
 import json
+import velbus
 
 COMMAND_CODE = 0xEC
 
@@ -53,7 +52,7 @@ class BlindStatusMessage(velbus.Message):
     received by:
     """
 
-    def __init__(self):
+    def __init__(self, address=None):
         velbus.Message.__init__(self)
         self.channel = 0
         self.timeout = 0
@@ -61,7 +60,8 @@ class BlindStatusMessage(velbus.Message):
         self.led_status = 0
         self.blind_position = 0
         self.locked_inhibit_forced = 0
-        self.alarm_auto_mode_selection = 0 
+        self.alarm_auto_mode_selection = 0
+        self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
         """
@@ -80,7 +80,7 @@ class BlindStatusMessage(velbus.Message):
         self.blind_position = data[4]
         self.locked_inhibit_forced = data[5]
         self.alarm_auto_mode_selection = data[6]
-        
+
     def to_json(self):
         """
         @return: str
@@ -111,7 +111,7 @@ class BlindStatusMessage(velbus.Message):
         """
         @return: bool
         """
-        return self.disable_inhibit_forced == CHANNEL_LOCKED
+        return self.locked_inhibit_forced == CHANNEL_LOCKED
 
     def is_up(self):
         """

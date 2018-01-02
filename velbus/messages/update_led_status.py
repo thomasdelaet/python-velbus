@@ -12,11 +12,12 @@ class UpdateLedStatusMessage(velbus.Message):
     received by: VMB6IN
     """
 
-    def __init__(self):
+    def __init__(self, address=None):
         velbus.Message.__init__(self)
         self.led_on = []
         self.led_slow_blinking = []
         self.led_fast_blinking = []
+        self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
         """

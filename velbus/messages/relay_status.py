@@ -1,9 +1,9 @@
 """
 @author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
 import struct
 import json
+import velbus
 
 COMMAND_CODE = 0xfb
 
@@ -33,19 +33,19 @@ LED_VERY_FAST_BLINKING = 1 << 4
 
 
 class RelayStatusMessage(velbus.Message):
-    # pylint: disable-msg=R0904
     """
     send by: VMB4RYLD
     received by:
     """
 
-    def __init__(self):
+    def __init__(self, address=None):
         velbus.Message.__init__(self)
         self.channel = 0
         self.disable_inhibit_forced = 0
         self.status = 0
         self.led_status = 0
         self.delay_time = 0
+        self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
         """

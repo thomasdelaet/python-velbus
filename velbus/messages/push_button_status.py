@@ -1,8 +1,8 @@
 """
 @author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
 import json
+import velbus
 
 COMMAND_CODE = 0x00
 
@@ -13,11 +13,12 @@ class PushButtonStatusMessage(velbus.Message):
     received by: VMB4RYLD
     """
 
-    def __init__(self):
+    def __init__(self, address=None):
         velbus.Message.__init__(self)
         self.closed = []
         self.opened = []
         self.closed_long = []
+        self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
         """

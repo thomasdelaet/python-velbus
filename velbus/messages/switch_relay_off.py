@@ -1,24 +1,23 @@
 """
 @author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
 import json
 import logging
+import velbus
 
 COMMAND_CODE = 0x01
-
 
 class SwitchRelayOffMessage(velbus.Message):
     """
     send by:
     received by: VMB4RYLD
     """
-    # pylint: disable-msg=R0904
 
-    def __init__(self):
+    def __init__(self, address=None):
         velbus.Message.__init__(self)
         self.relay_channels = []
         self.logger = logging.getLogger('velbus')
+        self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
         """
@@ -44,7 +43,8 @@ class SwitchRelayOffMessage(velbus.Message):
         return json.dumps(json_dict)
 
     def set_defaults(self, address):
-        self.set_address(address)
+        if address is not None:
+            self.set_address(address)
         self.set_high_priority()
         self.set_no_rtr()
 

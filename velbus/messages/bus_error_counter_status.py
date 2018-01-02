@@ -12,11 +12,12 @@ class BusErrorCounterStatusMessage(velbus.Message):
     received by:
     """
 
-    def __init__(self):
+    def __init__(self, address=None):
         velbus.Message.__init__(self)
         self.transmit_error_counter = 0
         self.receive_error_counter = 0
         self.bus_off_counter = 0
+        self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
         """
@@ -35,6 +36,6 @@ class BusErrorCounterStatusMessage(velbus.Message):
         @return: bytes
         """
         return bytes([COMMAND_CODE, self.transmit_error_counter,
-                     self.receive_error_counter, self.bus_off_counter])
+                      self.receive_error_counter, self.bus_off_counter])
 
 velbus.register_command(COMMAND_CODE, BusErrorCounterStatusMessage)

@@ -1,10 +1,11 @@
 """
 @author: Tom Dupré <gitd8400@gmail.com>
 """
-import velbus
 import json
 import logging
 import struct
+import velbus
+
 
 COMMAND_CODE = 0x05
 
@@ -13,13 +14,13 @@ class CoverUpMessage(velbus.Message):
     sent by:
     received by: VMB2BLE
     """
-    # pylint: disable-msg=R0904
 
-    def __init__(self):
+    def __init__(self, address=None):
         velbus.Message.__init__(self)
         self.channel = 0
         self.delay_time = 0
         self.logger = logging.getLogger('velbus')
+        self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
         """
@@ -33,7 +34,7 @@ class CoverUpMessage(velbus.Message):
         self.needs_data(data, 4)
         self.set_attributes(priority, address, rtr)
         self.channel = self.byte_to_channel(data[0])
-        self.needs_valid_channel(self.channel,2)
+        self.needs_valid_channel(self.channel, 2)
         self.logger.debug("Setting channel to %s",
                           str(self.byte_to_channel(data[0])))
         (self.delay_time,) = struct.unpack('>L', bytes([0]) + data[1:])
@@ -48,7 +49,8 @@ class CoverUpMessage(velbus.Message):
         return json.dumps(json_dict)
 
     def set_defaults(self, address):
-        self.set_address(address)
+        if address is not None:
+            self.set_address(address)
         self.set_high_priority()
         self.set_no_rtr()
 

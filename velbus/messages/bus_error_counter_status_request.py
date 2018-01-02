@@ -12,9 +12,6 @@ class BusErrorStatusRequestMessage(velbus.Message):
     received by: VMB6IN, VMB4RYLD
     """
 
-    def __init__(self):
-        velbus.Message.__init__(self)
-
     def populate(self, priority, address, rtr, data):
         """
         @return None

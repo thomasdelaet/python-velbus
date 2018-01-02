@@ -1,8 +1,8 @@
 """
 @author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
 import struct
+import velbus
 
 COMMAND_CODE = 0xff
 
@@ -12,9 +12,9 @@ class ModuleTypeMessage(velbus.Message):
     send by: VMB6IN, VMB4RYLD
     received by:
     """
-    # pylint: disable-msg=R0902
+    #pylint: disable-msg=R0902
 
-    def __init__(self):
+    def __init__(self, address=None):
         velbus.Message.__init__(self)
         self.module_type = 0x00
         self.led_on = []
@@ -24,6 +24,7 @@ class ModuleTypeMessage(velbus.Message):
         self.memory_map_version = 0
         self.build_year = 0
         self.build_week = 0
+        self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
         """

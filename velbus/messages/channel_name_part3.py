@@ -12,10 +12,11 @@ class ChannelNamePart3Message(velbus.Message):
     received by:
     """
 
-    def __init__(self):
+    def __init__(self, address=None):
         velbus.Message.__init__(self)
         self.channel = 0
         self.name = ""
+        self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
         """

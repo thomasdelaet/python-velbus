@@ -12,12 +12,13 @@ class ModuleStatusMessage(velbus.Message):
     received by:
     """
 
-    def __init__(self):
+    def __init__(self, address=None):
         velbus.Message.__init__(self)
         self.closed = []
         self.led_on = []
         self.led_slow_blinking = []
         self.led_fast_blinking = []
+        self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
         """
