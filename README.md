@@ -4,7 +4,7 @@ This library was created to support the Velbus protocol in my home automation ef
 
 It is currently being used by the Velbus component in [home assisstant](http://home-assistant.io) but can also be used indepenently.
 
-The latest version of the library is *2.0.11* and it is published as a python package on [pypi](https://pypi.python.org/pypi/python-velbus)
+The latest version of the library is *2.0.12* and it is published as a python package on [pypi](https://pypi.python.org/pypi/python-velbus)
 
 I would like to extend this module to support all Velbus modules and offer higher-level functionality such as auto-discovery, so feel free to submit pull requests or log issues through [github](http://www.github.com/thomasdelaet/python-velbus) for functionality you like to have included.
 
