@@ -23,11 +23,9 @@ connection = velbus.VelbusUSBConnection(port)
 controller = velbus.Controller(connection)
 controller.subscribe(_on_message)
 
-message = velbus.SwitchRelayOnMessage()
 # set module address
 module_address = 0xdc
-
-message.set_defaults(module_address)
+message = velbus.SwitchRelayOnMessage(module_address)
 
 channel_number = 1
 
@@ -70,7 +68,9 @@ Steps to add support for an additional module:
 
 - [ ] Look up the protocol documentation of the module you want to include at the [velbus website](https://www.velbus.eu/products/): Select the module, go to *Downloads* and search for the info sheet with protocol information.
 - [ ] Go through the messages directory and look for messages in the protocol information sheet that are not yet supported. Create a new file in the *messages* folder for each unsupported message. Every new message should inherit from the *Message* object and reuse common functionality.
+- [ ] Implement constructor method for each new message
 - [ ] Implement the *populate* and *data_to_binary* methods for each new message
+- [ ] If the message has other than low priority or no RTR set (which are defaults), then re-implement *set_defaults* method
 - [ ] Add new messages to the *__init__.py* file in the *messages* folder
 - [ ] Test and iterate
 - [ ] Update the Supported modules section of the *README.md* file
