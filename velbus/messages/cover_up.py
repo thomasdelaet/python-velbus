@@ -4,9 +4,9 @@
 import velbus
 import json
 import logging
+import struct
 
 COMMAND_CODE = 0x05
-
 
 class CoverUpMessage(velbus.Message):
     """
@@ -58,7 +58,7 @@ class CoverUpMessage(velbus.Message):
         """
         return bytes([
             COMMAND_CODE,
-            self.channels_to_byte([self.channel]),
+            self.channels_to_byte([self.channel])
         ]) + struct.pack('>L', self.delay_time)[-3:]
 
-velbus.register_command(COMMAND_CODE, CoverForcedUpMessage)
+velbus.register_command(COMMAND_CODE, CoverUpMessage)

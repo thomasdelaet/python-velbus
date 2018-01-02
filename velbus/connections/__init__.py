@@ -96,5 +96,6 @@ class VelbusUSBConnection(velbus.VelbusConnection):
         while True:
             message = self._write_queue.get(block=True)
             self.logger.info("Sending message on USB bus: %s", str(message))
+            self.logger.debug("Sending binary message:  %s", str(message.to_binary()))
             self._reader.write(message.to_binary())
             time.sleep(self.SLEEP_TIME)
