@@ -46,7 +46,6 @@ UP_LED_VERY_FAST_BLINKING = 1
 
 
 class BlindStatusMessage(velbus.Message):
-    # pylint: disable-msg=R0904
     """
     sent by: VMB2BLE
     received by:

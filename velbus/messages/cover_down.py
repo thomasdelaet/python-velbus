@@ -14,7 +14,6 @@ class CoverDownMessage(velbus.Message):
     sent by:
     received by: VMB2BLE
     """
-    # pylint: disable-msg=R0904
 
     def __init__(self, address=None):
         velbus.Message.__init__(self)

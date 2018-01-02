@@ -19,6 +19,12 @@ class StartRelayBlinkingTimerMessage(velbus.Message):
         self.delay_time = 0
         self.set_defaults(address)
 
+    def set_defaults(self, address):
+        if address is not None:
+            self.set_address(address)
+        self.set_high_priority()
+        self.set_no_rtr()
+
     def populate(self, priority, address, rtr, data):
         """
         @return: None

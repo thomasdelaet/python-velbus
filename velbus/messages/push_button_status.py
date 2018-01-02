@@ -33,6 +33,12 @@ class PushButtonStatusMessage(velbus.Message):
         self.opened = self.byte_to_channels(data[1])
         self.closed_long = self.byte_to_channels(data[2])
 
+    def set_defaults(self, address):
+        if address is not None:
+            self.set_address(address)
+        self.set_high_priority()
+        self.set_no_rtr()
+
     def to_json(self):
         """
         @return: str
