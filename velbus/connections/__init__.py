@@ -70,6 +70,7 @@ class VelbusUSBConnection(velbus.VelbusConnection):
         self._write_queue = Queue()
         self._write_process = threading.Thread(None, self.write_daemon,
                                                "write_packets_process", (), {})
+        self._write_process.daemon = True
         self._write_process.start()
 
     def stop(self):
