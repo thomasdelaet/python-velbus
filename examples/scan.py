@@ -12,7 +12,7 @@ import velbus
 def module_found(module):
     """Callback when new module is found."""
     logging.info('New module')
-    logging.info(module)
+    logging.info(module._channel_names)
 
 if __name__ == "__main__":
     logging.basicConfig(stream=sys.stdout, level=logging.INFO)
