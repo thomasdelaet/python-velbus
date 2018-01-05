@@ -36,14 +36,9 @@ class ModuleTypeMessage(velbus.Message):
         self.needs_data(data, 6)
         self.set_attributes(priority, address, rtr)
         self.module_type = data[0]
-        if self.module_type == velbus.SIX_CHANNEL_INPUT_MODULE_TYPE:
-            self.led_on = self.byte_to_channels(data[1])
-            self.led_slow_blinking = self.byte_to_channels(data[2])
-            self.led_fast_blinking = self.byte_to_channels(data[3])
-        elif self.module_type == velbus.VMB4RYLD_TYPE:
-            (self.serial,) = struct.unpack(
-                '>L', bytes([0, 0]) + data[1] + data[2])
-            self.memory_map_version = data[3]
+        (self.serial,) = struct.unpack(
+            '>L', bytes([0, 0, data[1], data[2]]))
+        self.memory_map_version = data[3]
         self.build_year = data[4]
         self.build_week = data[5]
 
