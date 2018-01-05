@@ -81,7 +81,7 @@ class Controller(object):
         if self.__scan_callback:
             raise Exception("Scan already in progress, wait till finished")
         self.__scan_callback = callback
-        for address in range(1, 255):
+        for address in range(0, 256):
             message = velbus.ModuleTypeRequestMessage(address)
             self.send(message)
         #FIXME: Wait a number of seconds before returning
