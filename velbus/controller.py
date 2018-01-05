@@ -74,7 +74,7 @@ class Controller(object):
 
     def scan(self, callback):
         """
-        Scan the bus and return callback with all available modules
+        Scan the bus and call the callback when a new module is discovered
 
         @return: None
         """
@@ -109,6 +109,14 @@ class Controller(object):
         if isinstance(message, velbus.ReceiveBufferFullMessage):
             self.logger.error("Velbus receive buffer full message received")
         if isinstance(message, velbus.ModuleTypeMessage):
-            self.logger.error("Module type response received")
+            self.logger.info("Module type response received")
+            name = message.module_name()
+            if name == "Unknown":
+                self.logger.warning("Unknown module (code: " + str(message.module_type) + ')')
+                return
+            if message.module_name() in velbus.ModuleRegistry:
+                self.__scan_callback(velbus.ModuleRegistry[message.module_name()]())
+            else:
+                self.logger.warning("Module " + message.module_name() + " is not yet supported.")
         for subscriber in self.__subscribers:
             subscriber(message)

@@ -6,6 +6,28 @@ import velbus
 
 COMMAND_CODE = 0xff
 
+MODULE_DIRECTORY = {
+    0x01: 'VMB8PB',
+    0x02: 'VMB1RY',
+    0x03: 'VMB1BL',
+    0x05: 'VMB6IN',
+    0x07: 'VMB1DM',
+    0x08: 'VMB4RY',
+    0x09: 'VMB2BL',
+    0x0a: 'VMB8IR',
+    0x0b: 'VMB4PD',
+    0x0c: 'VMB1TS',
+    0x0e: 'VMB1TC',
+    0x0f: 'VMB1LED',
+    0x10: 'VMB4RYLD',
+    0x11: 'VMB4RYNO',
+    0x12: 'VMB4DC',
+    0x14: 'VMBDME',
+    0x15: 'VMBDMI',
+    0x16: 'VMB8PBU',
+    0x17: 'VMB6PBN',
+    0x22: 'VMB7IN'
+}
 
 class ModuleTypeMessage(velbus.Message):
     """
@@ -25,6 +47,14 @@ class ModuleTypeMessage(velbus.Message):
         self.build_year = 0
         self.build_week = 0
         self.set_defaults(address)
+
+    def module_name(self):
+        """
+        @return str
+        """
+        if self.module_type in MODULE_DIRECTORY.keys():
+            return MODULE_DIRECTORY[self.module_type]
+        return "Unknown"
 
     def populate(self, priority, address, rtr, data):
         """

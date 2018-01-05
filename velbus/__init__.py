@@ -32,6 +32,8 @@ VMB4RYLD_TYPE = 0x10
 # pylint: disable-msg=C0103
 CommandRegistry = {}
 
+ModuleRegistry = {}
+
 def on_app_engine():
     """
     @return: bool
@@ -57,6 +59,16 @@ def register_command(command_value, command_class):
     else:
         raise Exception("double registration in command registry")
 
+def register_module(module_name, module_class):
+    """
+    @return: None
+    """
+    assert isinstance(module_name, str)
+    assert isinstance(module_class, type)
+    if module_name not in ModuleRegistry:
+        ModuleRegistry[module_name] = module_class
+    else:
+        raise Exception("double registration in module registry")
 
 def checksum(data):
     """
@@ -78,6 +90,9 @@ def checksum(data):
 # pylint: disable-msg=W0401,C0413
 from velbus.message import Message
 from velbus.messages import *
+
+from velbus.module import Module
+from velbus.modules import *
 
 from velbus.parser import VelbusParser, ParserError
 
