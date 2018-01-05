@@ -24,6 +24,6 @@ if __name__ == "__main__":
     logging.info('Starting scan')
     controller.scan(scan_completed)
     logging.info('Starting sleep')
-    time.sleep(60)
+    time.sleep(30)
     logging.info('Exiting ...')
     connection.stop()
