@@ -37,6 +37,7 @@ class Controller(object):
         self.parser = velbus.VelbusParser(self)
         self.__subscribers = []
         self.connection.set_controller(self)
+        self.__scan_callback = None
 
     def feed_parser(self, data):
         """
@@ -71,6 +72,20 @@ class Controller(object):
         """
         self.connection.send(message)
 
+    def scan(self, callback):
+        """
+        Scan the bus and return callback with all available modules
+
+        @return: None
+        """
+        if self.__scan_callback:
+            raise Exception("Scan already in progress, wait till finished")
+        self.__scan_callback = callback
+        for address in range(1, 255):
+            message = velbus.ModuleTypeRequestMessage(address)
+            self.send(message)
+        #FIXME: Wait a number of seconds before returning
+
     def send_binary(self, binary_message):
         """
         @return: None
@@ -93,5 +108,7 @@ class Controller(object):
             self.logger.error("Velbus bus off message received")
         if isinstance(message, velbus.ReceiveBufferFullMessage):
             self.logger.error("Velbus receive buffer full message received")
+        if isinstance(message, velbus.ModuleTypeMessage):
+            self.logger.error("Module type response received")
         for subscriber in self.__subscribers:
             subscriber(message)
