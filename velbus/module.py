@@ -65,7 +65,7 @@ class Module(object):
         for channel in range(1, self.number_of_channels() + 1):
             name_parts = self._name_count_data[channel]
             name = name_parts[1] + name_parts[2] + name_parts[3]
-            self._channel_names[channel] = name
+            self._channel_names[channel] = name.rstrip('\xff')
         self._name_callback(self)
         self._name_callback = None
         self._name_count_received = 0
