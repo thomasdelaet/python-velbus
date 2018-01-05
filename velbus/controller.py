@@ -114,8 +114,9 @@ class Controller(object):
             if name == "Unknown":
                 self.logger.warning("Unknown module (code: " + str(message.module_type) + ')')
                 return
-            if message.module_name() in velbus.ModuleRegistry:
-                self.__scan_callback(velbus.ModuleRegistry[message.module_name()]())
+            if name in velbus.ModuleRegistry:
+                module = velbus.ModuleRegistry[name](message.module_type, name, message.address)
+                module.get_name(self.__scan_callback)
             else:
                 self.logger.warning("Module " + message.module_name() + " is not yet supported.")
         for subscriber in self.__subscribers:
