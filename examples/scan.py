@@ -9,21 +9,24 @@ import sys
 import velbus
 
 
-def module_found(module):
-    """Callback when new module is found."""
-    logging.info('New module')
-    logging.info(module._channel_names)
+def scan_finished():
+    """
+    Callback for finished scan
+    """
+    logging.info('Scan finished')
+    logging.info(controller.get_modules('switch'))
+    logging.info(controller.get_modules('binary_sensor'))
 
-if __name__ == "__main__":
-    logging.basicConfig(stream=sys.stdout, level=logging.INFO)
-    #pylint: disable-msg=C0103
-    port = '/dev/ttyACM0'
-    logging.info('Configuring controller')
-    connection = velbus.VelbusUSBConnection(port)
-    controller = velbus.Controller(connection)
-    logging.info('Starting scan')
-    controller.scan(module_found)
-    logging.info('Starting sleep')
-    time.sleep(30)
-    logging.info('Exiting ...')
-    connection.stop()
+
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+#pylint: disable-msg=C0103
+port = '/dev/ttyACM0'
+logging.info('Configuring controller')
+connection = velbus.VelbusUSBConnection(port)
+controller = velbus.Controller(connection)
+logging.info('Starting scan')
+controller.scan(scan_finished)
+logging.info('Starting sleep')
+time.sleep(30)
+logging.info('Exiting ...')
+connection.stop()

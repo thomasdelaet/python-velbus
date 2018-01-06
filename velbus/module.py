@@ -7,6 +7,7 @@ class Module(object):
     """
     Abstract class for Velbus hardware modules.
     """
+    #pylint: disable-msg=R0902
     def __init__(self, module_type, module_name, module_address, controller):
         self._type = module_type
         self._name = module_name
@@ -17,6 +18,14 @@ class Module(object):
         self._name_count_received = 0
         self._name_count_data = {}
         self._controller.subscribe(self.on_message)
+
+    def get_module_name(self):
+        """
+        Returns the module model name
+
+        @return: str
+        """
+        return self._name
 
     def on_message(self, message):
         """
@@ -60,13 +69,13 @@ class Module(object):
         self._name_count_data[channel][part] = message.name
         if self._name_count_needed() <= self._name_count_received:
             self._generate_names()
-    
+
     def _generate_names(self):
         for channel in range(1, self.number_of_channels() + 1):
             name_parts = self._name_count_data[channel]
             name = name_parts[1] + name_parts[2] + name_parts[3]
             self._channel_names[channel] = name.rstrip('\xff')
-        self._name_callback(self)
+        self._name_callback()
         self._name_callback = None
         self._name_count_received = 0
         self._name_count_data = {}

@@ -2,8 +2,13 @@
 @author: Thomas Delaet <thomas@delaet.org>
 """
 import logging
+import time
 import velbus
 
+MODULE_CATEGORIES = {
+    'switch': ['VMB4RYLD', 'VMB4RYNO'],
+    'binary_sensor': ['VMB6IN', 'VMB7IN']
+}
 
 class VelbusConnection(object):
     """
@@ -19,7 +24,7 @@ class VelbusConnection(object):
         assert isinstance(controller, Controller)
         self.controller = controller
 
-    def send(self, message):
+    def send(self, message, callback=None):
         """
         @return: None
         """
@@ -38,6 +43,8 @@ class Controller(object):
         self.__subscribers = []
         self.connection.set_controller(self)
         self.__scan_callback = None
+        self._modules = {}
+        self._modules_loaded = 0
 
     def feed_parser(self, data):
         """
@@ -66,13 +73,25 @@ class Controller(object):
         """
         self.__subscribers.remove(subscriber)
 
-    def send(self, message):
+    def send(self, message, callback=None):
         """
         @return: None
         """
-        self.connection.send(message)
+        self.connection.send(message, callback)
 
-    def scan(self, callback):
+    def get_modules(self, category):
+        """
+        Returns a list of modules from a specific category
+
+        @return: list
+        """
+        result = []
+        for module in self._modules.items():
+            if module.get_module_name() in MODULE_CATEGORIES[category]:
+                result.append(module)
+        return result
+
+    def scan(self, callback=None):
         """
         Scan the bus and call the callback when a new module is discovered
 
@@ -81,19 +100,39 @@ class Controller(object):
         if self.__scan_callback:
             raise Exception("Scan already in progress, wait till finished")
         self.__scan_callback = callback
+
+        def module_loaded():
+            """
+            Callback when a module has been fully loaded.
+            """
+            self._modules_loaded += 1
+            if self._modules_loaded >= len(self._modules.items()):
+                self.__scan_callback()
+
+        def scan_finished():
+            """
+            Callback when scan is finished
+            """
+            time.sleep(3)
+            for module in self._modules.values():
+                module.get_name(module_loaded)
+
         for address in range(0, 256):
             message = velbus.ModuleTypeRequestMessage(address)
-            self.send(message)
-        #FIXME: Wait a number of seconds before returning
+            if address == 255:
+                self.send(message, scan_finished)
+            else:
+                self.send(message)
 
-    def send_binary(self, binary_message):
+
+    def send_binary(self, binary_message, callback=None):
         """
         @return: None
         """
         assert isinstance(binary_message, str)
         message = self.parser.parse(binary_message)
         if isinstance(message, velbus.Message):
-            self.send(message)
+            self.send(message, callback)
 
     def new_message(self, message):
         """
@@ -111,13 +150,15 @@ class Controller(object):
         if isinstance(message, velbus.ModuleTypeMessage):
             self.logger.info("Module type response received")
             name = message.module_name()
+            address = message.address
+            m_type = message.module_type
             if name == "Unknown":
                 self.logger.warning("Unknown module (code: " + str(message.module_type) + ')')
                 return
             if name in velbus.ModuleRegistry:
-                module = velbus.ModuleRegistry[name](message.module_type, name, message.address, self)
-                module.get_name(self.__scan_callback)
+                module = velbus.ModuleRegistry[name](m_type, name, address, self)
+                self._modules[address] = module
             else:
-                self.logger.warning("Module " + message.module_name() + " is not yet supported.")
+                self.logger.warning("Module " + name + " is not yet supported.")
         for subscriber in self.__subscribers:
             subscriber(message)
