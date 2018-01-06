@@ -107,7 +107,7 @@ class Controller(object):
             """
             self._modules_loaded += 1
             nb_modules = len(self._modules.items())
-            logging.info("Module loaded (" + self._modules_loaded + ' out of ' + nb_modules)
+            logging.info("Loaded (" + str(self._modules_loaded) + ' out of ' + str(nb_modules))
             if self._modules_loaded >= nb_modules:
                 self.__scan_callback()
 
