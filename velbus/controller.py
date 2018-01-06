@@ -107,7 +107,7 @@ class Controller(object):
             """
             self._modules_loaded += 1
             nb_modules = len(self._modules.items())
-            logging.info("Loaded (" + str(self._modules_loaded) + ' out of ' + str(nb_modules))
+            logging.info("Loaded " + str(self._modules_loaded) + ' out of ' + str(nb_modules))
             if self._modules_loaded >= nb_modules:
                 self.__scan_callback()
 
@@ -117,7 +117,7 @@ class Controller(object):
             """
             time.sleep(3)
             logging.info('Scan finished')
-            for module in self._modules.values():
+            for module in self._modules.items():
                 module.get_name(module_loaded)
 
         for address in range(0, 256):
