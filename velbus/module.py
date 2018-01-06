@@ -17,6 +17,7 @@ class Module(object):
         self._controller = controller
         self._name_count_received = 0
         self._name_count_data = {}
+        self.loaded = False
         self._controller.subscribe(self.on_message)
 
     def get_module_name(self):
@@ -40,11 +41,10 @@ class Module(object):
         elif isinstance(message, velbus.ChannelNamePart3Message):
             self._process_channel_name_message(3, message)
 
-    def get_name(self, callback=None):
+    def load(self):
         """
         Retrieve names of channels
         """
-        self._name_callback = callback
         self._name_count_received = 0
         message = velbus.ChannelNameRequestMessage(self._address)
         message.channels = list(range(1, self.number_of_channels() + 1))
@@ -75,7 +75,7 @@ class Module(object):
             name_parts = self._name_count_data[channel]
             name = name_parts[1] + name_parts[2] + name_parts[3]
             self._channel_names[channel] = name.rstrip('\xff')
-        self._name_callback()
         self._name_callback = None
         self._name_count_received = 0
         self._name_count_data = {}
+        self.loaded = True

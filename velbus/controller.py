@@ -44,7 +44,6 @@ class Controller(object):
         self.connection.set_controller(self)
         self.__scan_callback = None
         self._modules = {}
-        self._modules_loaded = 0
 
     def feed_parser(self, data):
         """
@@ -97,28 +96,13 @@ class Controller(object):
 
         @return: None
         """
-        if self.__scan_callback:
-            raise Exception("Scan already in progress, wait till finished")
-        self.__scan_callback = callback
-
-        def module_loaded():
-            """
-            Callback when a module has been fully loaded.
-            """
-            self._modules_loaded += 1
-            nb_modules = len(self._modules.values())
-            logging.info("Loaded " + str(self._modules_loaded) + ' out of ' + str(nb_modules))
-            if self._modules_loaded >= nb_modules:
-                self.__scan_callback()
-
         def scan_finished():
             """
             Callback when scan is finished
             """
             time.sleep(3)
             logging.info('Scan finished')
-            for module in self._modules.values():
-                module.get_name(module_loaded)
+            callback()
 
         for address in range(0, 256):
             message = velbus.ModuleTypeRequestMessage(address)
@@ -161,6 +145,7 @@ class Controller(object):
             if name in velbus.ModuleRegistry:
                 module = velbus.ModuleRegistry[name](m_type, name, address, self)
                 self._modules[address] = module
+                module.load()
             else:
                 self.logger.warning("Module " + name + " is not yet supported.")
         for subscriber in self.__subscribers:
