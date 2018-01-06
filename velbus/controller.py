@@ -106,7 +106,9 @@ class Controller(object):
             Callback when a module has been fully loaded.
             """
             self._modules_loaded += 1
-            if self._modules_loaded >= len(self._modules.items()):
+            nb_modules = len(self._modules.items())
+            logging.info("Module loaded (" + self._modules_loaded + ' out of ' + nb_modules)
+            if self._modules_loaded >= nb_modules:
                 self.__scan_callback()
 
         def scan_finished():
@@ -114,6 +116,7 @@ class Controller(object):
             Callback when scan is finished
             """
             time.sleep(3)
+            logging.info('Scan finished')
             for module in self._modules.values():
                 module.get_name(module_loaded)
 
