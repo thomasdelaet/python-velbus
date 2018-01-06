@@ -19,8 +19,16 @@
 #
 import os
 import sys
+
+print(sys.path)
+
 #sys.path.insert(0, os.path.abspath('.'))
+
+#print(sys.path)
+
 sys.path.insert(0, os.path.abspath('../'))
+
+print(sys.path)
 
 # -- General configuration ------------------------------------------------
 
