@@ -85,7 +85,7 @@ class Controller(object):
         @return: list
         """
         result = []
-        for module in self._modules.items():
+        for module in self._modules.values():
             if module.get_module_name() in MODULE_CATEGORIES[category]:
                 result.append(module)
         return result

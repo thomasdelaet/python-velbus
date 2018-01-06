@@ -13,7 +13,6 @@ def scan_finished():
     """
     Callback for finished scan
     """
-    logging.info('Scan finished')
     logging.info(controller.get_modules('switch'))
     logging.info(controller.get_modules('binary_sensor'))
 
