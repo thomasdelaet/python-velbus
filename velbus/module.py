@@ -12,12 +12,14 @@ class Module(object):
         self._type = module_type
         self._name = module_name
         self._address = module_address
+
         self._channel_names = {}
-        self._name_callback = None
-        self._controller = controller
-        self._name_count_received = 0
-        self._name_count_data = {}
+        self._name_data = {}
+
+        self._loaded_callbacks = []
         self.loaded = False
+
+        self._controller = controller
         self._controller.subscribe(self.on_message)
 
     def get_module_name(self):
@@ -27,6 +29,14 @@ class Module(object):
         @return: str
         """
         return self._name
+
+    def get_name(self, channel):
+        """
+        Get name for one of the channels
+
+        @return: str
+        """
+        return self._channel_names[channel]
 
     def on_message(self, message):
         """
@@ -40,15 +50,25 @@ class Module(object):
             self._process_channel_name_message(2, message)
         elif isinstance(message, velbus.ChannelNamePart3Message):
             self._process_channel_name_message(3, message)
+        else:
+            self._on_message(message)
 
-    def load(self):
+    def _on_message(self, message):
+        pass
+
+    def load(self, callback):
         """
         Retrieve names of channels
         """
-        self._name_count_received = 0
-        message = velbus.ChannelNameRequestMessage(self._address)
-        message.channels = list(range(1, self.number_of_channels() + 1))
+        if len(self._loaded_callbacks) == 0:
+            message = velbus.ChannelNameRequestMessage(self._address)
+            message.channels = list(range(1, self.number_of_channels() + 1))
         self._controller.send(message)
+        self._loaded_callbacks.append(callback)
+        self._load()
+
+    def _load(self):
+        pass
 
     def number_of_channels(self):
         """
@@ -62,20 +82,34 @@ class Module(object):
         return self.number_of_channels() * 3
 
     def _process_channel_name_message(self, part, message):
-        self._name_count_received += 1
         channel = message.channel
-        if channel not in self._name_count_data:
-            self._name_count_data[channel] = {}
-        self._name_count_data[channel][part] = message.name
-        if self._name_count_needed() <= self._name_count_received:
+        if channel not in self._name_data:
+            self._name_data[channel] = {}
+        self._name_data[channel][part] = message.name
+        if self._name_messages_complete():
             self._generate_names()
 
     def _generate_names(self):
+        assert self._name_messages_complete()
         for channel in range(1, self.number_of_channels() + 1):
-            name_parts = self._name_count_data[channel]
+            name_parts = self._name_data[channel]
             name = name_parts[1] + name_parts[2] + name_parts[3]
             self._channel_names[channel] = name.rstrip('\xff')
-        self._name_callback = None
-        self._name_count_received = 0
-        self._name_count_data = {}
+        self._name_data = {}
         self.loaded = True
+        for callback in self._loaded_callbacks:
+            callback()
+        self._loaded_callbacks = []
+
+    def _name_messages_complete(self):
+        """
+        Check if all name messages have been received
+        """
+        for channel in range(1, self.number_of_channels() + 1):
+            try:
+                for name_index in range(1, 4):
+                    if not isinstance(self._name_data[channel][name_index], str):
+                        return False
+            except Exception:
+                return False
+        return True
