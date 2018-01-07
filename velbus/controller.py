@@ -36,9 +36,9 @@ class Controller(object):
     Velbus Bus connection controller
     """
 
-    def __init__(self, connection):
+    def __init__(self, port):
         self.logger = logging.getLogger('velbus')
-        self.connection = connection
+        self.connection = velbus.VelbusUSBConnection(port, self)
         self.parser = velbus.VelbusParser(self)
         self.__subscribers = []
         self.connection.set_controller(self)
@@ -150,3 +150,9 @@ class Controller(object):
                 self.logger.warning("Module " + name + " is not yet supported.")
         for subscriber in self.__subscribers:
             subscriber(message)
+
+    def stop(self):
+        """
+        Stop velbus
+        """
+        self.connection.stop()

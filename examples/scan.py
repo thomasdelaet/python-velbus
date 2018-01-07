@@ -21,11 +21,10 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 #pylint: disable-msg=C0103
 port = '/dev/ttyACM0'
 logging.info('Configuring controller')
-connection = velbus.VelbusUSBConnection(port)
-controller = velbus.Controller(connection)
+controller = velbus.Controller(port)
 logging.info('Starting scan')
 controller.scan(scan_finished)
 logging.info('Starting sleep')
 time.sleep(30)
 logging.info('Exiting ...')
-connection.stop()
+controller.stop()

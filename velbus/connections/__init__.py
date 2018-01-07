@@ -47,10 +47,11 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 
     SLEEP_TIME = 60 / 1000
 
-    def __init__(self, device):
+    def __init__(self, device, controller=None):
         velbus.VelbusConnection.__init__(self)
         self.logger = logging.getLogger('velbus')
         self._device = device
+        self.controller = controller
         try:
             self.serial = serial.Serial(port=device,
                                         baudrate=self.BAUD_RATE,
