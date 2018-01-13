@@ -60,6 +60,11 @@ class Module(object):
         """
         Retrieve names of channels
         """
+        if callback is None:
+            def callb():
+                """No-op"""
+                pass
+            callback = callb
         if len(self._loaded_callbacks) == 0:
             message = velbus.ChannelNameRequestMessage(self._address)
             message.channels = list(range(1, self.number_of_channels() + 1))
