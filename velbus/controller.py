@@ -145,7 +145,7 @@ class Controller(object):
             if name in velbus.ModuleRegistry:
                 module = velbus.ModuleRegistry[name](m_type, name, address, self)
                 self._modules[address] = module
-                module.load()
+                #module.load()
             else:
                 self.logger.warning("Module " + name + " is not yet supported.")
         for subscriber in self.__subscribers:
