@@ -53,9 +53,9 @@ class VMB4RYModule(velbus.Module):
     def _on_message(self, message):
         if isinstance(message, velbus.RelayStatusMessage):
             self._is_on[message.channel] = message.is_on()
-        if message.channel in self._callbacks:
-            for callback in self._callbacks[message.channel]:
-                callback(message.is_on())
+            if message.channel in self._callbacks:
+                for callback in self._callbacks[message.channel]:
+                    callback(message.is_on())
 
     def on_status_update(self, channel, callback):
         """
