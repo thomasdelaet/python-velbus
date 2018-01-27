@@ -3,7 +3,7 @@
 """
 import velbus
 
-class VMB7INModule(velbus.Module):
+class VMB7INModule(velbus.modules.VMB6INModule):
     """
     Velbus input module with 7 channels
     """
