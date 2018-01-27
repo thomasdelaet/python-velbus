@@ -10,6 +10,7 @@ Welcome to python-velbus's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+    readme_link
 
 
 Indices and tables
