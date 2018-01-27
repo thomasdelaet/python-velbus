@@ -8,6 +8,8 @@ The latest version of the library is *2.0.12* and it is published as a python pa
 
 I would like to extend this module to support all Velbus modules and offer higher-level functionality such as auto-discovery, so feel free to submit pull requests or log issues through [github](http://www.github.com/thomasdelaet/python-velbus) for functionality you like to have included.
 
+API documentation is available [here](http://python-velbus.readthedocs.io/en/latest/)
+
 # Example usage
 
 The library currently only supports a serial connection to the Velbus controller (either through USB module or through RS-232 interface). In order to use the library, you need to first initialize the controller and can then send and receive messages on the Velbus. The library currently does not validate if a message is supported by a certain module (e.g., you can send a blind up message to a relay)
