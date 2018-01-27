@@ -7,7 +7,7 @@ import velbus
 
 MODULE_CATEGORIES = {
     'switch': ['VMB4RYLD', 'VMB4RYNO'],
-    'binary_sensor': ['VMB6IN', 'VMB7IN']
+    'sensor': ['VMB6IN', 'VMB7IN']
 }
 
 class VelbusConnection(object):
