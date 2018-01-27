@@ -25,12 +25,17 @@ class VMB4RYModule(velbus.Module):
             return self._is_on[channel]
         return False
 
-    def turn_on(self, channel, callback):
+    def turn_on(self, channel, callback = None):
         """
         Turn on switch.
 
         @return: None
         """
+        if callback is None:
+            def callb():
+                """No-op"""
+                pass
+            callback = callb
         message = velbus.SwitchRelayOnMessage(self._address)
         message.relay_channels = [channel]
         self._controller.send(message, callback)
@@ -40,12 +45,17 @@ class VMB4RYModule(velbus.Module):
         message.channels = list(range(1, self.number_of_channels()+1))
         self._controller.send(message)
 
-    def turn_off(self, channel, callback):
+    def turn_off(self, channel, callback=None):
         """
         Turn off switch.
 
         @return: None
         """
+        if callback is None:
+            def callb():
+                """No-op"""
+                pass
+            callback = callb
         message = velbus.SwitchRelayOffMessage(self._address)
         message.relay_channels = [channel]
         self._controller.send(message, callback)
