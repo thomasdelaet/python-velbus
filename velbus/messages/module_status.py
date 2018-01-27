@@ -5,6 +5,7 @@ import velbus
 
 COMMAND_CODE = 0xed
 
+#FIXME: This is written for VMB6IN but VMB7IN transmits a different type of of module status message
 
 class ModuleStatusMessage(velbus.Message):
     """

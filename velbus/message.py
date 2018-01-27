@@ -247,7 +247,7 @@ class Message(object):
         :return: None
         """
         assert isinstance(data, bytes)
-        if len(data) != length:
+        if len(data) < length:
             self.parser_error("needs " + str(length) + " bytes of data")
 
     def needs_fixed_byte(self, byte, value):
