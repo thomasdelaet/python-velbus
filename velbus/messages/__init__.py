@@ -1,5 +1,5 @@
 """
-@author: Thomas Delaet <thomas@delaet.org>
+:author: Thomas Delaet <thomas@delaet.org>
 """
 # pylint: disable-msg=C0301
 from velbus.messages.bus_active import BusActiveMessage

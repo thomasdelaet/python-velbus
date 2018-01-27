@@ -1,5 +1,5 @@
 """
-@author: Tom Dupré <gitd8400@gmail.com>
+:author: Tom Dupré <gitd8400@gmail.com>
 """
 import json
 import logging

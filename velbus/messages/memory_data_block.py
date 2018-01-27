@@ -1,5 +1,5 @@
 """
-@author: Thomas Delaet <thomas@delaet.org>
+:author: Thomas Delaet <thomas@delaet.org>
 """
 import velbus
 
@@ -21,7 +21,7 @@ class MemoryDataBlockMessage(velbus.Message):
 
     def populate(self, priority, address, rtr, data):
         """
-        @return None
+        :return None
         """
         assert isinstance(data, bytes)
         self.needs_low_priority(priority)
@@ -34,7 +34,7 @@ class MemoryDataBlockMessage(velbus.Message):
 
     def data_to_binary(self):
         """
-        @return: bytes
+        :return: bytes
         """
         return bytes([
             COMMAND_CODE,

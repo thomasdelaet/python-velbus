@@ -1,5 +1,5 @@
 """
-@author: Thomas Delaet <thomas@delaet.org>
+:author: Thomas Delaet <thomas@delaet.org>
 """
 import logging
 import velbus
@@ -103,7 +103,7 @@ class VelbusParser(object):
 
     def parse(self, data):
         """
-        @return: None
+        :return: None
         """
         # pylint: disable-msg=R0911,C1801
         assert isinstance(data, bytes)

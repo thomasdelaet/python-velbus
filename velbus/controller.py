@@ -1,5 +1,5 @@
 """
-@author: Thomas Delaet <thomas@delaet.org>
+:author: Thomas Delaet <thomas@delaet.org>
 """
 import logging
 import time
@@ -19,14 +19,14 @@ class VelbusConnection(object):
 
     def set_controller(self, controller):
         """
-        @return: None
+        :return: None
         """
         assert isinstance(controller, Controller)
         self.controller = controller
 
     def send(self, message, callback=None):
         """
-        @return: None
+        :return: None
         """
         raise NotImplementedError
 
@@ -48,32 +48,32 @@ class Controller(object):
         """
         Feed parser with new data
 
-        @return: None
+        :return: None
         """
         assert isinstance(data, bytes)
         self.parser.feed(data)
 
     def subscribe(self, subscriber):
         """
-        @return: None
+        :return: None
         """
         self.__subscribers.append(subscriber)
 
     def parse(self, binary_message):
         """
-        @return: velbus.Message or None
+        :return: velbus.Message or None
         """
         return self.parser.parse(binary_message)
 
     def unsubscribe(self, subscriber):
         """
-        @return: None
+        :return: None
         """
         self.__subscribers.remove(subscriber)
 
     def send(self, message, callback=None):
         """
-        @return: None
+        :return: None
         """
         self.connection.send(message, callback)
 
@@ -81,7 +81,7 @@ class Controller(object):
         """
         Returns a list of modules from a specific category
 
-        @return: list
+        :return: list
         """
         result = []
         for module in self._modules.values():
@@ -93,7 +93,7 @@ class Controller(object):
         """
         Scan the bus and call the callback when a new module is discovered
 
-        @return: None
+        :return: None
         """
         def scan_finished():
             """
@@ -113,7 +113,7 @@ class Controller(object):
 
     def send_binary(self, binary_message, callback=None):
         """
-        @return: None
+        :return: None
         """
         assert isinstance(binary_message, str)
         message = self.parser.parse(binary_message)
@@ -122,7 +122,7 @@ class Controller(object):
 
     def new_message(self, message):
         """
-        @return: None
+        :return: None
         """
         self.logger.info("New message: " + str(message))
         if isinstance(message, velbus.BusActiveMessage):

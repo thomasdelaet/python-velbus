@@ -1,5 +1,5 @@
 """
-@author: Thomas Delaet <thomas@delaet.org>
+:author: Thomas Delaet <thomas@delaet.org>
 """
 import json
 import base64
@@ -21,7 +21,7 @@ class Message(object):
 
     def set_attributes(self, priority, address, rtr):
         """
-        @return: None
+        :return: None
         """
         assert isinstance(priority, int)
         assert isinstance(address, int)
@@ -34,7 +34,7 @@ class Message(object):
 
     def populate(self, priority, address, rtr, data):
         """
-        @return: None
+        :return: None
         """
         raise NotImplementedError
 
@@ -45,7 +45,7 @@ class Message(object):
         If a message has different than low priority or NO_RTR set,
         then this method needs override in subclass
 
-        @return: None
+        :return: None
         """
         if address is not None:
             self.set_address(address)
@@ -54,14 +54,14 @@ class Message(object):
 
     def set_address(self, address):
         """
-        @return: None
+        :return: None
         """
         assert isinstance(address, int)
         self.address = address
 
     def to_binary(self):
         """
-        @return: bytes
+        :return: bytes
         """
         pre_checksum_data = self.__checksum_data()
         checksum = velbus.checksum(pre_checksum_data)
@@ -69,13 +69,13 @@ class Message(object):
 
     def to_base64(self):
         """
-        @return: str
+        :return: str
         """
         return base64.b64encode(self.to_binary())
 
     def __checksum_data(self):
         """
-        @return: bytes
+        :return: bytes
         """
         data_bytes = self.data_to_binary()
         if self.rtr:
@@ -88,7 +88,7 @@ class Message(object):
 
     def data_to_binary(self):
         """
-        @return: bytes
+        :return: bytes
         """
         raise NotImplementedError
 
@@ -96,7 +96,7 @@ class Message(object):
         """
         Create JSON structure with generic attributes
 
-        @return: dict
+        :return: dict
         """
         return {'name': self.__class__.__name__, 'priority': self.priority,
                 'address': self.address, 'rtr': self.rtr}
@@ -107,7 +107,7 @@ class Message(object):
 
         This method should be overridden in subclasses to include more than just generic attributes
 
-        @return: str
+        :return: str
         """
         return json.dumps(self.to_json_basic())
 
@@ -116,7 +116,7 @@ class Message(object):
 
     def byte_to_channels(self, byte):
         """
-        @return: list(int)
+        :return: list(int)
         """
         # pylint: disable-msg=R0201
         assert isinstance(byte, int)
@@ -130,7 +130,7 @@ class Message(object):
 
     def channels_to_byte(self, channels):
         """
-        @return: int
+        :return: int
         """
         # pylint: disable-msg=R0201
         assert isinstance(channels, list)
@@ -142,7 +142,7 @@ class Message(object):
 
     def byte_to_channel(self, byte):
         """
-        @return: int
+        :return: int
         """
         assert isinstance(byte, int)
         channels = self.byte_to_channels(byte)
@@ -151,7 +151,7 @@ class Message(object):
 
     def needs_valid_channel(self, channel, maximum):
         """
-        @return: None
+        :return: None
         """
         assert isinstance(channel, int)
         assert isinstance(maximum, int)
@@ -160,13 +160,13 @@ class Message(object):
 
     def parser_error(self, message):
         """
-        @return: None
+        :return: None
         """
         raise velbus.ParserError(self.__class__.__name__ + " " + message)
 
     def needs_rtr(self, rtr):
         """
-        @return: None
+        :return: None
         """
         assert isinstance(rtr, bool)
         if not rtr:
@@ -174,13 +174,13 @@ class Message(object):
 
     def set_rtr(self):
         """
-        @return: None
+        :return: None
         """
         self.rtr = True
 
     def needs_no_rtr(self, rtr):
         """
-        @return: None
+        :return: None
         """
         assert isinstance(rtr, bool)
         if rtr:
@@ -188,13 +188,13 @@ class Message(object):
 
     def set_no_rtr(self):
         """
-        @return: None
+        :return: None
         """
         self.rtr = False
 
     def needs_low_priority(self, priority):
         """
-        @return: None
+        :return: None
         """
         assert isinstance(priority, int)
         if priority != velbus.LOW_PRIORITY:
@@ -202,13 +202,13 @@ class Message(object):
 
     def set_low_priority(self):
         """
-        @return: None
+        :return: None
         """
         self.priority = velbus.LOW_PRIORITY
 
     def needs_high_priority(self, priority):
         """
-        @return: None
+        :return: None
         """
         assert isinstance(priority, int)
         if priority != velbus.HIGH_PRIORITY:
@@ -216,13 +216,13 @@ class Message(object):
 
     def set_high_priority(self):
         """
-        @return: None
+        :return: None
         """
         self.priority = velbus.HIGH_PRIORITY
 
     def needs_firmware_priority(self, priority):
         """
-        @return: None
+        :return: None
         """
         assert isinstance(priority, int)
         if priority != velbus.FIRMWARE_PRIORITY:
@@ -230,13 +230,13 @@ class Message(object):
 
     def set_firmware_priority(self):
         """
-        @return: None
+        :return: None
         """
         self.priority = velbus.FIRMWARE_PRIORITY
 
     def needs_no_data(self, data):
         """
-        @return: None
+        :return: None
         """
         length = len(data)
         if length != 0:
@@ -244,7 +244,7 @@ class Message(object):
 
     def needs_data(self, data, length):
         """
-        @return: None
+        :return: None
         """
         assert isinstance(data, bytes)
         if len(data) != length:
@@ -252,7 +252,7 @@ class Message(object):
 
     def needs_fixed_byte(self, byte, value):
         """
-        @return: None
+        :return: None
         """
         assert isinstance(byte, int)
         assert isinstance(value, int)
@@ -264,7 +264,7 @@ class Message(object):
 
     def needs_one_channel(self, channels):
         """
-        @return: None
+        :return: None
         """
         assert isinstance(channels, list)
         if len(channels) != 1 or not isinstance(channels[0], int) or \

@@ -1,5 +1,5 @@
 """
-@author: Thomas Delaet <thomas@delaet.org>
+:author: Thomas Delaet <thomas@delaet.org>
 """
 import struct
 import velbus
@@ -30,7 +30,7 @@ class WriteModuleAddressAndSerialNumberMessage(velbus.Message):
 
     def populate(self, priority, address, rtr, data):
         """
-        @return: None
+        :return: None
         """
         assert isinstance(data, bytes)
         self.needs_firmware_priority(priority)
@@ -46,7 +46,7 @@ class WriteModuleAddressAndSerialNumberMessage(velbus.Message):
 
     def data_to_binary(self):
         """
-        @return: bytes
+        :return: bytes
         """
         return chr(COMMAND_CODE) + chr(self.module_type) + \
             struct.pack('>L', self.current_serial)[2:] + \

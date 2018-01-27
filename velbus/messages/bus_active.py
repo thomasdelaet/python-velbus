@@ -1,5 +1,5 @@
 """
-@author: Thomas Delaet <thomas@delaet.org>
+:author: Thomas Delaet <thomas@delaet.org>
 """
 import velbus
 
@@ -27,7 +27,7 @@ class BusActiveMessage(velbus.Message):
 
     def data_to_binary(self):
         """
-        @return bytes
+        :return: bytes
         """
         return bytes([COMMAND_CODE])
 

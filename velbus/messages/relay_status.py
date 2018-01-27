@@ -1,5 +1,5 @@
 """
-@author: Thomas Delaet <thomas@delaet.org>
+:author: Thomas Delaet <thomas@delaet.org>
 """
 import struct
 import json
@@ -49,7 +49,7 @@ class RelayStatusMessage(velbus.Message):
 
     def populate(self, priority, address, rtr, data):
         """
-        @return None
+        :return: None
         """
         assert isinstance(data, bytes)
         self.needs_low_priority(priority)
@@ -65,7 +65,7 @@ class RelayStatusMessage(velbus.Message):
 
     def to_json(self):
         """
-        @return: str
+        :return: str
         """
         json_dict = self.to_json_basic()
         json_dict['channel'] = self.channel
@@ -77,49 +77,49 @@ class RelayStatusMessage(velbus.Message):
 
     def is_normal(self):
         """
-        @return: bool
+        :return: bool
         """
         return self.disable_inhibit_forced == CHANNEL_NORMAL
 
     def is_inhibited(self):
         """
-        @return: bool
+        :return: bool
         """
         return self.disable_inhibit_forced == CHANNEL_INHIBITED
 
     def is_forced_on(self):
         """
-        @return: bool
+        :return: bool
         """
         return self.disable_inhibit_forced == CHANNEL_FORCED_ON
 
     def is_disabled(self):
         """
-        @return: bool
+        :return: bool
         """
         return self.disable_inhibit_forced == CHANNEL_DISABLED
 
     def is_on(self):
         """
-        @return: bool
+        :return: bool
         """
         return self.status == RELAY_ON
 
     def is_off(self):
         """
-        @return: bool
+        :return: bool
         """
         return self.status == RELAY_OFF
 
     def has_interval_timer_on(self):
         """
-        @return: bool
+        :return: bool
         """
         return self.status == INTERVAL_TIMER_ON
 
     def data_to_binary(self):
         """
-        @return: bytes
+        :return: bytes
         """
         return bytes([
             COMMAND_CODE,

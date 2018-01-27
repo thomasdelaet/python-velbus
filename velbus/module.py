@@ -1,5 +1,5 @@
 """
-@author: Thomas Delaet <thomas@delaet.org>
+:author: Thomas Delaet <thomas@delaet.org>
 """
 import velbus
 
@@ -26,7 +26,7 @@ class Module(object):
         """
         Returns the module model name
 
-        @return: str
+        :return: str
         """
         return self._name
 
@@ -34,7 +34,7 @@ class Module(object):
         """
         Get name for one of the channels
 
-        @return: str
+        :return: str
         """
         return self._channel_names[channel]
 
@@ -79,7 +79,7 @@ class Module(object):
         """
         Retrieve the number of avaiable channels in this module
 
-        @return: int
+        :return: int
         """
         raise NotImplementedError
 

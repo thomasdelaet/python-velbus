@@ -1,5 +1,5 @@
 """
-@author: Tom Dupre
+:author: Tom Dupré <gitd8400@gmail.com>
 """
 import json
 import velbus
@@ -64,7 +64,7 @@ class BlindStatusMessage(velbus.Message):
 
     def populate(self, priority, address, rtr, data):
         """
-        @return None
+        :return: None
         """
         assert isinstance(data, bytes)
         self.needs_low_priority(priority)
@@ -82,7 +82,7 @@ class BlindStatusMessage(velbus.Message):
 
     def to_json(self):
         """
-        @return: str
+        :return: str
         """
         json_dict = self.to_json_basic()
         json_dict['channel'] = self.channel
@@ -96,37 +96,37 @@ class BlindStatusMessage(velbus.Message):
 
     def is_normal(self):
         """
-        @return: bool
+        :return: bool
         """
         return self.locked_inhibit_forced == CHANNEL_NORMAL
 
     def is_inhibited(self):
         """
-        @return: bool
+        :return: bool
         """
         return self.locked_inhibit_forced == CHANNEL_INHIBITED
 
     def is_locked(self):
         """
-        @return: bool
+        :return: bool
         """
         return self.locked_inhibit_forced == CHANNEL_LOCKED
 
     def is_up(self):
         """
-        @return: bool
+        :return: bool
         """
         return self.status == BLIND_UP
 
     def is_down(self):
         """
-        @return: bool
+        :return: bool
         """
         return self.status == BLIND_OFF
 
     def data_to_binary(self):
         """
-        @return: bytes
+        :return: bytes
         """
         return bytes([
             COMMAND_CODE,

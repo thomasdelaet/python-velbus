@@ -1,5 +1,5 @@
 """
-@author: Thomas Delaet <thomas@delaet.org
+:author: Thomas Delaet <thomas@delaet.org>
 """
 import velbus
 
@@ -19,7 +19,7 @@ class VMB4RYModule(velbus.Module):
         """
         Check if a switch is turned on
 
-        @return: bool
+        :return: bool
         """
         if channel in self._is_on:
             return self._is_on[channel]
@@ -29,7 +29,7 @@ class VMB4RYModule(velbus.Module):
         """
         Turn on switch.
 
-        @return: None
+        :return: None
         """
         if callback is None:
             def callb():
@@ -49,7 +49,7 @@ class VMB4RYModule(velbus.Module):
         """
         Turn off switch.
 
-        @return: None
+        :return: None
         """
         if callback is None:
             def callb():

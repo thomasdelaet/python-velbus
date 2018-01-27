@@ -1,5 +1,5 @@
 """
-@author: Thomas Delaet <thomas@delaet.org>
+:author: Thomas Delaet <thomas@delaet.org>
 """
 import velbus
 
@@ -19,7 +19,7 @@ class ReceiveBufferFullMessage(velbus.Message):
 
     def populate(self, priority, address, rtr, data):
         """
-        @return: None
+        :return: None
         """
         self.needs_high_priority(priority)
         self.needs_no_rtr(rtr)
@@ -28,7 +28,7 @@ class ReceiveBufferFullMessage(velbus.Message):
 
     def data_to_binary(self):
         """
-        @return: bytes
+        :return: bytes
         """
         return bytes([COMMAND_CODE])
 

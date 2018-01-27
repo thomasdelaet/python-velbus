@@ -1,5 +1,5 @@
 """
-@author: Thomas Delaet <thomas@delaet.org>
+:author: Thomas Delaet <thomas@delaet.org>
 """
 import json
 import velbus
@@ -22,7 +22,7 @@ class PushButtonStatusMessage(velbus.Message):
 
     def populate(self, priority, address, rtr, data):
         """
-        @return None
+        :return: None
         """
         assert isinstance(data, bytes)
         self.needs_high_priority(priority)
@@ -41,7 +41,7 @@ class PushButtonStatusMessage(velbus.Message):
 
     def to_json(self):
         """
-        @return: str
+        :return: str
         """
         json_dict = self.to_json_basic()
         json_dict['closed_channels'] = self.closed
@@ -51,13 +51,13 @@ class PushButtonStatusMessage(velbus.Message):
 
     def get_channels(self):
         """
-        @return: list
+        :return: list
         """
         return self.closed + self.opened
 
     def data_to_binary(self):
         """
-        @return: bytes
+        :return: bytes
         """
         return bytes([
             COMMAND_CODE,

@@ -1,5 +1,5 @@
 """
-@author: Thomas Delaet <thomas@delaet.org>
+:author: Thomas Delaet <thomas@delaet.org>
 """
 import os
 
@@ -36,7 +36,7 @@ ModuleRegistry = {}
 
 def on_app_engine():
     """
-    @return: bool
+    :return: bool
     """
     if 'SERVER_SOFTWARE' in os.environ:
         server_software = os.environ['SERVER_SOFTWARE']
@@ -49,7 +49,7 @@ def on_app_engine():
 
 def register_command(command_value, command_class):
     """
-    @return: None
+    :return: None
     """
     assert isinstance(command_value, int)
     assert command_value >= 0 and command_value <= 255
@@ -61,7 +61,7 @@ def register_command(command_value, command_class):
 
 def register_module(module_name, module_class):
     """
-    @return: None
+    :return: None
     """
     assert isinstance(module_name, str)
     assert isinstance(module_class, type)
@@ -72,7 +72,7 @@ def register_module(module_name, module_class):
 
 def checksum(data):
     """
-    @return: int
+    :return: int
     """
     assert isinstance(data, bytes)
     assert len(data) >= MINIMUM_MESSAGE_SIZE - 2
