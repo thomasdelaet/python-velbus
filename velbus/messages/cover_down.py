@@ -24,7 +24,7 @@ class CoverDownMessage(velbus.Message):
 
     def populate(self, priority, address, rtr, data):
         """
-        @return: None
+        :return: None
         """
         assert isinstance(data, bytes)
         self.logger.debug("Populating message: priority %s, address: %s, channel: %s", str(
@@ -41,7 +41,7 @@ class CoverDownMessage(velbus.Message):
 
     def to_json(self):
         """
-        @return: str
+        :return: str
         """
         json_dict = self.to_json_basic()
         json_dict['channel'] = self.channel
@@ -56,7 +56,7 @@ class CoverDownMessage(velbus.Message):
 
     def data_to_binary(self):
         """
-        @return: bytes
+        :return: bytes
         """
         return bytes([
             COMMAND_CODE,
