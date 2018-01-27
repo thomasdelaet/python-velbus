@@ -38,12 +38,11 @@ class Controller(object):
 
     def __init__(self, port):
         self.logger = logging.getLogger('velbus')
-        self.connection = velbus.VelbusUSBConnection(port, self)
         self.parser = velbus.VelbusParser(self)
         self.__subscribers = []
-        self.connection.set_controller(self)
         self.__scan_callback = None
         self._modules = {}
+        self.connection = velbus.VelbusUSBConnection(port, self)
 
     def feed_parser(self, data):
         """
