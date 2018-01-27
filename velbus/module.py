@@ -68,7 +68,7 @@ class Module(object):
         if len(self._loaded_callbacks) == 0:
             message = velbus.ChannelNameRequestMessage(self._address)
             message.channels = list(range(1, self.number_of_channels() + 1))
-        self._controller.send(message)
+            self._controller.send(message)
         self._loaded_callbacks.append(callback)
         self._load()
 
