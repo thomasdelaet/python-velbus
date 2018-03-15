@@ -42,7 +42,10 @@ class Controller(object):
         self.__subscribers = []
         self.__scan_callback = None
         self._modules = {}
-        self.connection = velbus.VelbusUSBConnection(port, self)
+        if ":" in port:
+            self.connection = velbus.VelbusSocketConnection(port, self)
+        else:
+            self.connection = velbus.VelbusUSBConnection(port, self)
 
     def feed_parser(self, data):
         """
