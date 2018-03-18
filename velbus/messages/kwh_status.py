@@ -34,7 +34,7 @@ class KwhStatusMessage(velbus.Message):
         self.needs_no_rtr(rtr)
         self.needs_data(data, 7)
         self.set_attributes(priority, address, rtr)
-        self.channel = self.byte_to_channels(data[0] & 0x03)
+        self.channel = (data[0] & 0x03) +1 
         self.pulses = (data[0] >> 2) * 100
         self.counter = (data[1] << 24) + (data[2] << 16) + (data[3] << 8) + data[4]
         self.kwh = float(float(self.counter)/self.pulses)
@@ -51,6 +51,7 @@ class KwhStatusMessage(velbus.Message):
         json_dict['kwh'] = self.kwh
         json_dict['delay'] = self.delay
         json_dict['watt'] = self.watt
+        json_dict['channel'] = self.channel
         return json.dumps(json_dict)
 
     def get_channels(self):
