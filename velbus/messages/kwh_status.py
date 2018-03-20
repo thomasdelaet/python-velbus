@@ -40,6 +40,8 @@ class KwhStatusMessage(velbus.Message):
         self.kwh = float(float(self.counter)/self.pulses)
         self.delay = (data[5] << 8) + data[6]
         self.watt = float((1000 * 1000 * 3600) / (self.delay * self.pulses))
+        if self.watt < 55:
+            self.watt = 0
 
     def to_json(self):
         """
