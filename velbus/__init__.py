@@ -100,6 +100,6 @@ from velbus.controller import Controller, VelbusConnection
 
 if not on_app_engine():
     try:
-        from velbus.connections import VelbusUSBConnection
+        from velbus.connections import VelbusUSBConnection, VelbusSocketConnection
     except ImportError:
         pass
