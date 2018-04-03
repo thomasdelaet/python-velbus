@@ -42,3 +42,6 @@ from velbus.messages.cover_up import CoverUpMessage
 from velbus.messages.blind_status import BlindStatusMessage
 from velbus.messages.sensor_temperature import SensorTemperatureMessage
 from velbus.messages.kwh_status import KwhStatusMessage
+from velbus.messages.temp_sensor_status import TempSensorStatusMessage
+from velbus.messages.temp_set_heating import TempSetHeatingMessage
+from velbus.messages.temp_set_cooling import TempSetCoolingMessage
