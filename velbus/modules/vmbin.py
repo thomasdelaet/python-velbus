@@ -23,7 +23,7 @@ class VMB6INModule(velbus.Module):
         self._controller.send(message)
 
     def number_of_channels(self):
-        return 7
+        return 6
 
     def _on_message(self, message):
         if isinstance(message, velbus.PushButtonStatusMessage):
