@@ -35,6 +35,12 @@ class VMB6INModule(velbus.Module):
                 if channel in self._callbacks:
                     for callback in self._callbacks[channel]:
                         callback(self._is_closed[channel])
+        elif isinstance(message, velbus.ModuleStatusMessage):
+            for channel in list(range(1, self.number_of_channels() + 1)):
+                if channel in message.closed:
+                    self._is_closed[channel] = True
+                else:
+                    self._is_closed[channel] = False
 
     def on_status_update(self, channel, callback):
         """
