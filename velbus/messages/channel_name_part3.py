@@ -30,7 +30,7 @@ class ChannelNamePart3Message(velbus.Message):
         channels = self.byte_to_channels(data[0])
         self.needs_one_channel(channels)
         self.channel = channels[0]
-        self.name = "".join([chr(x) for x in data[1:]])
+        self.name = "".join([chr(x) for x in data[1:5]])
 
     def data_to_binary(self):
         """
