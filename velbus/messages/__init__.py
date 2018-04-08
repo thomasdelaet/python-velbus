@@ -42,3 +42,10 @@ from velbus.messages.cover_up import CoverUpMessage
 from velbus.messages.blind_status import BlindStatusMessage
 from velbus.messages.sensor_temperature import SensorTemperatureMessage
 from velbus.messages.kwh_status import KwhStatusMessage
+from velbus.messages.temp_sensor_status import TempSensorStatusMessage
+from velbus.messages.temp_set_heating import TempSetHeatingMessage
+from velbus.messages.temp_set_cooling import TempSetCoolingMessage
+from velbus.messages.switch_to_comfort import SwitchToComfortMessage
+from velbus.messages.switch_to_day import SwitchToDayMessage
+from velbus.messages.switch_to_night import SwitchToNightMessage
+from velbus.messages.switch_to_safe import SwitchToSafeMessage
