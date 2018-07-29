@@ -50,6 +50,9 @@ class VMB6INModule(velbus.Module):
             self._callbacks[channel] = []
         self._callbacks[channel].append(callback)
 
+    def get_categories(self, channel):
+        return ['binary_sensor']
+
 class VMB7INModule(VMB6INModule):
     """
     Velbus input module with 7 channels

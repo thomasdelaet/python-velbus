@@ -39,6 +39,14 @@ class Module(object):
         """
         return self._channel_names[channel]
 
+    def get_categories(self, channel):
+        """
+        Get type of functionality of channel
+
+        :return: str
+        """
+        return []
+
     def on_message(self, message):
         """
         Process received message

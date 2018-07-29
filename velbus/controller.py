@@ -5,10 +5,6 @@ import logging
 import time
 import velbus
 
-MODULE_CATEGORIES = {
-    'switch': ['VMB4RYLD', 'VMB4RYNO'],
-    'sensor': ['VMB6IN', 'VMB7IN']
-}
 
 class VelbusConnection(object):
     """
@@ -80,17 +76,13 @@ class Controller(object):
         """
         self.connection.send(message, callback)
 
-    def get_modules(self, category):
+    def get_modules(self):
         """
         Returns a list of modules from a specific category
 
         :return: list
         """
-        result = []
-        for module in self._modules.values():
-            if module.get_module_name() in MODULE_CATEGORIES[category]:
-                result.append(module)
-        return result
+        return self._modules.values()
 
     def scan(self, callback=None):
         """
