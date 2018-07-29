@@ -84,6 +84,12 @@ class Controller(object):
         """
         return self._modules.values()
 
+    def get_module(self, address):
+        """
+        Returns module at address
+        """
+        return self._modules[address]
+
     def scan(self, callback=None):
         """
         Scan the bus and call the callback when a new module is discovered

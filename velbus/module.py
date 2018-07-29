@@ -31,6 +31,14 @@ class Module(object):
         """
         return self._name
 
+    def get_module_address(self):
+        """
+        Returns the module address
+
+        :return: int
+        """
+        return self._address
+
     def get_name(self, channel):
         """
         Get name for one of the channels
