@@ -87,14 +87,15 @@ class ModuleTypeMessage(velbus.Message):
         assert isinstance(data, bytes)
         self.needs_low_priority(priority)
         self.needs_no_rtr(rtr)
-        self.needs_data(data, 6)
+        self.needs_data(data, 4)
         self.set_attributes(priority, address, rtr)
         self.module_type = data[0]
         (self.serial,) = struct.unpack(
             '>L', bytes([0, 0, data[1], data[2]]))
         self.memory_map_version = data[3]
-        self.build_year = data[4]
-        self.build_week = data[5]
+        if len(data) > 4:
+            self.build_year = data[4]
+            self.build_week = data[5]
 
     def data_to_binary(self):
         """
