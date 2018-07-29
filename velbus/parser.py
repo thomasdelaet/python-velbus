@@ -133,10 +133,20 @@ class VelbusParser(object):
             self.logger.warning("Packet has no valid checksum")
             return
         if data_size >= 1:
-            if data[4] in velbus.CommandRegistry:
-                message = velbus.CommandRegistry[data[4]]()
+            if data[4] == 0xff:
+                message = velbus.ModuleTypeMessage()
                 message.populate(priority, address, rtr, data[5:-2])
                 return message
+            elif address in self.controller._modules:
+                command_value = data[4]
+                module_type = self.controller.get_module(address).get_type()
+                if velbus.commandRegistry.has_command(command_value, module_type):
+                    command = velbus.commandRegistry.get_command(command_value, module_type)
+                    message = command()
+                    message.populate(priority, address, rtr, data[5:-2])
+                    return message
+                else:
+                    self.logger.warning("received unrecognized command %s", str(data[4]))
             else:
                 self.logger.warning("received unrecognized command %s", str(data[4]))
         else:
