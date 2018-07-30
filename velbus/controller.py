@@ -102,8 +102,13 @@ class Controller(object):
             """
             time.sleep(3)
             logging.info('Scan finished')
-            callback()
-
+            self._nb_of_modules_loaded = 0
+            def module_loaded():
+                self._nb_of_modules_loaded += 1
+                if self._nb_of_modules_loaded >= len(self._modules):
+                    callback()
+            for module in self._modules:
+                self._modules[module].load(module_loaded)
         for address in range(0, 256):
             message = velbus.ModuleTypeRequestMessage(address)
             if address == 255:
@@ -145,7 +150,6 @@ class Controller(object):
             if name in velbus.ModuleRegistry:
                 module = velbus.ModuleRegistry[name](m_type, name, address, self)
                 self._modules[address] = module
-                #module.load()
             else:
                 self.logger.warning("Module " + name + " is not yet supported.")
         for subscriber in self.__subscribers:
