@@ -8,12 +8,13 @@ class CommandRegistry:
         self._default_commands = {}
         self._overrides = {}
 
-    def register_command(self, command_value, command_class, module_type=0):
+    def register_command(self, command_value, command_class, module_name=0):
         assert isinstance(command_value, int)
         assert command_value >= 0 and command_value <= 255
         assert isinstance(command_class, type)
-        assert module_type in self._module_directory or module_type == 0 
-        if module_type:
+        assert module_name in self._module_directory.values() or module_name == 0 
+        if module_name:
+            module_type = next((mtype for mtype, mname in self._module_directory.items() if mname == module_name), None)
             self._register_override(command_value, command_class, module_type)
         else:
             self._register_default(command_value, command_class)
@@ -41,9 +42,10 @@ class CommandRegistry:
         return False
 
     def get_command(self, command_value, module_type=0):
-        assert self.has_command(command_value)
+        assert self.has_command(command_value, module_type)
         if module_type in self._overrides:
             if command_value in self._overrides[module_type]:
                 return self._overrides[module_type][command_value]
         if command_value in self._default_commands:
             return self._default_commands[command_value]
+
