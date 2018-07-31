@@ -6,9 +6,9 @@ from velbus.messages.bus_active import BusActiveMessage
 from velbus.messages.bus_error_counter_status_request import BusErrorStatusRequestMessage
 from velbus.messages.bus_error_counter_status import BusErrorCounterStatusMessage
 from velbus.messages.bus_off import BusOffMessage
-from velbus.messages.channel_name_part1 import ChannelNamePart1Message
-from velbus.messages.channel_name_part2 import ChannelNamePart2Message
-from velbus.messages.channel_name_part3 import ChannelNamePart3Message
+from velbus.messages.channel_name_part1 import ChannelNamePart1Message, ChannelNamePart1Message2
+from velbus.messages.channel_name_part2 import ChannelNamePart2Message, ChannelNamePart2Message2
+from velbus.messages.channel_name_part3 import ChannelNamePart3Message, ChannelNamePart3Message2
 from velbus.messages.channel_name_request import ChannelNameRequestMessage
 from velbus.messages.clear_led import ClearLedMessage
 from velbus.messages.fast_blinking_led import FastBlinkingLedMessage
@@ -18,6 +18,7 @@ from velbus.messages.memory_data import MemoryDataMessage
 from velbus.messages.memory_dump_request import MemoryDumpRequestMessage
 from velbus.messages.module_status_request import ModuleStatusRequestMessage
 from velbus.messages.module_status import ModuleStatusMessage
+from velbus.messages.module_status import ModuleStatusMessage2
 from velbus.messages.module_type import ModuleTypeMessage
 from velbus.messages.module_type_request import ModuleTypeRequestMessage
 from velbus.messages.push_button_status import PushButtonStatusMessage
@@ -42,3 +43,7 @@ from velbus.messages.cover_up import CoverUpMessage
 from velbus.messages.blind_status import BlindStatusMessage
 from velbus.messages.sensor_temperature import SensorTemperatureMessage
 from velbus.messages.kwh_status import KwhStatusMessage
+from velbus.messages.counter_status import CounterStatusMessage
+from velbus.messages.counter_status_request import CounterStatusRequestMessage
+from velbus.messages.module_subtype import ModuleSubTypeMessage
+

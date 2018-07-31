@@ -64,11 +64,11 @@ class Module(object):
         """
         if message.address != self._address:
             return
-        if isinstance(message, velbus.ChannelNamePart1Message):
+        if isinstance(message, velbus.ChannelNamePart1Message) or isinstance(message, velbus.ChannelNamePart1Message2):
             self._process_channel_name_message(1, message)
-        elif isinstance(message, velbus.ChannelNamePart2Message):
+        elif isinstance(message, velbus.ChannelNamePart2Message) or isinstance(message, velbus.ChannelNamePart2Message2):
             self._process_channel_name_message(2, message)
-        elif isinstance(message, velbus.ChannelNamePart3Message):
+        elif isinstance(message, velbus.ChannelNamePart3Message) or isinstance(message, velbus.ChannelNamePart3Message2):
             self._process_channel_name_message(3, message)
         else:
             self._on_message(message)

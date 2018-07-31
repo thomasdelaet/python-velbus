@@ -28,7 +28,8 @@ class VelbusParser(object):
         Add new incoming data to buffer and try to process
         """
         self.buffer += data
-        self.next_packet()
+        while len(self.buffer) >= 6:
+            self.next_packet()
 
     def valid_header_waiting(self):
         """
