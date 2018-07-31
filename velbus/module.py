@@ -13,6 +13,10 @@ class Module(object):
         self._type = module_type
         self._name = module_name
         self._address = module_address
+        self.serial = 0
+        self.memory_map_version = 0
+        self.build_year = 0
+        self.build_week = 0
 
         self._channel_names = {}
         self._name_data = {}
@@ -70,6 +74,8 @@ class Module(object):
             self._process_channel_name_message(2, message)
         elif isinstance(message, velbus.ChannelNamePart3Message) or isinstance(message, velbus.ChannelNamePart3Message2):
             self._process_channel_name_message(3, message)
+        elif isinstance(message, velbus.ModuleTypeMessage):
+            self._process_module_type_message(message)
         else:
             self._on_message(message)
 
@@ -113,6 +119,12 @@ class Module(object):
         self._name_data[channel][part] = message.name
         if self._name_messages_complete():
             self._generate_names()
+
+    def _process_module_type_message(self, message):
+        self.serial = message.serial
+        self.memory_map_version = message.memory_map_version
+        self.build_year = message.build_year
+        self.build_week = message.build_week
 
     def _generate_names(self):
         assert self._name_messages_complete()
