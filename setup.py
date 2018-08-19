@@ -4,7 +4,7 @@ with open('README.md') as file:
     long_description = file.read()
 
 setup(name='python-velbus',
-      version='2.0.17',
+      version='2.0.18',
       url='https://bitbucket.org/tdelaet/python-velbus/',
       license='MIT',
       author='Thomas Delaet',
@@ -12,6 +12,6 @@ setup(name='python-velbus',
       author_email='thomas@delaet.org',
       description="Python Library for the Velbus protocol",
       long_description=long_description,
-      packages=['velbus', 'velbus.connections', 'velbus.messages'],
+      packages=['velbus', 'velbus.connections', 'velbus.messages', 'velbus.modules'],
       platforms='any',
      )
