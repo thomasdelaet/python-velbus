@@ -19,6 +19,9 @@ class SensorTemperatureMessage(velbus.Message):
         self.min = 0
         self.max = 0
 
+    def getCurTemp(self):
+        return self.cur
+
     def populate(self, priority, address, rtr, data):
         """
         data bytes (high + low)

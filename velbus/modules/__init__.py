@@ -8,4 +8,5 @@ from velbus.modules.vmbin import VMB7INModule
 from velbus.modules.vmbgp import VMBGPxModule
 from velbus.modules.vmbpbn import VMB2PBNModule
 from velbus.modules.vmbpbn import VMB6PBNModule
+from velbus.modules.vmb1ts import VMB1TSModule
 

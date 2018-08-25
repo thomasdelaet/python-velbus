@@ -11,6 +11,9 @@ class VMBGPxModule(velbus.Module):
         velbus.Module.__init__(self, module_type, module_name, module_address, controller)
         self._is_closed = {}
         self._is_enabled = {}
+        self._cur = None
+        self._min = None
+        self._max = None
         self._callbacks = {}
 
     def is_closed(self, channel):
@@ -23,16 +26,34 @@ class VMBGPxModule(velbus.Module):
             return self._is_enabled[channel]
         return False
 
+    def getMinTemp(self):
+        return self._min
+    
+    def getMiaxTemp(self):
+        return self._max
+
+    def getCurTemp(self):
+        return self._cur
+
     def _load(self):
         message = velbus.ModuleStatusRequestMessage(self._address)
         message.channels = list(range(1, self.number_of_channels()+1))
         self._controller.send(message)
 
     def number_of_channels(self):
-        return 32
+        # 1-32 = inputs
+        # 33 = temp sensor
+        return 33
 
     def _on_message(self, message):
-        if isinstance(message, velbus.PushButtonStatusMessage):
+        if isinstance(message, velbus.SensorTemperatureMessage):
+            self._cur = message.cur
+            self._min = message.min
+            self._max = message.max
+            if 33 in self._callbacks:
+                for callback in self._callbacks[33]:
+                    callback(message.getCurTemp())
+        elif isinstance(message, velbus.PushButtonStatusMessage):
             for channel in message.closed:
                 self._is_closed[channel] = True
             for channel in message.opened:
@@ -51,6 +72,9 @@ class VMBGPxModule(velbus.Module):
                     self._is_enabled[channel] = True
                 else:
                     self._is_enabled[channel] = False
+            if channel in self._callbacks:
+                for callback in self._callbacks[channel]:
+                    callback(self._is_closed[channel])
 
     def on_status_update(self, channel, callback):
         """
@@ -61,7 +85,9 @@ class VMBGPxModule(velbus.Module):
         self._callbacks[channel].append(callback)
 
     def get_categories(self, channel):
-        if channel in self._is_enabled and self._is_enabled[channel]:
+        if channel == 33:
+            return ['temp_sensor']
+        elif channel in self._is_enabled and self._is_enabled[channel]:
             return ['binary_sensor']
         else:
             return []
