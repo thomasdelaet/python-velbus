@@ -43,8 +43,7 @@ class VelbusParser(object):
             result = result and self.buffer[0] == velbus.START_BYTE
             if not result:
                 self.logger.warning("Start byte not recognized")
-            result = result and (self.buffer[1] == velbus.HIGH_PRIORITY
-                                 or self.buffer[1] == velbus.LOW_PRIORITY)
+            result = result and (self.buffer[1] in velbus.PRIORITY)
             if not result:
                 self.logger.warning("Priority not recognized")
             result = result and (self.buffer[3] & 0x0F <= 8)
@@ -120,7 +119,7 @@ class VelbusParser(object):
             self.logger.warning("end byte not correct")
             return
         priority = data[1]
-        if priority != velbus.LOW_PRIORITY and priority != velbus.HIGH_PRIORITY:
+        if priority not in velbus.PRIORITY:
             self.logger.warning("unrecognized priority")
             return
         address = data[2]
