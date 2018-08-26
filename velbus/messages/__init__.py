@@ -33,6 +33,13 @@ from velbus.messages.start_relay_blinking_timer import StartRelayBlinkingTimerMe
 from velbus.messages.start_relay_timer import StartRelayTimerMessage
 from velbus.messages.switch_relay_off import SwitchRelayOffMessage
 from velbus.messages.switch_relay_on import SwitchRelayOnMessage
+from velbus.messages.switch_to_comfort import SwitchToComfortMessage
+from velbus.messages.switch_to_day import SwitchToDayMessage
+from velbus.messages.switch_to_night import SwitchToNightMessage
+from velbus.messages.switch_to_safe import SwitchToSafeMessage
+from velbus.messages.temp_sensor_status import TempSensorStatusMessage
+from velbus.messages.temp_set_heating import TempSetHeatingMessage
+from velbus.messages.temp_set_cooling import TempSetCoolingMessage
 from velbus.messages.update_led_status import UpdateLedStatusMessage
 from velbus.messages.very_fast_blinking_led import VeryFastBlinkingLedMessage
 from velbus.messages.write_data_to_memory import WriteDataToMemoryMessage
@@ -46,4 +53,3 @@ from velbus.messages.kwh_status import KwhStatusMessage
 from velbus.messages.counter_status import CounterStatusMessage
 from velbus.messages.counter_status_request import CounterStatusRequestMessage
 from velbus.messages.module_subtype import ModuleSubTypeMessage
-
