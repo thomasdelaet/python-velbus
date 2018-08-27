@@ -6,53 +6,6 @@ import velbus
 
 COMMAND_CODE = 0xff
 
-MODULE_DIRECTORY = {
-    0x01: 'VMB8PB',
-    0x02: 'VMB1RY',
-    0x03: 'VMB1BL',
-    0x05: 'VMB6IN',
-    0x07: 'VMB1DM',
-    0x08: 'VMB4RY',
-    0x09: 'VMB2BL',
-    0x0a: 'VMB8IR',
-    0x0b: 'VMB4PD',
-    0x0c: 'VMB1TS',
-    0x0d: 'VMB1TH',
-    0x0e: 'VMB1TC',
-    0x0f: 'VMB1LED',
-    0x10: 'VMB4RYLD',
-    0x11: 'VMB4RYNO',
-    0x12: 'VMB4DC',
-    0x13: 'VMBLCDWB',
-    0x14: 'VMBDME',
-    0x15: 'VMBDMI',
-    0x16: 'VMB8PBU',
-    0x17: 'VMB6PBN',
-    0x18: 'VMB2PBN',
-    0x19: 'VMB6PBB',
-    0x1a: 'VMB4RF',
-    0x1b: 'VMB1RYNO',
-    0x1c: 'VMB1BLE',
-    0x1d: 'VMB2BLE',
-    0x1e: 'VMBGP1',
-    0x1f: 'VMBGP2',
-    0x20: 'VMBGP4',
-    0x21: 'VMBGP0',
-    0x22: 'VMB7IN',
-    0x28: 'VMBGPOD',
-    0x29: 'VMB1RYNOS',
-    0x2a: 'VMBIRM',
-    0x2b: 'VMBIRC',
-    0x2c: 'VMBIRO',
-    0x2d: 'VMBGP4PIR',
-    0x2e: 'VMB1BLS',
-    0x2f: 'VMBDMI-R',
-    0x31: 'VMBMETEO',
-    0x32: 'VMB4AN',
-
-}
-
-
 class ModuleTypeMessage(velbus.Message):
     """
     send by: VMB6IN, VMB4RYLD
@@ -76,8 +29,8 @@ class ModuleTypeMessage(velbus.Message):
         """
         :return: str
         """
-        if self.module_type in MODULE_DIRECTORY.keys():
-            return MODULE_DIRECTORY[self.module_type]
+        if self.module_type in velbus.MODULE_DIRECTORY.keys():
+            return velbus.MODULE_DIRECTORY[self.module_type]
         return "Unknown"
 
     def populate(self, priority, address, rtr, data):
