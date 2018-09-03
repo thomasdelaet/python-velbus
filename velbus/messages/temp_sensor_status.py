@@ -101,7 +101,6 @@ class TempSensorStatusMessage(velbus.Message):
         json_dict['current_temp'] = self.current_temp
         json_dict['target_temp'] = self.target_temp
         json_dict['sleep_timer'] = self.sleep_timer
-        print(json_dict)
         return json.dumps(json_dict)
 
 
