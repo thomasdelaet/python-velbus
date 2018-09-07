@@ -37,11 +37,7 @@ class CounterStatusMessage(velbus.Message):
         self.channel = (data[0] & 0x03) +1 
         self.pulses = (data[0] >> 2) * 100
         self.counter = (data[1] << 24) + (data[2] << 16) + (data[3] << 8) + data[4]
-        self.kwh = float(float(self.counter)/self.pulses)
         self.delay = (data[5] << 8) + data[6]
-        self.watt = float((1000 * 1000 * 3600) / (self.delay * self.pulses))
-        if self.watt < 55:
-            self.watt = 0
 
     def to_json(self):
         """
