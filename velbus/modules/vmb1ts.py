@@ -46,7 +46,26 @@ class VMB1TSModule(velbus.Module):
         self._callbacks.append(callback)
 
     def get_categories(self, channel):
-        return ['temp_sensor']
+        return ['sensor']
+
+
+    def get_state(self, channel):
+        """
+        Ignore channel
+        """
+        return self._cur
+
+    def get_class(self, channel):
+        """
+        Ignore channel
+        """
+        return 'temperature'
+
+    def get_unit(self, channel):
+        """
+        Ignore channel
+        """
+        return '°C'
 
 
 velbus.register_module('VMB1TS', VMB1TSModule)

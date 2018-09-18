@@ -86,11 +86,32 @@ class VMBGPxModule(velbus.Module):
 
     def get_categories(self, channel):
         if channel == 33:
-            return ['temp_sensor']
+            return ['sensor']
         elif channel in self._is_enabled and self._is_enabled[channel]:
             return ['binary_sensor']
         else:
             return []
+
+    def get_state(self, channel):
+        """
+        Can only be called for channel 33
+        So ignore channel
+        """
+        return self._cur
+
+    def get_class(self, channel):
+        """
+        Can only be called for channel 33
+        So ignore channel
+        """
+        return 'temperature'
+
+    def get_unit(self, channel):
+        """
+        Can only be called for channel 33
+        So ignore channel
+        """
+        return '°C'
 
 velbus.register_module('VMBGP1', VMBGPxModule)
 velbus.register_module('VMBGP2', VMBGPxModule)
