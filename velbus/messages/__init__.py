@@ -47,9 +47,10 @@ from velbus.messages.write_memory_block import WriteMemoryBlockMessage
 from velbus.messages.write_module_address_and_serial_number import WriteModuleAddressAndSerialNumberMessage
 from velbus.messages.cover_down import CoverDownMessage
 from velbus.messages.cover_up import CoverUpMessage
-from velbus.messages.blind_status import BlindStatusMessage
+from velbus.messages.blind_status import BlindStatusNgMessage
 from velbus.messages.sensor_temperature import SensorTemperatureMessage
 from velbus.messages.kwh_status import KwhStatusMessage
 from velbus.messages.counter_status import CounterStatusMessage
 from velbus.messages.counter_status_request import CounterStatusRequestMessage
 from velbus.messages.module_subtype import ModuleSubTypeMessage
+from velbus.messages.set_temperature import SetTemperatureMessage

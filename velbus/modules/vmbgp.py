@@ -113,8 +113,58 @@ class VMBGPxModule(velbus.Module):
         """
         return '°C'
 
+
+class VMBGPxDModule(VMBGPxModule):
+    
+    def __init__(self, module_type, module_name, module_address, controller):
+        VMBGPxModule.__init__(self, module_type, module_name, module_address, controller)
+        self._cmode = None
+        self._target = None
+
+    def _on_message(self, message):
+        if isinstance(message, velbus.TempSensorStatusMessage):
+            self._cur = message.current_temp
+            self._target = message.target_temp
+            self._cmode = message.mode_str
+            self._cstatus = message.status_str
+            if 33 in self._callbacks:
+                for callback in self._callbacks[33]:
+                    callback(message.getCurTemp())
+        VMBGPxModule._on_message(self, message)
+
+    def get_categories(self, channel):
+        if channel == 33:
+            return ['sensor', 'climate']
+        elif channel in self._is_enabled and self._is_enabled[channel]:
+            return ['binary_sensor']
+        else:
+            return []
+
+    def get_climate_mode(self):
+        return self._cmode
+
+    def get_climate_target(self):
+        return self._target
+
+    def set_mode(self, mode):
+        if mode == "safe":
+            message = velbus.SwitchToSafeMessage(self._address)
+        elif mode == "night":
+            message = velbus.SwitchToNightMessage(self._address)
+        elif mode == "day":
+            message = velbus.SwitchToDayMessage(self._address)
+        elif mode == "comfort":
+            message = velbus.SwitchToComfortMessage(self._address)
+        self._controller.send(message)
+
+    def set_temp(self, temp):
+        message = velbus.SetTemperatureMessage(self._address)
+        message.temp = temp * 2
+        self._controller.send(message)
+
+
 velbus.register_module('VMBGP1', VMBGPxModule)
 velbus.register_module('VMBGP2', VMBGPxModule)
 velbus.register_module('VMBGP4', VMBGPxModule)
 velbus.register_module('VMBGP0', VMBGPxModule)
-velbus.register_module('VMBGPOD', VMBGPxModule)
+velbus.register_module('VMBGPOD', VMBGPxDModule)

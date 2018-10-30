@@ -6,8 +6,6 @@ import json
 
 COMMAND_CODE = 0xed
 
-#FIXME: This is written for VMB6IN but VMB7IN transmits a different type of of module status message
-
 class ModuleStatusMessage(velbus.Message):
     """
     send by: VMB6IN
@@ -93,6 +91,44 @@ class ModuleStatusMessage2(velbus.Message):
         json_dict['locked'] = self.locked
         return json.dumps(json_dict)
 
+class ModuleStatusPirMessage(velbus.Message):
+
+    def __init__(self, address=None):
+        velbus.Message.__init__(self)
+        # in data[0]
+        self.dark = False               # bit 1
+        self.light = False              # bit 2
+        self.motion1 = False            # bit 3
+        self.light_motion1 = False      # bit 4
+        self.motion2 = False            # bit 5
+        self.light_motion2 = False      # bit 6
+        self.low_temp_alarm = False     # bit 7
+        self.high_temp_alarm = False    # bit 8
+        # in data[1] and data[2]
+        self.light_value = 0
+
+    def populate(self, priority, address, rtr, data):
+        assert isinstance(data, bytes)
+        self.needs_low_priority(priority)
+        self.needs_no_rtr(rtr)
+        self.needs_data(data, 7)
+        self.set_attributes(priority, address, rtr)
+        self.dark = (0x01 & data[0])
+        self.light = (0x02 & data[0])
+        self.motion1 = (0x04 & data[0])
+        self.light_motion1 = (0x08 & data[0])
+        self.motion2 = (0x10 & data[0])
+        self.light_motion2 = (0x20 & data[0])
+        self.low_temp_alarm = (0x40 & data[0])
+        self.high_temp_alarm = (0x80 & data[0])
+        self.light_value = (data[1] << 8) + data[2] 
+
+    def data_to_binary(self):
+        """
+        :return: bytes
+        """
+        raise NotImplementedError
+
 
 velbus.register_command(COMMAND_CODE, ModuleStatusMessage)
 velbus.register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMB8PBU')
@@ -105,4 +141,4 @@ velbus.register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBGP4')
 velbus.register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBGP0')
 velbus.register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBGPOD')
 velbus.register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMB7IN')
-velbus.register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBIRO')
+velbus.register_command(COMMAND_CODE, ModuleStatusPirMessage, 'VMBIRO')

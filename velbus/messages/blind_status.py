@@ -45,7 +45,7 @@ UP_LED_FAST_BLINKING = 1 << 1
 UP_LED_VERY_FAST_BLINKING = 1
 
 
-class BlindStatusMessage(velbus.Message):
+class BlindStatusNgMessage(velbus.Message):
     """
     sent by: VMB2BLE
     received by:
@@ -140,4 +140,5 @@ class BlindStatusMessage(velbus.Message):
             ])
 
 
-velbus.register_command(COMMAND_CODE, BlindStatusMessage)
+velbus.register_command(COMMAND_CODE, BlindStatusNgMessage, 'VMB1BLE')
+velbus.register_command(COMMAND_CODE, BlindStatusNgMessage, 'VMB2BLE')

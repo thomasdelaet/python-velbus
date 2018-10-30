@@ -70,6 +70,12 @@ MODULE_DIRECTORY = {
     0x2f: 'VMBDMI-R',
     0x31: 'VMBMETEO',
     0x32: 'VMB4AN',
+    0x33: 'VMBVP01',
+    0x34: 'VMBEL1',
+    0x35: 'VMBEL2',
+    0x36: 'VMBEL4',
+    0x37: 'VMBELO',
+    0x39: 'VMBSIG',
 }
 
 #pylint: disable-msg=C0413
