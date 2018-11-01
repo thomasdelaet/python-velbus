@@ -19,8 +19,10 @@ class TempSensorStatusMessage(velbus.Message):
         velbus.Message.__init__(self)
         self.local_control = 0  # 0=unlocked, 1 =locked
         self.status_mode = 0    # 0=run, 1=manual, 2=sleep timer, 3=disable
+        self.status_str = 'run'
         self.auto_send = 0      # 0=disabled, 1=enabled
         self.mode = 0           # 0=safe, 1=night, 2=day, 4=comfort
+        self.mode_str = 'safe'
         self.cool = 0           # 0=cool, 1=heat
         self.heater = 0         # 0=pff, 1=on
         self.boost = 0          # 0=off, 1 = on
@@ -33,6 +35,9 @@ class TempSensorStatusMessage(velbus.Message):
         self.current_temp = None# current temp
         self.target_temp = None # current temp
         self.sleep_timer = None # current sleepTimer
+
+    def getCurTemp(self):
+        return self.current_temp
 
     def populate(self, priority, address, rtr, data):
         """
@@ -62,8 +67,10 @@ class TempSensorStatusMessage(velbus.Message):
 
         self.local_control = (data[0] & 0x01)
         self.status_mode = (data[0] & 0x206)
+        self._status_str = DSTATUS[self.status_mode]
         self.auto_send = (data[0] & 0x08)
         self.mode = (data[0] & 0x70)
+        self.mode_str = DMODE[self.mode]
         self.cool = (data[0] & 0x80)
 
         self.heater = (data[2] & 0x01)
