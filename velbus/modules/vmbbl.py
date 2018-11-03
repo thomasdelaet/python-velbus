@@ -1,16 +1,15 @@
 """
-:author: Thomas Delaet <thomas@delaet.org
+:author: Maikel Punie <maikel.punie@gmail.com>
 """
 import velbus
 
-class VMB2PBNModule(velbus.Module):
+class VMB1BLModule(velbus.Module):
     """
     Velbus input module with 6 channels
     """
     def __init__(self, module_type, module_name, module_address, controller):
         velbus.Module.__init__(self, module_type, module_name, module_address, controller)
         self._is_closed = {}
-        self._is_enabled = {}
         self._callbacks = {}
 
     def is_closed(self, channel):
@@ -24,7 +23,7 @@ class VMB2PBNModule(velbus.Module):
         self._controller.send(message)
 
     def number_of_channels(self):
-        return 2
+        return 1 
 
     def _on_message(self, message):
         if isinstance(message, velbus.PushButtonStatusMessage):
@@ -36,17 +35,12 @@ class VMB2PBNModule(velbus.Module):
                 if channel in self._callbacks:
                     for callback in self._callbacks[channel]:
                         callback(self._is_closed[channel])
-        elif isinstance(message, velbus.ModuleStatusMessage2):
+        elif isinstance(message, velbus.ModuleStatusMessage):
             for channel in list(range(1, self.number_of_channels() + 1)):
                 if channel in message.closed:
                     self._is_closed[channel] = True
                 else:
                     self._is_closed[channel] = False
-                if channel in message.enabled:
-                    self._is_enabled[channel] = True
-                else:
-                    self._is_enabled[channel] = False
-
 
     def on_status_update(self, channel, callback):
         """
@@ -57,28 +51,25 @@ class VMB2PBNModule(velbus.Module):
         self._callbacks[channel].append(callback)
 
     def get_categories(self, channel):
-        if channel in self._is_enabled and self._is_enabled[channel]:
-            return ['binary_sensor']
-        else:
-            return []
+        return ['binary_sensor']
 
-
-class VMB6PBNModule(VMB2PBNModule):
+class VMB2BLModule(VMB1BLModule):
     """
     Velbus input module with 7 channels
     """
     def number_of_channels(self):
-        return 6
+        return 2
 
-
-class VMB8PBUModule(VMB2PBNModule):
-    """
-    Velbus input module with 7 channels
-    """
+class VMB1BLEModule(velbus.Module):
     def number_of_channels(self):
-        return 6
+        return 1
+
+class VMB2BLEModule(velbus.Module):
+    def number_of_channels(self):
+        return 2
 
 
-velbus.register_module('VMB2PBN', VMB2PBNModule)
-velbus.register_module('VMB6PBN', VMB6PBNModule)
-velbus.register_module('VMB8PBU', VMB8PBUModule)
+velbus.register_module('VMB1BL', VMB1BLModule)
+velbus.register_module('VMB2BL', VMB2BLModule)
+velbus.register_module('VMB1BLE', VMB1BLEModule)
+velbus.register_module('VMB2BLE', VMB2BLEModule)

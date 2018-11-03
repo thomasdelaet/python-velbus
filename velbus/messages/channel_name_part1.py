@@ -82,4 +82,6 @@ velbus.register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP2')
 velbus.register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP4')
 velbus.register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP0')
 velbus.register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGPOD')
+velbus.register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMB1BL')
+velbus.register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMB2BL')
 
