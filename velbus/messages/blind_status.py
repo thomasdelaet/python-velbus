@@ -140,5 +140,61 @@ class BlindStatusNgMessage(velbus.Message):
             ])
 
 
+class BlindStatusNgMessage2(velbus.Message):
+    """
+    sent by: VMB2BLE
+    received by:
+    """
+
+    def __init__(self, address=None):
+        velbus.Message.__init__(self)
+        self.channel = 0
+        self.timeout = 0
+        self.status = 0
+        self.led_status = 0
+        self.blind_position = 0
+        self.locked_inhibit_forced = 0
+        self.alarm_auto_mode_selection = 0
+        self.set_defaults(address)
+
+    def populate(self, priority, address, rtr, data):
+        """
+        :return: None
+        """
+        assert isinstance(data, bytes)
+        self.needs_low_priority(priority)
+        self.needs_no_rtr(rtr)
+        self.needs_data(data, 7)
+        self.set_attributes(priority, address, rtr)
+        # 00000011 = channel 1
+        # 00001100 = channel 2
+        # so shift 1 bit to the right + and with 03
+        tmp = (data[0] >> 1) & 0x03
+        self.channel = self.byte_to_channel(tmp)
+        self.needs_valid_channel(self.channel, 5)
+        self.timeout = data[1] # Omzetter seconden ????
+        self.status = data[2]
+        self.led_status = data[3]
+        self.blind_position = data[4]
+        self.locked_inhibit_forced = data[5]
+        self.alarm_auto_mode_selection = data[6]
+
+    def to_json(self):
+        """
+        :return: str
+        """
+        json_dict = self.to_json_basic()
+        json_dict['channel'] = self.channel
+        json_dict['timeout'] = self.timeout
+        json_dict['status'] = self.status
+        json_dict['led_status'] = self.led_status
+        json_dict['blind_position'] = self.blind_position
+        json_dict['locked_inhibit_forced'] = self.locked_inhibit_forced
+        json_dict['alarm_auto_mode_selection'] = self.alarm_auto_mode_selection
+        return json.dumps(json_dict)
+
+
 velbus.register_command(COMMAND_CODE, BlindStatusNgMessage, 'VMB1BLE')
 velbus.register_command(COMMAND_CODE, BlindStatusNgMessage, 'VMB2BLE')
+velbus.register_command(COMMAND_CODE, BlindStatusNgMessage2, 'VMB1BL')
+velbus.register_command(COMMAND_CODE, BlindStatusNgMessage2, 'VMB2BL')
