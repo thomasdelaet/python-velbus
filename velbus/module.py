@@ -92,6 +92,8 @@ class Module(object):
                 pass
             callback = callb
         if len(self._loaded_callbacks) == 0:
+            message = velbus.ModuleStatusRequestMessage(self._address)
+            self._controller.send(message)
             message = velbus.ChannelNameRequestMessage(self._address)
             message.channels = list(range(1, self.number_of_channels() + 1))
             self._controller.send(message)

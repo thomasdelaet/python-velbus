@@ -73,6 +73,7 @@ The following Velbus modules are currently supported by this library:
 | VMB1RS | Serial interface | SUPPORTED | All messages are supported |
 | VMB1USB | USB configuration module | SUPPORTED | All messages are supported |
 | VMBRSUSB | Configuration module with USB and RS-232 interface | SUPPORTED | All messages are supported |
+| VMBMETEO | meteo modules | SUPPORTED | Temperature, wind, rain and light sensor supported |
 
 # Adding support for other modules
 

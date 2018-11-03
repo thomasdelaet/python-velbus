@@ -55,3 +55,4 @@ from velbus.messages.counter_status import CounterStatusMessage
 from velbus.messages.counter_status_request import CounterStatusRequestMessage
 from velbus.messages.module_subtype import ModuleSubTypeMessage
 from velbus.messages.set_temperature import SetTemperatureMessage
+from velbus.messages.meteo_raw import MeteoRawMessage
