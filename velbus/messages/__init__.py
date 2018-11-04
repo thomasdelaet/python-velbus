@@ -6,9 +6,9 @@ from velbus.messages.bus_active import BusActiveMessage
 from velbus.messages.bus_error_counter_status_request import BusErrorStatusRequestMessage
 from velbus.messages.bus_error_counter_status import BusErrorCounterStatusMessage
 from velbus.messages.bus_off import BusOffMessage
-from velbus.messages.channel_name_part1 import ChannelNamePart1Message, ChannelNamePart1Message2
-from velbus.messages.channel_name_part2 import ChannelNamePart2Message, ChannelNamePart2Message2
-from velbus.messages.channel_name_part3 import ChannelNamePart3Message, ChannelNamePart3Message2
+from velbus.messages.channel_name_part1 import ChannelNamePart1Message, ChannelNamePart1Message2, ChannelNamePart1Message3
+from velbus.messages.channel_name_part2 import ChannelNamePart2Message, ChannelNamePart2Message2, ChannelNamePart2Message3
+from velbus.messages.channel_name_part3 import ChannelNamePart3Message, ChannelNamePart3Message2, ChannelNamePart3Message3
 from velbus.messages.channel_name_request import ChannelNameRequestMessage
 from velbus.messages.clear_led import ClearLedMessage
 from velbus.messages.fast_blinking_led import FastBlinkingLedMessage

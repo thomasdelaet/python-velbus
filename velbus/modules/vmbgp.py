@@ -163,8 +163,28 @@ class VMBGPxDModule(VMBGPxModule):
         self._controller.send(message)
 
 
+class VMBGPPirModule(velbus.Module):
+    def number_of_channels(self):
+        # 1-4 = buttons
+        # 5 = dark/light
+        # 6 = Motion
+        # 7 = light dependant motion
+        # 8 = absece
+        # 9 = temperature
+        return 9
+
+    def get_categories(self, channel):
+        if channel == 9:
+            return ['sensor']
+        elif channel in self._is_enabled and self._is_enabled[channel]:
+            return ['binary_sensor']
+        else:
+            return []
+
+
 velbus.register_module('VMBGP1', VMBGPxModule)
 velbus.register_module('VMBGP2', VMBGPxModule)
 velbus.register_module('VMBGP4', VMBGPxModule)
 velbus.register_module('VMBGP0', VMBGPxModule)
 velbus.register_module('VMBGPOD', VMBGPxDModule)
+velbus.register_module('VMBGP4PIR', VMBGPPirModule)

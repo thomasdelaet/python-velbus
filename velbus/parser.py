@@ -110,7 +110,7 @@ class VelbusParser(object):
         assert len(data) > 0
         assert len(data) >= velbus.MINIMUM_MESSAGE_SIZE
         assert data[0] == velbus.START_BYTE
-        self.logger.info("Processing message %s", str(data))
+        self.logger.debug("Processing message %s", str(data))
         if len(data) > velbus.MAXIMUM_MESSAGE_SIZE:
             self.logger.warning("Velbus message are maximum %s bytes, this one is %s", str(
                 velbus.MAXIMUM_MESSAGE_SIZE), str(len(data)))

@@ -140,7 +140,7 @@ class Controller(object):
         if isinstance(message, velbus.ReceiveBufferFullMessage):
             self.logger.error("Velbus receive buffer full message received")
         if isinstance(message, velbus.ModuleTypeMessage):
-            self.logger.info("Module type response received")
+            self.logger.debug("Module type response received")
             name = message.module_name()
             address = message.address
             m_type = message.module_type
