@@ -78,5 +78,8 @@ class VMB4RYModule(velbus.Module):
     def get_categories(self, channel):
         return ['switch']
 
+
 velbus.register_module('VMB4RYLD', VMB4RYModule)
 velbus.register_module('VMB4RYNO', VMB4RYModule)
+velbus.register_module('VMB1RYNO', VMB4RYModule)
+velbus.register_module('VMB1RYNOS', VMB4RYModule)
