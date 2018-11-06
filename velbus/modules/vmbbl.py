@@ -26,16 +26,7 @@ class VMB1BLModule(velbus.Module):
         return 1 
 
     def _on_message(self, message):
-        if isinstance(message, velbus.PushButtonStatusMessage):
-            for channel in message.closed:
-                self._is_closed[channel] = True
-            for channel in message.opened:
-                self._is_closed[channel] = False
-            for channel in message.get_channels():
-                if channel in self._callbacks:
-                    for callback in self._callbacks[channel]:
-                        callback(self._is_closed[channel])
-        elif isinstance(message, velbus.ModuleStatusMessage):
+        if isinstance(message, velbus.ModuleStatusMessage):
             for channel in list(range(1, self.number_of_channels() + 1)):
                 if channel in message.closed:
                     self._is_closed[channel] = True
@@ -51,7 +42,12 @@ class VMB1BLModule(velbus.Module):
         self._callbacks[channel].append(callback)
 
     def get_categories(self, channel):
-        return ['binary_sensor']
+        return ['cover']
+
+    def _request_channel_name(self):
+        message = velbus.ChannelNameRequestMessage2(self._address)
+        message.channels = list(range(1, self.number_of_channels() + 1))
+        self._controller.send(message)
 
 class VMB2BLModule(VMB1BLModule):
     """
@@ -60,11 +56,16 @@ class VMB2BLModule(VMB1BLModule):
     def number_of_channels(self):
         return 2
 
+
 class VMB1BLEModule(velbus.Module):
+    def get_categories(self, channel):
+        return ['cover']
+
     def number_of_channels(self):
         return 1
 
-class VMB2BLEModule(velbus.Module):
+
+class VMB2BLEModule(VMB1BLEModule):
     def number_of_channels(self):
         return 2
 

@@ -92,11 +92,10 @@ class Module(object):
                 pass
             callback = callb
         if len(self._loaded_callbacks) == 0:
-            message = velbus.ModuleStatusRequestMessage(self._address)
-            self._controller.send(message)
-            message = velbus.ChannelNameRequestMessage(self._address)
-            message.channels = list(range(1, self.number_of_channels() + 1))
-            self._controller.send(message)
+            self._request_module_status()
+            self._request_channel_name()
+        else:
+            print("++++++++++++++++++++++++++++++++++")
         self._loaded_callbacks.append(callback)
         self._load()
 
@@ -149,6 +148,15 @@ class Module(object):
                 for name_index in range(1, 4):
                     if not isinstance(self._name_data[channel][name_index], str):
                         return False
-            except Exception:
+            except Exception as exp:
                 return False
         return True
+
+    def _request_module_status(self):
+        message = velbus.ModuleStatusRequestMessage(self._address)
+        self._controller.send(message)
+
+    def _request_channel_name(self):
+        message = velbus.ChannelNameRequestMessage(self._address)
+        message.channels = list(range(1, self.number_of_channels() + 1))
+        self._controller.send(message)
