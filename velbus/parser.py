@@ -146,9 +146,9 @@ class VelbusParser(object):
                     message.populate(priority, address, rtr, data[5:-2])
                     return message
                 else:
-                    self.logger.warning("received unrecognized command %s", str(data[4]))
+                    self.logger.warning("received unrecognized command %s from module %s (%s)", str(data[4]), str(address), str(module_type))
             else:
-                self.logger.warning("received unrecognized command %s", str(data[4]))
+                self.logger.warning("received unrecognized command %s from module %s", str(data[4]), str(address))
         else:
             if rtr:
                 message = velbus.ModuleTypeRequestMessage()
