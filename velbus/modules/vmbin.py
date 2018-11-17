@@ -137,6 +137,8 @@ class VMB7INModule(VMB6INModule):
         Ignore channel
         """
         val = None
+        if channel not in self._unit:
+            return val
         if self._unit[channel] == 'l/h':
             val = ((1000 * 3600) / (self._delay[channel] * self._pulses[channel]))
         elif self._unit[channel] == 'm3/h':
