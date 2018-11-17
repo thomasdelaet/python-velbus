@@ -160,3 +160,11 @@ class Controller(object):
         Stop velbus
         """
         self.connection.stop()
+
+    def sync_clock(self):
+        """
+        This will send all the needed messages to sync the cloc
+        """
+        self.send( velbus.SetRealtimeClock() )
+        self.send( velbus.SetDate() )
+        self.send( velbus.SetDaylightSaving() )

@@ -17,14 +17,15 @@ class SetDate(velbus.Message):
     def __init__(self, address=0x00):
         velbus.Message.__init__(self)
         self.logger = logging.getLogger('velbus')
-        self.set_defaults(address)
         self._day = None
         self._mon = None
         self._year = None
+        self.set_defaults(address)
 
     def set_defaults(self, address):
         if address is not None:
             self.set_address(address)
+        self.set_low_priority()
         self.set_no_rtr()
         lclt = time.localtime()
         self._day = lclt[2]
@@ -36,6 +37,7 @@ class SetDate(velbus.Message):
         :return: None
         """
         assert isinstance(data, bytes)
+        self.needs_low_priority(priority)
         self.needs_no_rtr(rtr)
         self.needs_data(data, 4)
         self.set_attributes(priority, address, rtr)
