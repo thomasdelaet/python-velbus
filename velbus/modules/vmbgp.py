@@ -35,11 +35,6 @@ class VMBGPxModule(velbus.Module):
     def getCurTemp(self):
         return self._cur
 
-    def _load(self):
-        message = velbus.ModuleStatusRequestMessage(self._address)
-        message.channels = list(range(1, self.number_of_channels()+1))
-        self._controller.send(message)
-
     def number_of_channels(self):
         # 1-8 = inputs
         # 9 = temp sensor
@@ -162,6 +157,9 @@ class VMBGPxDModule(VMBGPxModule):
         message.temp = temp * 2
         self._controller.send(message)
 
+    def number_of_channels(self):
+        return 33
+
 
 class VMBGPPirModule(velbus.Module):
     def number_of_channels(self):
@@ -185,6 +183,6 @@ class VMBGPPirModule(velbus.Module):
 velbus.register_module('VMBGP1', VMBGPxModule)
 velbus.register_module('VMBGP2', VMBGPxModule)
 velbus.register_module('VMBGP4', VMBGPxModule)
-velbus.register_module('VMBGP0', VMBGPxModule)
+velbus.register_module('VMBGP0', VMBGPxDModule)
 velbus.register_module('VMBGPOD', VMBGPxDModule)
 velbus.register_module('VMBGP4PIR', VMBGPPirModule)

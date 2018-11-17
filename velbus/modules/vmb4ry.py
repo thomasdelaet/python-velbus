@@ -40,11 +40,6 @@ class VMB4RYModule(velbus.Module):
         message.relay_channels = [channel]
         self._controller.send(message, callback)
 
-    def _load(self):
-        message = velbus.ModuleStatusRequestMessage(self._address)
-        message.channels = list(range(1, self.number_of_channels()+1))
-        self._controller.send(message)
-
     def turn_off(self, channel, callback=None):
         """
         Turn off switch.
