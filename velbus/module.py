@@ -154,6 +154,7 @@ class Module(object):
 
     def _request_module_status(self):
         message = velbus.ModuleStatusRequestMessage(self._address)
+        message.channels = list(range(1, self.number_of_channels()+1))
         self._controller.send(message)
 
     def _request_channel_name(self):
