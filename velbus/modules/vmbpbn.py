@@ -18,6 +18,11 @@ class VMB2PBNModule(velbus.Module):
             return self._is_closed[channel]
         return False
 
+    def _load(self):
+        message = velbus.ModuleStatusRequestMessage(self._address)
+        message.channels = list(range(1, self.number_of_channels()+1))
+        self._controller.send(message)
+
     def number_of_channels(self):
         return 2
 

@@ -14,6 +14,7 @@ class ModuleTypeRequestMessage(velbus.Message):
         """
         :return: None
         """
+        assert isinstance(data, bytes)
         self.needs_low_priority(priority)
         self.needs_rtr(rtr)
         self.needs_no_data(data)

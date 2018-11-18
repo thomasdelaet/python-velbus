@@ -17,6 +17,11 @@ class VMB6INModule(velbus.Module):
             return self._is_closed[channel]
         return False
 
+    def _load(self):
+        message = velbus.ModuleStatusRequestMessage(self._address)
+        message.channels = list(range(1, self.number_of_channels()+1))
+        self._controller.send(message)
+
     def number_of_channels(self):
         return 6
 
@@ -67,7 +72,11 @@ class VMB7INModule(VMB6INModule):
         if channel in self._is_closed:
             return self._is_closed[channel]
         return False
+
     def _load(self):
+        message = velbus.ModuleStatusRequestMessage(self._address)
+        message.channels = list(range(1, self.number_of_channels()+1))
+        self._controller.send(message)
         # request the counter statuis
         message = velbus.CounterStatusRequestMessage(self._address)
         self._controller.send(message)
@@ -137,8 +146,6 @@ class VMB7INModule(VMB6INModule):
         Ignore channel
         """
         val = None
-        if channel not in self._unit:
-            return val
         if self._unit[channel] == 'l/h':
             val = ((1000 * 3600) / (self._delay[channel] * self._pulses[channel]))
         elif self._unit[channel] == 'm3/h':

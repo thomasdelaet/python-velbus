@@ -140,7 +140,7 @@ class Controller(object):
         if isinstance(message, velbus.ReceiveBufferFullMessage):
             self.logger.error("Velbus receive buffer full message received")
         if isinstance(message, velbus.ModuleTypeMessage):
-            self.logger.debug("Module type response received")
+            self.logger.info("Module type response received")
             name = message.module_name()
             address = message.address
             m_type = message.module_type
@@ -160,11 +160,3 @@ class Controller(object):
         Stop velbus
         """
         self.connection.stop()
-
-    def sync_clock(self):
-        """
-        This will send all the needed messages to sync the cloc
-        """
-        self.send( velbus.SetRealtimeClock() )
-        self.send( velbus.SetDate() )
-        self.send( velbus.SetDaylightSaving() )
