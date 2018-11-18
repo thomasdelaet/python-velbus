@@ -110,7 +110,7 @@ class VelbusParser(object):
         assert len(data) > 0
         assert len(data) >= velbus.MINIMUM_MESSAGE_SIZE
         assert data[0] == velbus.START_BYTE
-        self.logger.debug("Processing message %s", str(data))
+        self.logger.info("Processing message %s", str(data))
         if len(data) > velbus.MAXIMUM_MESSAGE_SIZE:
             self.logger.warning("Velbus message are maximum %s bytes, this one is %s", str(
                 velbus.MAXIMUM_MESSAGE_SIZE), str(len(data)))
@@ -146,9 +146,9 @@ class VelbusParser(object):
                     message.populate(priority, address, rtr, data[5:-2])
                     return message
                 else:
-                    self.logger.warning("received unrecognized command %s from module %s (%s)", str(data[4]), str(address), str(module_type))
+                    self.logger.warning("received unrecognized command %s", str(data[4]))
             else:
-                self.logger.warning("received unrecognized command %s from module %s", str(data[4]), str(address))
+                self.logger.warning("received unrecognized command %s", str(data[4]))
         else:
             if rtr:
                 message = velbus.ModuleTypeRequestMessage()

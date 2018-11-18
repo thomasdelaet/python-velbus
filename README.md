@@ -58,8 +58,6 @@ The following Velbus modules are currently supported by this library:
 | VMB7IN | 7 channel input module | SUPPORTED | All messages are supported |
 | VMB4RYLD | 4 channel relay module | SUPPORTED | All messages are supported |
 | VMB4RYNO | 4 channel relay module | SUPPORTED | All messages are supported |
-| VMB1RYNO | 1 channel relay module | SUPPORTED | All messages are supported |
-| VMB1RYNOS | 1 channel relay module | SUPPORTED | All messages are supported |
 | VMB2PBN | 2 channel input module | SUPPORTED | All messages are supported |
 | VMB6PBN | 6 channel input module | SUPPORTED | All messages are supported |
 | VMB8PBU | 8 channel input module | SUPPORTED | All messages are supported |

@@ -24,6 +24,11 @@ class VMBIROModule(velbus.Module):
     def getCurTemp(self):
         return self._cur
 
+    def _load(self):
+        message = velbus.ModuleStatusRequestMessage(self._address)
+        message.channels = list(range(1, self.number_of_channels()+1))
+        self._controller.send(message)
+
     def _on_message(self, message):
         if isinstance(message, velbus.SensorTemperatureMessage):
             self._cur = message.cur 

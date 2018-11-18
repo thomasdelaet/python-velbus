@@ -6,10 +6,10 @@ from velbus.messages.bus_active import BusActiveMessage
 from velbus.messages.bus_error_counter_status_request import BusErrorStatusRequestMessage
 from velbus.messages.bus_error_counter_status import BusErrorCounterStatusMessage
 from velbus.messages.bus_off import BusOffMessage
-from velbus.messages.channel_name_part1 import ChannelNamePart1Message, ChannelNamePart1Message2, ChannelNamePart1Message3
-from velbus.messages.channel_name_part2 import ChannelNamePart2Message, ChannelNamePart2Message2, ChannelNamePart2Message3
-from velbus.messages.channel_name_part3 import ChannelNamePart3Message, ChannelNamePart3Message2, ChannelNamePart3Message3
-from velbus.messages.channel_name_request import ChannelNameRequestMessage, ChannelNameRequestMessage2
+from velbus.messages.channel_name_part1 import ChannelNamePart1Message, ChannelNamePart1Message2
+from velbus.messages.channel_name_part2 import ChannelNamePart2Message, ChannelNamePart2Message2
+from velbus.messages.channel_name_part3 import ChannelNamePart3Message, ChannelNamePart3Message2
+from velbus.messages.channel_name_request import ChannelNameRequestMessage
 from velbus.messages.clear_led import ClearLedMessage
 from velbus.messages.fast_blinking_led import FastBlinkingLedMessage
 from velbus.messages.interface_status_request import InterfaceStatusRequestMessage
@@ -56,6 +56,3 @@ from velbus.messages.counter_status_request import CounterStatusRequestMessage
 from velbus.messages.module_subtype import ModuleSubTypeMessage
 from velbus.messages.set_temperature import SetTemperatureMessage
 from velbus.messages.meteo_raw import MeteoRawMessage
-from velbus.messages.set_realtime_clock import SetRealtimeClock
-from velbus.messages.set_date import SetDate
-from velbus.messages.set_daylight_saving import SetDaylightSaving
