@@ -1,5 +1,5 @@
 """
-:author: Thomas Delaet <thomas@delaet.org>
+:author: Thomas Delaet <thomas@delaet.org> and Maikel Punie <maikel.punie@gmail.com>
 """
 import velbus
 
@@ -33,6 +33,36 @@ class ChannelNameRequestMessage(velbus.Message):
         :return: bytes
         """
         return bytes([COMMAND_CODE, self.channels_to_byte(self.channels)])
+
+
+class ChannelNameRequestMessage2(ChannelNameRequestMessage):
+    """
+    send by:
+    received by: VMB2BL
+    """
+
+    def populate(self, priority, address, rtr, data):
+        """
+        :return: None
+        """
+        assert isinstance(data, bytes)
+        self.needs_low_priority(priority)
+        self.needs_no_rtr(rtr)
+        self.needs_data(data, 1)
+        self.set_attributes(priority, address, rtr)
+        tmp = (data[0] >> 1) & 0x03
+        self.channels = self.byte_to_channels(tmp)
+
+    def data_to_binary(self):
+        """
+        :return: bytes
+        """
+        tmp = 0x00
+        if 1 in self.channels:
+            tmp += 0x03
+        if 2 in self.channels:
+            tmp += 0x0c
+        return bytes([COMMAND_CODE, tmp])
 
 
 velbus.register_command(COMMAND_CODE, ChannelNameRequestMessage)
