@@ -97,7 +97,7 @@ Steps to add support for an additional module:
 
 The library currently offers only the lowest level of functionality: sending and receiving messages to modules. I plan to extend this library with more higher-level functionality such as:
 
-- [ ] Modeling modules and their supported functions as entities
+- [x] Modeling modules and their supported functions as entities
 - [ ] Only allowing to send supported messages to modules
-- [ ] Auto-discovery of modules
+- [x] Auto-discovery of modules
 - [ ] Exposing the velbus controller as an external API so it can be shared between different consumers
