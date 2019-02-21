@@ -140,7 +140,7 @@ class BlindStatusNgMessage(velbus.Message):
             ])
 
 
-class BlindStatusNgMessage2(velbus.Message):
+class BlindStatusMessage(velbus.Message):
     """
     sent by: VMB2BLE
     received by:
@@ -196,5 +196,5 @@ class BlindStatusNgMessage2(velbus.Message):
 
 velbus.register_command(COMMAND_CODE, BlindStatusNgMessage, 'VMB1BLE')
 velbus.register_command(COMMAND_CODE, BlindStatusNgMessage, 'VMB2BLE')
-velbus.register_command(COMMAND_CODE, BlindStatusNgMessage2, 'VMB1BL')
-velbus.register_command(COMMAND_CODE, BlindStatusNgMessage2, 'VMB2BL')
+velbus.register_command(COMMAND_CODE, BlindStatusMessage, 'VMB1BL')
+velbus.register_command(COMMAND_CODE, BlindStatusMessage, 'VMB2BL')

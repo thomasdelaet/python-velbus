@@ -80,12 +80,6 @@ class VMB7INModule(VMB6INModule):
     def number_of_channels(self):
         return 8
 
-    def _call_callback(self, channel):
-        if channel in self._callbacks:
-            for callback in self._callbacks[channel]:
-                callback(self._is_closed[channel])
-
-
     def _on_message(self, message):
         if isinstance(message, velbus.PushButtonStatusMessage):
             for channel in message.closed:

@@ -104,9 +104,14 @@ class CoverOffMessage2(velbus.Message):
         """
         :return: bytes
         """
+        if self.channel == 0x01:
+            tmp = 0x03
+        else:
+            tmp = 0x0C
+
         return bytes([
             COMMAND_CODE,
-            self.channels_to_byte([self.channel])
+            tmp
         ]) + struct.pack('>L', self.delay_time)[-3:]
 
 
