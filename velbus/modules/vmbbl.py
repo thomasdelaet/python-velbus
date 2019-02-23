@@ -9,24 +9,19 @@ class VMB1BLModule(velbus.Module):
     """
     def __init__(self, module_type, module_name, module_address, controller):
         velbus.Module.__init__(self, module_type, module_name, module_address, controller)
-        self._is_closed = {}
+        self._state = {}
         self._callbacks = {}
-
-    def is_closed(self, channel):
-        if channel in self._is_closed:
-            return self._is_closed[channel]
-        return False
 
     def number_of_channels(self):
         return 1 
 
     def _on_message(self, message):
-        if isinstance(message, velbus.ModuleStatusMessage):
-            for channel in list(range(1, self.number_of_channels() + 1)):
-                if channel in message.closed:
-                    self._is_closed[channel] = True
-                else:
-                    self._is_closed[channel] = False
+        if isinstance(message, velbus.BlindStatusNgMessage):
+            self._state[message.channel] = message.blind_position
+            self._call_callback(message.channel)
+        if isinstance(message, velbus.BlindStatusMessage):
+            self._state[message.channel] = message.blind_position
+            self._call_callback(message.channel)
 
     def on_status_update(self, channel, callback):
         """
@@ -44,20 +39,55 @@ class VMB1BLModule(velbus.Module):
         message.channels = list(range(1, self.number_of_channels() + 1))
         self._controller.send(message)
 
+    def open(self, channel):
+        message = velbus.CoverUpMessage2(self._address)
+        message.channel = channel
+        self._controller.send(message)
+    
+    def close(self, channel):
+        message = velbus.CoverDownMessage2(self._address)
+        message.channel = channel
+        self._controller.send(message)
+
+    def stop(self, channel):
+        message = velbus.CoverOffMessage2(self._address)
+        message.channel = channel
+        self._controller.send(message)
+    
+    def get_state(self, channel):
+        if channel not in self._state:
+            return None
+        return self._state[channel]
+
+    def _call_callback(self, channel):
+        if channel in self._callbacks:
+            for callback in self._callbacks[channel]:
+                callback(self._state[channel])
+
+
 class VMB2BLModule(VMB1BLModule):
-    """
-    Velbus input module with 7 channels
-    """
     def number_of_channels(self):
         return 2
 
 
-class VMB1BLEModule(velbus.Module):
-    def get_categories(self, channel):
-        return ['cover']
-
+class VMB1BLEModule(VMB1BLModule):
     def number_of_channels(self):
         return 1
+
+    def open(self, channel):
+        message = velbus.CoverUpMessage(self._address)
+        message.channel = channel
+        self._controller.send(message)
+    
+    def close(self, channel):
+        message = velbus.CoverDownMessage(self._address)
+        message.channel = channel
+        self._controller.send(message)
+
+    def stop(self, channel):
+        message = velbus.CoverOffMessage(self._address)
+        message.channel = channel
+        self._controller.send(message)
 
 
 class VMB2BLEModule(VMB1BLEModule):
@@ -69,3 +99,4 @@ velbus.register_module('VMB1BL', VMB1BLModule)
 velbus.register_module('VMB2BL', VMB2BLModule)
 velbus.register_module('VMB1BLE', VMB1BLEModule)
 velbus.register_module('VMB2BLE', VMB2BLEModule)
+
