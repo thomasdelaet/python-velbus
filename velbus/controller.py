@@ -4,9 +4,10 @@
 import logging
 import time
 import velbus
-from velbus.parser import VelbusParser  
+from velbus.parser import VelbusParser
 from velbus.connections.socket import SocketConnection
 from velbus.connections.serial import USBConnection
+
 
 class VelbusConnection(object):
     """
@@ -36,7 +37,7 @@ class Controller(object):
 
     def __init__(self, port):
         self.logger = logging.getLogger('velbus')
-        self.parser = velbus.VelbusParser(self)
+        self.parser = VelbusParser(self)
         self.__subscribers = []
         self.__scan_callback = None
         self._modules = {}
