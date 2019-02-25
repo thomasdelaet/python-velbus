@@ -4,7 +4,9 @@
 import logging
 import time
 import velbus
-
+from velbus.parser import VelbusParser  
+from velbus.connections.socket import SocketConnection
+from velbus.connections.serial import USBConnection
 
 class VelbusConnection(object):
     """
@@ -39,9 +41,9 @@ class Controller(object):
         self.__scan_callback = None
         self._modules = {}
         if ":" in port:
-            self.connection = velbus.VelbusSocketConnection(port, self)
+            self.connection = SocketConnection(port, self)
         else:
-            self.connection = velbus.VelbusUSBConnection(port, self)
+            self.connection = USBConnection(port, self)
 
     def feed_parser(self, data):
         """
