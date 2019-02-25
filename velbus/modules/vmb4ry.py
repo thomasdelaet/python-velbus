@@ -3,6 +3,7 @@
 """
 import velbus
 
+
 class VMB4RYModule(velbus.Module):
     """
     Velbus Relay module.
@@ -25,7 +26,7 @@ class VMB4RYModule(velbus.Module):
             return self._is_on[channel]
         return False
 
-    def turn_on(self, channel, callback = None):
+    def turn_on(self, channel, callback=None):
         """
         Turn on switch.
 
@@ -66,7 +67,7 @@ class VMB4RYModule(velbus.Module):
         """
         Callback to execute on status of update of channel
         """
-        if not channel in self._callbacks:
+        if channel not in self._callbacks:
             self._callbacks[channel] = []
         self._callbacks[channel].append(callback)
 

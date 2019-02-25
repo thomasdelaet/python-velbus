@@ -2,7 +2,6 @@
 :author: Thomas Delaet <thomas@delaet.org>
 """
 import json
-import logging
 import velbus
 
 COMMAND_CODE = 0xdb
@@ -43,5 +42,6 @@ class SwitchToComfortMessage(velbus.Message):
             0x00,
             0x00
         ])
+
 
 velbus.register_command(COMMAND_CODE, SwitchToComfortMessage)

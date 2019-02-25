@@ -3,6 +3,7 @@
 """
 import velbus
 
+
 class VMB1TSModule(velbus.Module):
     """
     Velbus input module with 6 channels
@@ -25,12 +26,12 @@ class VMB1TSModule(velbus.Module):
 
     def _on_message(self, message):
         if isinstance(message, velbus.SensorTemperatureMessage):
-            self._cur = message.cur 
+            self._cur = message.cur
             self._min = message.min
             self._max = message.max
             for callback in self._callbacks:
                 callback(message.getCurTemp())
-    
+
     def number_of_channels(self):
         return 1
 
@@ -42,7 +43,6 @@ class VMB1TSModule(velbus.Module):
 
     def get_categories(self, channel):
         return ['sensor']
-
 
     def get_state(self, channel):
         """

@@ -259,8 +259,7 @@ class Message(object):
         assert byte >= 0 and value >= 0
         assert byte <= 0xff and value <= 0xff
         if byte != value:
-            self.parser_error("expects " + chr(value) +
-                              " in byte " + chr(byte))
+            self.parser_error("expects " + chr(value) + " in byte " + chr(byte))
 
     def needs_one_channel(self, channels):
         """

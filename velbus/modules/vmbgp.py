@@ -3,6 +3,7 @@
 """
 import velbus
 
+
 class VMBGPxModule(velbus.Module):
     """
     Velbus input module with 6 channels
@@ -28,7 +29,7 @@ class VMBGPxModule(velbus.Module):
 
     def getMinTemp(self):
         return self._min
-    
+
     def getMiaxTemp(self):
         return self._max
 
@@ -75,7 +76,7 @@ class VMBGPxModule(velbus.Module):
         """
         Callback to execute on status of update of channel
         """
-        if not channel in self._callbacks:
+        if channel not in self._callbacks:
             self._callbacks[channel] = []
         self._callbacks[channel].append(callback)
 
@@ -110,7 +111,7 @@ class VMBGPxModule(velbus.Module):
 
 
 class VMBGPxDModule(VMBGPxModule):
-    
+
     def __init__(self, module_type, module_name, module_address, controller):
         VMBGPxModule.__init__(self, module_type, module_name, module_address, controller)
         self._cmode = None

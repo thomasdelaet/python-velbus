@@ -3,6 +3,7 @@
 """
 import velbus
 
+
 class VMBIROModule(velbus.Module):
     """
     Velbus outdoor PIR sensor
@@ -26,12 +27,12 @@ class VMBIROModule(velbus.Module):
 
     def _on_message(self, message):
         if isinstance(message, velbus.SensorTemperatureMessage):
-            self._cur = message.cur 
+            self._cur = message.cur
             self._min = message.min
             self._max = message.max
             for callback in self._callbacks:
                 callback(message.getCurTemp())
-    
+
     def number_of_channels(self):
         return 1
 

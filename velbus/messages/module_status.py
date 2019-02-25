@@ -6,6 +6,7 @@ import json
 
 COMMAND_CODE = 0xed
 
+
 class ModuleStatusMessage(velbus.Message):
     """
     send by: VMB6IN
@@ -45,6 +46,7 @@ class ModuleStatusMessage(velbus.Message):
             self.channels_to_byte(self.led_slow_blinking),
             self.channels_to_byte(self.led_fast_blinking)
         ])
+
 
 class ModuleStatusMessage2(velbus.Message):
 
@@ -91,6 +93,7 @@ class ModuleStatusMessage2(velbus.Message):
         json_dict['locked'] = self.locked
         return json.dumps(json_dict)
 
+
 class ModuleStatusPirMessage(velbus.Message):
 
     def __init__(self, address=None):
@@ -121,7 +124,7 @@ class ModuleStatusPirMessage(velbus.Message):
         self.light_motion2 = (0x20 & data[0])
         self.low_temp_alarm = (0x40 & data[0])
         self.high_temp_alarm = (0x80 & data[0])
-        self.light_value = (data[1] << 8) + data[2] 
+        self.light_value = (data[1] << 8) + data[2]
 
     def data_to_binary(self):
         """

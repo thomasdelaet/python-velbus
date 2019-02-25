@@ -103,6 +103,7 @@ class Controller(object):
             time.sleep(3)
             logging.info('Scan finished')
             self._nb_of_modules_loaded = 0
+
             def module_loaded():
                 self._nb_of_modules_loaded += 1
                 if self._nb_of_modules_loaded >= len(self._modules):
@@ -115,7 +116,6 @@ class Controller(object):
                 self.send(message, scan_finished)
             else:
                 self.send(message)
-
 
     def send_binary(self, binary_message, callback=None):
         """
@@ -165,6 +165,6 @@ class Controller(object):
         """
         This will send all the needed messages to sync the cloc
         """
-        self.send( velbus.SetRealtimeClock() )
-        self.send( velbus.SetDate() )
-        self.send( velbus.SetDaylightSaving() )
+        self.send(velbus.SetRealtimeClock())
+        self.send(velbus.SetDate())
+        self.send(velbus.SetDaylightSaving())

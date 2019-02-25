@@ -3,6 +3,7 @@
 """
 import velbus
 
+
 class VMB2PBNModule(velbus.Module):
     """
     Velbus input module with 6 channels
@@ -42,12 +43,11 @@ class VMB2PBNModule(velbus.Module):
                 else:
                     self._is_enabled[channel] = False
 
-
     def on_status_update(self, channel, callback):
         """
         Callback to execute on status of update of channel
         """
-        if not channel in self._callbacks:
+        if channel not in self._callbacks:
             self._callbacks[channel] = []
         self._callbacks[channel].append(callback)
 

@@ -14,4 +14,4 @@ setup(name='python-velbus',
       long_description=long_description,
       packages=['velbus', 'velbus.connections', 'velbus.messages', 'velbus.modules'],
       platforms='any',
-     )
+)

@@ -10,6 +10,7 @@ import serial
 import serial.threaded
 import socket
 
+
 class Protocol(serial.threaded.Protocol):
     """Serial protocol."""
 
@@ -123,14 +124,13 @@ class VelbusSocketConnection(velbus.VelbusConnection):
         addr = (addr[0], int(addr[1]))
         try:
             self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self._socket.connect( addr )
-        except:
+            self._socket.connect(addr)
+        except Exception:
             self.logger.error("Could not open socket, \
                               no messages are read or written to the bus")
             raise VelbusException("Could not open socket port")
         # build a read thread
-        self._listen_process = threading.Thread(None, self.read_daemon,
-                                         "velbus-process-reader", (), {})
+        self._listen_process = threading.Thread(None, self.read_daemon, "velbus-process-reader", (), {})
         self._listen_process.daemon = True
         self._listen_process.start()
 
@@ -146,7 +146,7 @@ class VelbusSocketConnection(velbus.VelbusConnection):
         self.logger.warning("Stop executed")
         try:
             self._socket.close()
-        except:
+        except Exception:
             self.logger.error("Error while closing socket")
             raise VelbusException("Error while closing socket")
         time.sleep(1)

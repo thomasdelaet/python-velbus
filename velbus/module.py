@@ -4,11 +4,11 @@
 import string
 import velbus
 
+
 class Module(object):
     """
     Abstract class for Velbus hardware modules.
     """
-    #pylint: disable-msg=R0902
     def __init__(self, module_type, module_name, module_address, controller):
         self._type = module_type
         self._name = module_name
@@ -153,13 +153,13 @@ class Module(object):
                 for name_index in range(1, 4):
                     if not isinstance(self._name_data[channel][name_index], str):
                         return False
-            except Exception as exp:
+            except Exception:
                 return False
         return True
 
     def _request_module_status(self):
         message = velbus.ModuleStatusRequestMessage(self._address)
-        message.channels = list(range(1, self.number_of_channels()+1))
+        message.channels = list(range(1, self.number_of_channels() + 1))
         self._controller.send(message)
 
     def _request_channel_name(self):

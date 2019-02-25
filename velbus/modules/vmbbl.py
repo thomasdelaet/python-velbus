@@ -3,6 +3,7 @@
 """
 import velbus
 
+
 class VMB1BLModule(velbus.Module):
     """
     Velbus input module with 6 channels
@@ -13,7 +14,7 @@ class VMB1BLModule(velbus.Module):
         self._callbacks = {}
 
     def number_of_channels(self):
-        return 1 
+        return 1
 
     def _on_message(self, message):
         if isinstance(message, velbus.BlindStatusNgMessage):
@@ -27,7 +28,7 @@ class VMB1BLModule(velbus.Module):
         """
         Callback to execute on status of update of channel
         """
-        if not channel in self._callbacks:
+        if channel not in self._callbacks:
             self._callbacks[channel] = []
         self._callbacks[channel].append(callback)
 
@@ -43,7 +44,7 @@ class VMB1BLModule(velbus.Module):
         message = velbus.CoverUpMessage2(self._address)
         message.channel = channel
         self._controller.send(message)
-    
+
     def close(self, channel):
         message = velbus.CoverDownMessage2(self._address)
         message.channel = channel
@@ -53,7 +54,7 @@ class VMB1BLModule(velbus.Module):
         message = velbus.CoverOffMessage2(self._address)
         message.channel = channel
         self._controller.send(message)
-    
+
     def get_state(self, channel):
         if channel not in self._state:
             return None
@@ -78,7 +79,7 @@ class VMB1BLEModule(VMB1BLModule):
         message = velbus.CoverUpMessage(self._address)
         message.channel = channel
         self._controller.send(message)
-    
+
     def close(self, channel):
         message = velbus.CoverDownMessage(self._address)
         message.channel = channel
@@ -99,4 +100,3 @@ velbus.register_module('VMB1BL', VMB1BLModule)
 velbus.register_module('VMB2BL', VMB2BLModule)
 velbus.register_module('VMB1BLE', VMB1BLEModule)
 velbus.register_module('VMB2BLE', VMB2BLEModule)
-

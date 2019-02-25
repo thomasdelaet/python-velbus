@@ -2,12 +2,12 @@
 :author: Tom Dupré <gitd8400@gmail.com>
 """
 import json
-import logging
 import struct
 import velbus
 
 
 COMMAND_CODE = 0x05
+
 
 class CoverUpMessage(velbus.Message):
     """
@@ -58,7 +58,7 @@ class CoverUpMessage(velbus.Message):
             self.channels_to_byte([self.channel])
         ]) + struct.pack('>L', self.delay_time)[-3:]
 
-        
+
 class CoverUpMessage2(velbus.Message):
     """
     sent by:
@@ -115,7 +115,6 @@ class CoverUpMessage2(velbus.Message):
             COMMAND_CODE,
             tmp
         ]) + struct.pack('>L', self.delay_time)[-3:]
-
 
 
 velbus.register_command(COMMAND_CODE, CoverUpMessage2, 'VMB1BL')
