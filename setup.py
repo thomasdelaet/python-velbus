@@ -4,7 +4,7 @@ with open('README.md') as file:
     long_description = file.read()
 
 setup(name='python-velbus',
-      version='2.0.23',
+      version='2.0.24',
       url='https://github.com/thomasdelaet/python-velbus',
       license='MIT',
       author='Thomas Delaet',
