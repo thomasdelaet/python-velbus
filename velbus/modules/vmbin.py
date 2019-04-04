@@ -3,6 +3,7 @@
 """
 import velbus
 
+
 class VMB6INModule(velbus.Module):
     """
     Velbus input module with 6 channels
@@ -41,12 +42,13 @@ class VMB6INModule(velbus.Module):
         """
         Callback to execute on status of update of channel
         """
-        if not channel in self._callbacks:
+        if channel not in self._callbacks:
             self._callbacks[channel] = []
         self._callbacks[channel].append(callback)
 
     def get_categories(self, channel):
         return ['binary_sensor']
+
 
 class VMB7INModule(VMB6INModule):
     """
@@ -67,6 +69,7 @@ class VMB7INModule(VMB6INModule):
         if channel in self._is_closed:
             return self._is_closed[channel]
         return False
+
     def _load(self):
         # request the counter statuis
         message = velbus.CounterStatusRequestMessage(self._address)
@@ -102,7 +105,7 @@ class VMB7INModule(VMB6INModule):
             self._call_callback(message.channel)
         elif isinstance(message, velbus.MemoryDataMessage):
             for chan in range(1, 5):
-                val = message.data >> ((chan-1) * 2)
+                val = message.data >> ((chan - 1) * 2)
                 inp = val & 0x03
                 if inp == 0x01:
                     self._unit[chan] = 'l/h'
@@ -115,7 +118,7 @@ class VMB7INModule(VMB6INModule):
         """
         Callback to execute on status of update of channel
         """
-        if not channel in self._callbacks:
+        if channel not in self._callbacks:
             self._callbacks[channel] = []
         self._callbacks[channel].append(callback)
 
@@ -124,7 +127,6 @@ class VMB7INModule(VMB6INModule):
             return ['sensor']
         else:
             return ['binary_sensor']
-
 
     def get_state(self, channel):
         """
@@ -157,7 +159,6 @@ class VMB7INModule(VMB6INModule):
             return self._unit[channel]
         else:
             return None
-
 
 
 velbus.register_module('VMB7IN', VMB7INModule)

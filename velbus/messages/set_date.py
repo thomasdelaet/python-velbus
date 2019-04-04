@@ -67,4 +67,5 @@ class SetDate(velbus.Message):
             (self._year & 0x00ff)
         ])
 
+
 velbus.register_command(COMMAND_CODE, SetDate)

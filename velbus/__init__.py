@@ -137,6 +137,17 @@ def checksum(data):
         __checksum = bytes([0])
     return __checksum
 
+
+class VelbusException(Exception):
+    """Velbus Exception."""
+    def __init__(self, value):
+        Exception.__init__(self)
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
+
 # pylint: disable-msg=W0401,C0413
 from velbus.message import Message
 from velbus.messages import *
@@ -144,12 +155,4 @@ from velbus.messages import *
 from velbus.module import Module
 from velbus.modules import *
 
-from velbus.parser import VelbusParser, ParserError
-
 from velbus.controller import Controller, VelbusConnection
-
-if not on_app_engine():
-    try:
-        from velbus.connections import VelbusUSBConnection, VelbusSocketConnection
-    except ImportError:
-        pass

@@ -4,6 +4,9 @@
 import logging
 import time
 import velbus
+from velbus.parser import VelbusParser
+from velbus.connections.socket import SocketConnection
+from velbus.connections.serial import USBConnection
 
 
 class VelbusConnection(object):
@@ -34,14 +37,14 @@ class Controller(object):
 
     def __init__(self, port):
         self.logger = logging.getLogger('velbus')
-        self.parser = velbus.VelbusParser(self)
+        self.parser = VelbusParser(self)
         self.__subscribers = []
         self.__scan_callback = None
         self._modules = {}
         if ":" in port:
-            self.connection = velbus.VelbusSocketConnection(port, self)
+            self.connection = SocketConnection(port, self)
         else:
-            self.connection = velbus.VelbusUSBConnection(port, self)
+            self.connection = USBConnection(port, self)
 
     def feed_parser(self, data):
         """
@@ -103,6 +106,7 @@ class Controller(object):
             time.sleep(3)
             logging.info('Scan finished')
             self._nb_of_modules_loaded = 0
+
             def module_loaded():
                 self._nb_of_modules_loaded += 1
                 if self._nb_of_modules_loaded >= len(self._modules):
@@ -115,7 +119,6 @@ class Controller(object):
                 self.send(message, scan_finished)
             else:
                 self.send(message)
-
 
     def send_binary(self, binary_message, callback=None):
         """
@@ -165,6 +168,6 @@ class Controller(object):
         """
         This will send all the needed messages to sync the cloc
         """
-        self.send( velbus.SetRealtimeClock() )
-        self.send( velbus.SetDate() )
-        self.send( velbus.SetDaylightSaving() )
+        self.send(velbus.SetRealtimeClock())
+        self.send(velbus.SetDate())
+        self.send(velbus.SetDaylightSaving())

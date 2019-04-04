@@ -56,4 +56,5 @@ class SetDaylightSaving(velbus.Message):
             self._ds
         ])
 
+
 velbus.register_command(COMMAND_CODE, SetDaylightSaving)

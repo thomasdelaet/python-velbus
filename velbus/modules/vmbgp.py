@@ -3,6 +3,7 @@
 """
 import velbus
 
+
 class VMBGPxModule(velbus.Module):
     """
     Velbus input module with 6 channels
@@ -28,7 +29,7 @@ class VMBGPxModule(velbus.Module):
 
     def getMinTemp(self):
         return self._min
-    
+
     def getMiaxTemp(self):
         return self._max
 
@@ -45,8 +46,8 @@ class VMBGPxModule(velbus.Module):
             self._cur = message.cur
             self._min = message.min
             self._max = message.max
-            if 33 in self._callbacks:
-                for callback in self._callbacks[33]:
+            if 9 in self._callbacks:
+                for callback in self._callbacks[9]:
                     callback(message.getCurTemp())
         elif isinstance(message, velbus.PushButtonStatusMessage):
             for channel in message.closed:
@@ -75,7 +76,7 @@ class VMBGPxModule(velbus.Module):
         """
         Callback to execute on status of update of channel
         """
-        if not channel in self._callbacks:
+        if channel not in self._callbacks:
             self._callbacks[channel] = []
         self._callbacks[channel].append(callback)
 
@@ -89,28 +90,28 @@ class VMBGPxModule(velbus.Module):
 
     def get_state(self, channel):
         """
-        Can only be called for channel 33
+        Can only be called for channel 9
         So ignore channel
         """
         return self._cur
 
     def get_class(self, channel):
         """
-        Can only be called for channel 33
+        Can only be called for channel 9
         So ignore channel
         """
         return 'temperature'
 
     def get_unit(self, channel):
         """
-        Can only be called for channel 33
+        Can only be called for channel 9
         So ignore channel
         """
         return '°C'
 
 
 class VMBGPxDModule(VMBGPxModule):
-    
+
     def __init__(self, module_type, module_name, module_address, controller):
         VMBGPxModule.__init__(self, module_type, module_name, module_address, controller)
         self._cmode = None

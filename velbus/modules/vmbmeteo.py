@@ -3,6 +3,7 @@
 """
 import velbus
 
+
 class VMBMETEOModule(velbus.Module):
     """
     Velbus input module with 6 channels
@@ -28,7 +29,7 @@ class VMBMETEOModule(velbus.Module):
 
     def _on_message(self, message):
         if isinstance(message, velbus.SensorTemperatureMessage):
-            self._cur = message.cur 
+            self._cur = message.cur
             self._min = message.min
             self._max = message.max
             for callback in self._callbacks:
@@ -39,7 +40,7 @@ class VMBMETEOModule(velbus.Module):
             self._wind = message.wind
             for callback in self._callbacks:
                 callback(message.getCurTemp())
-    
+
     def number_of_channels(self):
         return 1
 
