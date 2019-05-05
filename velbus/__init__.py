@@ -155,4 +155,6 @@ from velbus.messages import *
 from velbus.module import Module
 from velbus.modules import *
 
-from velbus.controller import Controller, VelbusConnection
+from velbus.connection import VelbusConnection
+
+from velbus.controller import Controller
