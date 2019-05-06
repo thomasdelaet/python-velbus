@@ -9,27 +9,6 @@ from velbus.connections.socket import SocketConnection
 from velbus.connections.serial import USBConnection
 
 
-class VelbusConnection(object):
-    """
-    Generic Velbus connection
-    """
-
-    controller = None
-
-    def set_controller(self, controller):
-        """
-        :return: None
-        """
-        assert isinstance(controller, Controller)
-        self.controller = controller
-
-    def send(self, message, callback=None):
-        """
-        :return: None
-        """
-        raise NotImplementedError
-
-
 class Controller(object):
     """
     Velbus Bus connection controller

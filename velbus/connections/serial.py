@@ -28,7 +28,7 @@ class VelbusException(Exception):
         return repr(self.value)
 
 
-class VelbusUSBConnection(velbus.VelbusConnection):
+class USBConnection(velbus.VelbusConnection):
     """
     Wrapper for SerialPort connection configuration
     """
