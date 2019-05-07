@@ -156,5 +156,6 @@ from velbus.module import Module
 from velbus.modules import *
 
 from velbus.connection import VelbusConnection
+from velbus.connections import *
 
 from velbus.controller import Controller
