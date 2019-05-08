@@ -1,6 +1,10 @@
 """
 :author: Thomas Delaet <thomas@delaet.org>
 """
+
+from velbus.controller import Controller
+
+
 class VelbusConnection(object):
     """
     Generic Velbus connection
