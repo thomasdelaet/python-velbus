@@ -1,12 +1,13 @@
 """
 :author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0x0b
 
 
-class ReceiveBufferFullMessage(velbus.Message):
+class ReceiveBufferFullMessage(Message):
     """
     send by:
     received by: VMB1USB
@@ -33,4 +34,4 @@ class ReceiveBufferFullMessage(velbus.Message):
         return bytes([COMMAND_CODE])
 
 
-velbus.register_command(COMMAND_CODE, ReceiveBufferFullMessage)
+register_command(COMMAND_CODE, ReceiveBufferFullMessage)

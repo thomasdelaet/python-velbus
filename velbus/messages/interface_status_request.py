@@ -1,12 +1,13 @@
 """
 :author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0x0e
 
 
-class InterfaceStatusRequestMessage(velbus.Message):
+class InterfaceStatusRequestMessage(Message):
     """
     send by: VMB1USB
     received by:
@@ -28,4 +29,4 @@ class InterfaceStatusRequestMessage(velbus.Message):
         return bytes([COMMAND_CODE])
 
 
-velbus.register_command(COMMAND_CODE, InterfaceStatusRequestMessage)
+register_command(COMMAND_CODE, InterfaceStatusRequestMessage)

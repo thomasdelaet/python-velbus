@@ -3,19 +3,20 @@
 """
 import json
 import logging
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xe0
 
 
-class TempSetHeatingMessage(velbus.Message):
+class TempSetHeatingMessage(Message):
     """
     send by:
     received by: VMB4RYLD
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
@@ -41,4 +42,4 @@ class TempSetHeatingMessage(velbus.Message):
             0xaa
         ])
 
-velbus.register_command(COMMAND_CODE, TempSetHeatingMessage)
+register_command(COMMAND_CODE, TempSetHeatingMessage)

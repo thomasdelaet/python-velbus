@@ -2,19 +2,20 @@
 :author: Thomas Delaet <thomas@delaet.org>
 """
 import struct
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0x0d
 
 
-class StartRelayBlinkingTimerMessage(velbus.Message):
+class StartRelayBlinkingTimerMessage(Message):
     """
     send by:
     received by: VMB4RYLD
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.relay_channels = []
         self.delay_time = 0
         self.set_defaults(address)
@@ -47,4 +48,4 @@ class StartRelayBlinkingTimerMessage(velbus.Message):
             struct.pack('>L', self.delay_time)[-3:]
 
 
-velbus.register_command(COMMAND_CODE, StartRelayBlinkingTimerMessage)
+register_command(COMMAND_CODE, StartRelayBlinkingTimerMessage)

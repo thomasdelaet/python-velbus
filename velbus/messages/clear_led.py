@@ -1,19 +1,19 @@
 """
 :author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
-
+from velbus.message import Message
+from velbus.command_registry import register_command
 COMMAND_CODE = 0xf5
 
 
-class ClearLedMessage(velbus.Message):
+class ClearLedMessage(Message):
     """
     send by: VMB4RYLD
     received by: VMB6IN, VMB4RYLD
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.clear_leds = []
         self.set_defaults(address)
 
@@ -35,4 +35,4 @@ class ClearLedMessage(velbus.Message):
         return bytes([COMMAND_CODE, self.channels_to_byte(self.clear_leds)])
 
 
-velbus.register_command(COMMAND_CODE, ClearLedMessage)
+register_command(COMMAND_CODE, ClearLedMessage)

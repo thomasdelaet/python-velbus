@@ -5,12 +5,12 @@ import time
 import threading
 import logging
 from queue import Queue
-from velbus import VelbusException
-import velbus
 import socket
+from velbus.connections.connection import VelbusConnection
+from velbus.util import VelbusException
+from velbus.message import Message
 
-
-class SocketConnection(velbus.VelbusConnection):
+class SocketConnection(VelbusConnection):
     """
     Wrapper for Socket connection configuration
     :author: Maikel Punie <maikel.punie@gmail.com>
@@ -18,7 +18,7 @@ class SocketConnection(velbus.VelbusConnection):
     SLEEP_TIME = 60 / 1000
 
     def __init__(self, device, controller=None):
-        velbus.VelbusConnection.__init__(self)
+        VelbusConnection.__init__(self)
         self.logger = logging.getLogger('velbus')
         self._device = device
         self.controller = controller
@@ -60,7 +60,7 @@ class SocketConnection(velbus.VelbusConnection):
 
     def send(self, message, callback=None):
         """Add message to write queue."""
-        assert isinstance(message, velbus.Message)
+        assert isinstance(message, Message)
         self._write_queue.put_nowait((message, callback))
 
     def read_daemon(self):

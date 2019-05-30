@@ -3,19 +3,20 @@
 """
 import json
 import logging
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xdd
 
 
-class SwitchToNightMessage(velbus.Message):
+class SwitchToNightMessage(Message):
     """
     send by:
     received by: VMB4RYLD
     """
 
     def __init__(self, address=None, sleep=0):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.sleep = sleep
         self.set_defaults(address)
 
@@ -44,4 +45,4 @@ class SwitchToNightMessage(velbus.Message):
             0x00
         ])
 
-velbus.register_command(COMMAND_CODE, SwitchToNightMessage)
+register_command(COMMAND_CODE, SwitchToNightMessage)

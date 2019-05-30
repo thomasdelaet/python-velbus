@@ -1,19 +1,20 @@
 """
 :author: Maikel Punie <maikel.punie@gmail.com>
 """
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xbd
 
 
-class CounterStatusRequestMessage(velbus.Message):
+class CounterStatusRequestMessage(Message):
     """
     send by:
     received by: VMB7IN
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.wait_after_send = 500
         self.set_defaults(address)
 
@@ -38,4 +39,4 @@ class CounterStatusRequestMessage(velbus.Message):
         ])
 
 
-velbus.register_command(COMMAND_CODE, CounterStatusRequestMessage, 'VMB7IN')
+register_command(COMMAND_CODE, CounterStatusRequestMessage, 'VMB7IN')

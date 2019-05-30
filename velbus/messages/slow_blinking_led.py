@@ -1,19 +1,19 @@
 """
 :author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
-
+from velbus.message import Message
+from velbus.command_registry import register_command
 COMMAND_CODE = 0xf7
 
 
-class SlowBlinkingLedMessage(velbus.Message):
+class SlowBlinkingLedMessage(Message):
     """
     send by: VMB4RYLD
     received by: VMB6IN
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.leds = []
         self.set_defaults(address)
 
@@ -38,4 +38,4 @@ class SlowBlinkingLedMessage(velbus.Message):
         ])
 
 
-velbus.register_command(COMMAND_CODE, SlowBlinkingLedMessage)
+register_command(COMMAND_CODE, SlowBlinkingLedMessage)

@@ -1,20 +1,21 @@
 """
 :author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 import json
 
 COMMAND_CODE = 0xf0
 
 
-class ChannelNamePart1Message(velbus.Message):
+class ChannelNamePart1Message(Message):
     """
     send by: VMB6IN, VMB4RYLD
     received by:
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.channel = 0
         self.name = ""
         self.set_defaults(address)
@@ -87,13 +88,13 @@ class ChannelNamePart1Message3(ChannelNamePart1Message):
         self.name = "".join([chr(x) for x in data[1:]])
 
  
-velbus.register_command(COMMAND_CODE, ChannelNamePart1Message)
-velbus.register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP1')
-velbus.register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP2')
-velbus.register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP4')
-velbus.register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP0')
-velbus.register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGPOD')
-velbus.register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP4PIR')
-velbus.register_command(COMMAND_CODE, ChannelNamePart1Message3, 'VMB1BL')
-velbus.register_command(COMMAND_CODE, ChannelNamePart1Message3, 'VMB2BL')
+register_command(COMMAND_CODE, ChannelNamePart1Message)
+register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP1')
+register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP2')
+register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP4')
+register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP0')
+register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGPOD')
+register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP4PIR')
+register_command(COMMAND_CODE, ChannelNamePart1Message3, 'VMB1BL')
+register_command(COMMAND_CODE, ChannelNamePart1Message3, 'VMB2BL')
 

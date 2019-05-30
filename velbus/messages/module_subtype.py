@@ -2,12 +2,14 @@
 :author: Thomas Delaet <thomas@delaet.org>
 """
 import struct
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
+from velbus.module_registry import MODULE_DIRECTORY
 import json
 
 COMMAND_CODE = 0xb0
 
-class ModuleSubTypeMessage(velbus.Message):
+class ModuleSubTypeMessage(Message):
     """
     send by: VMB6IN, VMB4RYLD
     received by:
@@ -15,7 +17,7 @@ class ModuleSubTypeMessage(velbus.Message):
     #pylint: disable-msg=R0902
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.module_type = 0x00
         self.sub_address_1 = 0xff
         self.sub_address_2 = 0xff
@@ -27,8 +29,8 @@ class ModuleSubTypeMessage(velbus.Message):
         """
         :return: str
         """
-        if self.module_type in velbus.MODULE_DIRECTORY.keys():
-            return velbus.MODULE_DIRECTORY[self.module_type]
+        if self.module_type in MODULE_DIRECTORY.keys():
+            return MODULE_DIRECTORY[self.module_type]
         return "Unknown"
 
     def populate(self, priority, address, rtr, data):
@@ -58,9 +60,9 @@ class ModuleSubTypeMessage(velbus.Message):
         json_dict['sub_4'] = self.sub_address_4
         return json.dumps(json_dict)
 
-velbus.register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGP1')
-velbus.register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGP2')
-velbus.register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGP4')
-velbus.register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGP0')
-velbus.register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGPOD')
+register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGP1')
+register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGP2')
+register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGP4')
+register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGP0')
+register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGPOD')
 

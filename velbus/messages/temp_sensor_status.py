@@ -2,21 +2,22 @@
 :author: Maikel Punie <maikel.punie@gmail.com>
 """
 import json
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xea
 DSTATUS = { 0: 'run', 1:'manual', 2:'sleep', 4:'disable' }
 DMODE = { 0: 'safe', 16:'night', 32:'day', 64:'comfort' }
 
 
-class TempSensorStatusMessage(velbus.Message):
+class TempSensorStatusMessage(Message):
     """
     send by: VMBGPOD
     received by:
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.local_control = 0  # 0=unlocked, 1 =locked
         self.status_mode = 0    # 0=run, 1=manual, 2=sleep timer, 3=disable
         self.status_str = 'run'
@@ -111,4 +112,4 @@ class TempSensorStatusMessage(velbus.Message):
         return json.dumps(json_dict)
 
 
-velbus.register_command(COMMAND_CODE, TempSensorStatusMessage)
+register_command(COMMAND_CODE, TempSensorStatusMessage)

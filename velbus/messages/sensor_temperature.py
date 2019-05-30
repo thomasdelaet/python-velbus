@@ -2,19 +2,20 @@
 :author: Maikel Punie <maikel.punie@gmail.com>
 """
 import json
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xe6
 
 
-class SensorTemperatureMessage(velbus.Message):
+class SensorTemperatureMessage(Message):
     """
     send by: VMBTS, vmbg*pd, ...
     received by:
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.cur = 0
         self.min = 0
         self.max = 0
@@ -49,4 +50,4 @@ class SensorTemperatureMessage(velbus.Message):
         return json.dumps(json_dict)
 
 
-velbus.register_command(COMMAND_CODE, SensorTemperatureMessage)
+register_command(COMMAND_CODE, SensorTemperatureMessage)

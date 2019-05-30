@@ -2,19 +2,20 @@
 :author: Maikel Punie <maikel.punie@gmail.com>
 """
 import json
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xbe
 
 
-class KwhStatusMessage(velbus.Message):
+class KwhStatusMessage(Message):
     """
     send by: VMB7IN
     received by:
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.channel = 0
         self.pulses = 0
         self.counter = 0
@@ -63,4 +64,4 @@ class KwhStatusMessage(velbus.Message):
         return self.channel
 
 
-velbus.register_command(COMMAND_CODE, KwhStatusMessage)
+register_command(COMMAND_CODE, KwhStatusMessage)

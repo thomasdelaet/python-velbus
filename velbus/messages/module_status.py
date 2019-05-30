@@ -1,20 +1,21 @@
 """
 :author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 import json
 
 COMMAND_CODE = 0xed
 
 
-class ModuleStatusMessage(velbus.Message):
+class ModuleStatusMessage(Message):
     """
     send by: VMB6IN
     received by:
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.closed = []
         self.led_on = []
         self.led_slow_blinking = []
@@ -48,10 +49,10 @@ class ModuleStatusMessage(velbus.Message):
         ])
 
 
-class ModuleStatusMessage2(velbus.Message):
+class ModuleStatusMessage2(Message):
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.closed = []
         self.enabled = []
         self.normal = []
@@ -94,10 +95,10 @@ class ModuleStatusMessage2(velbus.Message):
         return json.dumps(json_dict)
 
 
-class ModuleStatusPirMessage(velbus.Message):
+class ModuleStatusPirMessage(Message):
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         # in data[0]
         self.dark = False               # bit 1
         self.light = False              # bit 2
@@ -133,15 +134,15 @@ class ModuleStatusPirMessage(velbus.Message):
         raise NotImplementedError
 
 
-velbus.register_command(COMMAND_CODE, ModuleStatusMessage)
-velbus.register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMB8PBU')
-velbus.register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMB6PBN')
-velbus.register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMB2PBN')
-velbus.register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMB6PBB')
-velbus.register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBGP1')
-velbus.register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBGP2')
-velbus.register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBGP4')
-velbus.register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBGP0')
-velbus.register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBGPOD')
-velbus.register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMB7IN')
-velbus.register_command(COMMAND_CODE, ModuleStatusPirMessage, 'VMBIRO')
+register_command(COMMAND_CODE, ModuleStatusMessage)
+register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMB8PBU')
+register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMB6PBN')
+register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMB2PBN')
+register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMB6PBB')
+register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBGP1')
+register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBGP2')
+register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBGP4')
+register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBGP0')
+register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBGPOD')
+register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMB7IN')
+register_command(COMMAND_CODE, ModuleStatusPirMessage, 'VMBIRO')

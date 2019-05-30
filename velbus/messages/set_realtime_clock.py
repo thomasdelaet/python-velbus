@@ -3,19 +3,20 @@
 """
 import json
 import logging
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 import time
 
 COMMAND_CODE = 0xD8
 
 
-class SetRealtimeClock(velbus.Message):
+class SetRealtimeClock(Message):
     """
     received by all modules
     """
 
     def __init__(self, address=0x00):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.logger = logging.getLogger('velbus')
         self._wday = None
         self._hour = None
@@ -66,4 +67,4 @@ class SetRealtimeClock(velbus.Message):
             self._min
         ])
 
-velbus.register_command(COMMAND_CODE, SetRealtimeClock)
+register_command(COMMAND_CODE, SetRealtimeClock)

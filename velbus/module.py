@@ -2,8 +2,15 @@
 :author: Thomas Delaet <thomas@delaet.org>
 """
 import string
-import velbus
-
+from velbus.messages.channel_name_part1 import ChannelNamePart1Message
+from velbus.messages.channel_name_part1 import ChannelNamePart1Message2
+from velbus.messages.channel_name_part2 import ChannelNamePart2Message
+from velbus.messages.channel_name_part2 import ChannelNamePart2Message2
+from velbus.messages.channel_name_part3 import ChannelNamePart3Message
+from velbus.messages.channel_name_part3 import ChannelNamePart3Message2
+from velbus.messages.module_type import ModuleTypeMessage
+from velbus.messages.module_status_request import ModuleStatusRequestMessage
+from velbus.messages.channel_name_request import ChannelNameRequestMessage
 
 class Module(object):
     """
@@ -68,21 +75,16 @@ class Module(object):
         """
         if message.address != self._address:
             return
-        if isinstance(message, velbus.ChannelNamePart1Message) or isinstance(message, velbus.ChannelNamePart1Message2):
+        if isinstance(message, ChannelNamePart1Message) or isinstance(message, ChannelNamePart1Message2):
             self._process_channel_name_message(1, message)
-        elif isinstance(message, velbus.ChannelNamePart2Message) or isinstance(message, velbus.ChannelNamePart2Message2):
+        elif isinstance(message, ChannelNamePart2Message) or isinstance(message, ChannelNamePart2Message2):
             self._process_channel_name_message(2, message)
-        elif isinstance(message, velbus.ChannelNamePart3Message) or isinstance(message, velbus.ChannelNamePart3Message2):
+        elif isinstance(message, ChannelNamePart3Message) or isinstance(message, ChannelNamePart3Message2):
             self._process_channel_name_message(3, message)
-        elif isinstance(message, velbus.ModuleTypeMessage):
+        elif isinstance(message, ModuleTypeMessage):
             self._process_module_type_message(message)
         else:
             self._on_message(message)
-
-    def _call_callback(self, channel):
-        if channel in self._callbacks:
-            for callback in self._callbacks[channel]:
-                callback(self._is_closed[channel])
 
     def _on_message(self, message):
         pass
@@ -99,8 +101,6 @@ class Module(object):
         if len(self._loaded_callbacks) == 0:
             self._request_module_status()
             self._request_channel_name()
-        else:
-            print("++++++++++++++++++++++++++++++++++")
         self._loaded_callbacks.append(callback)
         self._load()
 
@@ -158,11 +158,11 @@ class Module(object):
         return True
 
     def _request_module_status(self):
-        message = velbus.ModuleStatusRequestMessage(self._address)
+        message = ModuleStatusRequestMessage(self._address)
         message.channels = list(range(1, self.number_of_channels() + 1))
         self._controller.send(message)
 
     def _request_channel_name(self):
-        message = velbus.ChannelNameRequestMessage(self._address)
+        message = ChannelNameRequestMessage(self._address)
         message.channels = list(range(1, self.number_of_channels() + 1))
         self._controller.send(message)

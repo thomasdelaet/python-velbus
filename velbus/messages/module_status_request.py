@@ -1,19 +1,20 @@
 """
 :author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xfa
 
 
-class ModuleStatusRequestMessage(velbus.Message):
+class ModuleStatusRequestMessage(Message):
     """
     send by:
     received by: VMB6IN, VMB4RYLD
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.channels = []
         self.wait_after_send = 500
         self.set_defaults(address)
@@ -39,4 +40,4 @@ class ModuleStatusRequestMessage(velbus.Message):
         ])
 
 
-velbus.register_command(COMMAND_CODE, ModuleStatusRequestMessage)
+register_command(COMMAND_CODE, ModuleStatusRequestMessage)

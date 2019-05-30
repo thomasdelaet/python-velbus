@@ -1,10 +1,10 @@
 """
 :author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
-
-class ModuleTypeRequestMessage(velbus.Message):
+class ModuleTypeRequestMessage(Message):
     """
     send by:
     received by: VMB6IN, VMB4RYLD
@@ -30,3 +30,5 @@ class ModuleTypeRequestMessage(velbus.Message):
         :return: bytes
         """
         return bytes([])
+
+#FIXME: Dont' we need to register this message in command_registry?

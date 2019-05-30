@@ -1,15 +1,24 @@
 """
 :author: Thomas Delaet <thomas@delaet.org
 """
-import velbus
+from velbus.module import Module
+from velbus.module_registry import register_module
+from velbus.messages.temp_sensor_status import TempSensorStatusMessage
+from velbus.messages.sensor_temperature import SensorTemperatureMessage
+from velbus.messages.push_button_status import PushButtonStatusMessage
+from velbus.messages.module_status import ModuleStatusMessage2
+from velbus.messages.switch_to_safe import SwitchToSafeMessage
+from velbus.messages.switch_to_night import SwitchToNightMessage
+from velbus.messages.switch_to_day import SwitchToDayMessage
+from velbus.messages.switch_to_comfort import SwitchToComfortMessage
+from velbus.messages.set_temperature import SetTemperatureMessage
 
-
-class VMBGPxModule(velbus.Module):
+class VMBGPxModule(Module):
     """
     Velbus input module with 6 channels
     """
     def __init__(self, module_type, module_name, module_address, controller):
-        velbus.Module.__init__(self, module_type, module_name, module_address, controller)
+        Module.__init__(self, module_type, module_name, module_address, controller)
         self._is_closed = {}
         self._is_enabled = {}
         self._cur = None
@@ -42,14 +51,14 @@ class VMBGPxModule(velbus.Module):
         return 9
 
     def _on_message(self, message):
-        if isinstance(message, velbus.SensorTemperatureMessage):
+        if isinstance(message, SensorTemperatureMessage):
             self._cur = message.cur
             self._min = message.min
             self._max = message.max
             if 9 in self._callbacks:
                 for callback in self._callbacks[9]:
                     callback(message.getCurTemp())
-        elif isinstance(message, velbus.PushButtonStatusMessage):
+        elif isinstance(message, PushButtonStatusMessage):
             for channel in message.closed:
                 self._is_closed[channel] = True
             for channel in message.opened:
@@ -58,7 +67,7 @@ class VMBGPxModule(velbus.Module):
                 if channel in self._callbacks:
                     for callback in self._callbacks[channel]:
                         callback(self._is_closed[channel])
-        elif isinstance(message, velbus.ModuleStatusMessage2):
+        elif isinstance(message, ModuleStatusMessage2):
             for channel in list(range(1, self.number_of_channels() + 1)):
                 if channel in message.closed:
                     self._is_closed[channel] = True
@@ -118,7 +127,7 @@ class VMBGPxDModule(VMBGPxModule):
         self._target = None
 
     def _on_message(self, message):
-        if isinstance(message, velbus.TempSensorStatusMessage):
+        if isinstance(message, TempSensorStatusMessage):
             self._cur = message.current_temp
             self._target = message.target_temp
             self._cmode = message.mode_str
@@ -144,17 +153,17 @@ class VMBGPxDModule(VMBGPxModule):
 
     def set_mode(self, mode):
         if mode == "safe":
-            message = velbus.SwitchToSafeMessage(self._address)
+            message = SwitchToSafeMessage(self._address)
         elif mode == "night":
-            message = velbus.SwitchToNightMessage(self._address)
+            message = SwitchToNightMessage(self._address)
         elif mode == "day":
-            message = velbus.SwitchToDayMessage(self._address)
+            message = SwitchToDayMessage(self._address)
         elif mode == "comfort":
-            message = velbus.SwitchToComfortMessage(self._address)
+            message = SwitchToComfortMessage(self._address)
         self._controller.send(message)
 
     def set_temp(self, temp):
-        message = velbus.SetTemperatureMessage(self._address)
+        message = SetTemperatureMessage(self._address)
         message.temp = temp * 2
         self._controller.send(message)
 
@@ -162,7 +171,7 @@ class VMBGPxDModule(VMBGPxModule):
         return 33
 
 
-class VMBGPPirModule(velbus.Module):
+class VMBGPPirModule(Module):
     def number_of_channels(self):
         # 1-4 = buttons
         # 5 = dark/light
@@ -175,15 +184,16 @@ class VMBGPPirModule(velbus.Module):
     def get_categories(self, channel):
         if channel == 9:
             return ['sensor']
+        #FIXME: no member _is_enabled
         elif channel in self._is_enabled and self._is_enabled[channel]:
             return ['binary_sensor']
         else:
             return []
 
 
-velbus.register_module('VMBGP1', VMBGPxModule)
-velbus.register_module('VMBGP2', VMBGPxModule)
-velbus.register_module('VMBGP4', VMBGPxModule)
-velbus.register_module('VMBGP0', VMBGPxDModule)
-velbus.register_module('VMBGPOD', VMBGPxDModule)
-velbus.register_module('VMBGP4PIR', VMBGPPirModule)
+register_module('VMBGP1', VMBGPxModule)
+register_module('VMBGP2', VMBGPxModule)
+register_module('VMBGP4', VMBGPxModule)
+register_module('VMBGP0', VMBGPxDModule)
+register_module('VMBGPOD', VMBGPxDModule)
+register_module('VMBGP4PIR', VMBGPPirModule)

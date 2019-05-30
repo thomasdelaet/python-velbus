@@ -2,25 +2,28 @@
 :author: Maikel Punie <maikel.punie@gmail.com>
 """
 import json
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xA9
 
 
-class MeteoRawMessage(velbus.Message):
+class MeteoRawMessage(Message):
     """
     send by: VMBMETEO
     received by:
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.rain = 0
         self.light = 0
         self.wind = 0
 
     def getCurTemp(self):
-        return self.cur
+        #FIXME: self.cur does not exist
+        #return self.cur
+        pass
 
     def populate(self, priority, address, rtr, data):
         """
@@ -49,4 +52,4 @@ class MeteoRawMessage(velbus.Message):
         return json.dumps(json_dict)
 
 
-velbus.register_command(COMMAND_CODE, MeteoRawMessage, 'VMBMETEO')
+register_command(COMMAND_CODE, MeteoRawMessage, 'VMBMETEO')

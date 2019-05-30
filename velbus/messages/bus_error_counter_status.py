@@ -1,19 +1,20 @@
 """
 :author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xda
 
 
-class BusErrorCounterStatusMessage(velbus.Message):
+class BusErrorCounterStatusMessage(Message):
     """
     send by: VMB6IN, VMB4RYLD
     received by:
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.transmit_error_counter = 0
         self.receive_error_counter = 0
         self.bus_off_counter = 0
@@ -38,4 +39,4 @@ class BusErrorCounterStatusMessage(velbus.Message):
         return bytes([COMMAND_CODE, self.transmit_error_counter,
                       self.receive_error_counter, self.bus_off_counter])
 
-velbus.register_command(COMMAND_CODE, BusErrorCounterStatusMessage)
+register_command(COMMAND_CODE, BusErrorCounterStatusMessage)

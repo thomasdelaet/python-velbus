@@ -2,20 +2,21 @@
 :author: Thomas Delaet <thomas@delaet.org>
 """
 import struct
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 
 COMMAND_CODE = 0x6a
 
 
-class WriteModuleAddressAndSerialNumberMessage(velbus.Message):
+class WriteModuleAddressAndSerialNumberMessage(Message):
     """
     send by:
     received by: VMB4RYLD
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.module_type = 0x00
         self.current_serial = 0
         self.module_address = 0x00
@@ -54,4 +55,4 @@ class WriteModuleAddressAndSerialNumberMessage(velbus.Message):
             struct.pack('>L', self.new_serial)[2:]
 
 
-velbus.register_command(COMMAND_CODE, WriteModuleAddressAndSerialNumberMessage)
+register_command(COMMAND_CODE, WriteModuleAddressAndSerialNumberMessage)

@@ -3,32 +3,20 @@
 """
 import logging
 import time
-import velbus
 from velbus.parser import VelbusParser
 from velbus.connections.socket import SocketConnection
-from velbus.connections.serial import USBConnection
-
-
-class VelbusConnection(object):
-    """
-    Generic Velbus connection
-    """
-
-    controller = None
-
-    def set_controller(self, controller):
-        """
-        :return: None
-        """
-        assert isinstance(controller, Controller)
-        self.controller = controller
-
-    def send(self, message, callback=None):
-        """
-        :return: None
-        """
-        raise NotImplementedError
-
+from velbus.connections.serial import VelbusUSBConnection
+from velbus.messages.module_type_request import ModuleTypeRequestMessage
+from velbus.message import Message
+from velbus.messages.bus_active import BusActiveMessage
+from velbus.messages.receive_ready import ReceiveReadyMessage
+from velbus.messages.bus_off import BusOffMessage
+from velbus.module_registry import ModuleRegistry
+from velbus.messages.receive_buffer_full import ReceiveBufferFullMessage
+from velbus.messages.module_type import ModuleTypeMessage
+from velbus.messages.set_realtime_clock import SetRealtimeClock
+from velbus.messages.set_daylight_saving import SetDaylightSaving
+from velbus.messages.set_date import SetDate
 
 class Controller(object):
     """
@@ -44,7 +32,7 @@ class Controller(object):
         if ":" in port:
             self.connection = SocketConnection(port, self)
         else:
-            self.connection = USBConnection(port, self)
+            self.connection = VelbusUSBConnection(port, self)
 
     def feed_parser(self, data):
         """
@@ -114,7 +102,7 @@ class Controller(object):
             for module in self._modules:
                 self._modules[module].load(module_loaded)
         for address in range(0, 256):
-            message = velbus.ModuleTypeRequestMessage(address)
+            message = ModuleTypeRequestMessage(address)
             if address == 255:
                 self.send(message, scan_finished)
             else:
@@ -126,7 +114,7 @@ class Controller(object):
         """
         assert isinstance(binary_message, str)
         message = self.parser.parse(binary_message)
-        if isinstance(message, velbus.Message):
+        if isinstance(message, Message):
             self.send(message, callback)
 
     def new_message(self, message):
@@ -134,15 +122,15 @@ class Controller(object):
         :return: None
         """
         self.logger.info("New message: " + str(message))
-        if isinstance(message, velbus.BusActiveMessage):
+        if isinstance(message, BusActiveMessage):
             self.logger.info("Velbus active message received")
-        if isinstance(message, velbus.ReceiveReadyMessage):
+        if isinstance(message, ReceiveReadyMessage):
             self.logger.info("Velbus receive ready message received")
-        if isinstance(message, velbus.BusOffMessage):
+        if isinstance(message, BusOffMessage):
             self.logger.error("Velbus bus off message received")
-        if isinstance(message, velbus.ReceiveBufferFullMessage):
+        if isinstance(message, ReceiveBufferFullMessage):
             self.logger.error("Velbus receive buffer full message received")
-        if isinstance(message, velbus.ModuleTypeMessage):
+        if isinstance(message, ModuleTypeMessage):
             self.logger.debug("Module type response received")
             name = message.module_name()
             address = message.address
@@ -150,8 +138,8 @@ class Controller(object):
             if name == "Unknown":
                 self.logger.warning("Unknown module (code: " + str(message.module_type) + ')')
                 return
-            if name in velbus.ModuleRegistry:
-                module = velbus.ModuleRegistry[name](m_type, name, address, self)
+            if name in ModuleRegistry:
+                module = ModuleRegistry[name](m_type, name, address, self)
                 self._modules[address] = module
             else:
                 self.logger.warning("Module " + name + " is not yet supported.")
@@ -168,6 +156,6 @@ class Controller(object):
         """
         This will send all the needed messages to sync the cloc
         """
-        self.send(velbus.SetRealtimeClock())
-        self.send(velbus.SetDate())
-        self.send(velbus.SetDaylightSaving())
+        self.send(SetRealtimeClock())
+        self.send(SetDate())
+        self.send(SetDaylightSaving())

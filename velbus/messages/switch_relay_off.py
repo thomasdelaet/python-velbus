@@ -3,18 +3,19 @@
 """
 import json
 import logging
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0x01
 
-class SwitchRelayOffMessage(velbus.Message):
+class SwitchRelayOffMessage(Message):
     """
     send by:
     received by: VMB4RYLD
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.relay_channels = []
         self.logger = logging.getLogger('velbus')
         self.set_defaults(address)
@@ -53,4 +54,4 @@ class SwitchRelayOffMessage(velbus.Message):
             self.channels_to_byte(self.relay_channels)
         ])
 
-velbus.register_command(COMMAND_CODE, SwitchRelayOffMessage)
+register_command(COMMAND_CODE, SwitchRelayOffMessage)

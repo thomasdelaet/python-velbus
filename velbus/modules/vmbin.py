@@ -1,15 +1,21 @@
 """
 :author: Thomas Delaet <thomas@delaet.org
 """
-import velbus
+from velbus.module import Module
+from velbus.module_registry import register_module
+from velbus.messages.push_button_status import PushButtonStatusMessage
+from velbus.messages.module_status import ModuleStatusMessage, ModuleStatusMessage2
+from velbus.messages.counter_status import CounterStatusMessage
+from velbus.messages.counter_status_request import CounterStatusRequestMessage
+from velbus.messages.read_data_from_memory import ReadDataFromMemoryMessage
+from velbus.messages.memory_data import MemoryDataMessage
 
-
-class VMB6INModule(velbus.Module):
+class VMB6INModule(Module):
     """
     Velbus input module with 6 channels
     """
     def __init__(self, module_type, module_name, module_address, controller):
-        velbus.Module.__init__(self, module_type, module_name, module_address, controller)
+        Module.__init__(self, module_type, module_name, module_address, controller)
         self._is_closed = {}
         self._callbacks = {}
 
@@ -18,11 +24,16 @@ class VMB6INModule(velbus.Module):
             return self._is_closed[channel]
         return False
 
+    def _call_callback(self, channel):
+        if channel in self._callbacks:
+            for callback in self._callbacks[channel]:
+                callback(self._is_closed[channel])
+
     def number_of_channels(self):
         return 6
 
     def _on_message(self, message):
-        if isinstance(message, velbus.PushButtonStatusMessage):
+        if isinstance(message, PushButtonStatusMessage):
             for channel in message.closed:
                 self._is_closed[channel] = True
             for channel in message.opened:
@@ -31,7 +42,7 @@ class VMB6INModule(velbus.Module):
                 if channel in self._callbacks:
                     for callback in self._callbacks[channel]:
                         callback(self._is_closed[channel])
-        elif isinstance(message, velbus.ModuleStatusMessage):
+        elif isinstance(message, ModuleStatusMessage):
             for channel in list(range(1, self.number_of_channels() + 1)):
                 if channel in message.closed:
                     self._is_closed[channel] = True
@@ -55,7 +66,7 @@ class VMB7INModule(VMB6INModule):
     Velbus input module with 7 channels
     """
     def __init__(self, module_type, module_name, module_address, controller):
-        velbus.Module.__init__(self, module_type, module_name, module_address, controller)
+        Module.__init__(self, module_type, module_name, module_address, controller)
         self._is_closed = {}
         self._is_enabled = {}
         self._pulses = {}
@@ -72,10 +83,10 @@ class VMB7INModule(VMB6INModule):
 
     def _load(self):
         # request the counter statuis
-        message = velbus.CounterStatusRequestMessage(self._address)
+        message = CounterStatusRequestMessage(self._address)
         self._controller.send(message)
         # get the unit for the counters
-        message = velbus.ReadDataFromMemoryMessage(self._address)
+        message = ReadDataFromMemoryMessage(self._address)
         message.high_address = 0x03
         message.low_address = 0xfe
         self._controller.send(message)
@@ -84,26 +95,26 @@ class VMB7INModule(VMB6INModule):
         return 8
 
     def _on_message(self, message):
-        if isinstance(message, velbus.PushButtonStatusMessage):
+        if isinstance(message, PushButtonStatusMessage):
             for channel in message.closed:
                 self._is_closed[channel] = True
             for channel in message.opened:
                 self._is_closed[channel] = False
             for channel in message.get_channels():
                 self._call_callback(channel)
-        elif isinstance(message, velbus.ModuleStatusMessage2):
+        elif isinstance(message, ModuleStatusMessage2):
             for channel in list(range(1, self.number_of_channels() + 1)):
                 if channel in message.closed:
                     self._is_closed[channel] = True
                 else:
                     self._is_closed[channel] = False
-        elif isinstance(message, velbus.CounterStatusMessage):
+        elif isinstance(message, CounterStatusMessage):
             self._pulses[message.channel] = message.pulses
             self._counter[message.channel] = message.counter
             self._delay[message.channel] = message.delay
             self._is_counter.append(message.channel)
             self._call_callback(message.channel)
-        elif isinstance(message, velbus.MemoryDataMessage):
+        elif isinstance(message, MemoryDataMessage):
             for chan in range(1, 5):
                 val = message.data >> ((chan - 1) * 2)
                 inp = val & 0x03
@@ -161,5 +172,5 @@ class VMB7INModule(VMB6INModule):
             return None
 
 
-velbus.register_module('VMB7IN', VMB7INModule)
-velbus.register_module('VMB6IN', VMB6INModule)
+register_module('VMB7IN', VMB7INModule)
+register_module('VMB6IN', VMB6INModule)

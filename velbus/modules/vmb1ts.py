@@ -1,15 +1,17 @@
 """
 :author: Maikel Punie <maikel.punie@gmail.com>
 """
-import velbus
+from velbus.module import Module
+from velbus.module_registry import register_module
+from velbus.messages.sensor_temperature import SensorTemperatureMessage
 
 
-class VMB1TSModule(velbus.Module):
+class VMB1TSModule(Module):
     """
     Velbus input module with 6 channels
     """
     def __init__(self, module_type, module_name, module_address, controller):
-        velbus.Module.__init__(self, module_type, module_name, module_address, controller)
+        Module.__init__(self, module_type, module_name, module_address, controller)
         self._cur = None
         self._min = None
         self._max = None
@@ -25,7 +27,7 @@ class VMB1TSModule(velbus.Module):
         return self._cur
 
     def _on_message(self, message):
-        if isinstance(message, velbus.SensorTemperatureMessage):
+        if isinstance(message, SensorTemperatureMessage):
             self._cur = message.cur
             self._min = message.min
             self._max = message.max
@@ -63,4 +65,4 @@ class VMB1TSModule(velbus.Module):
         return '°C'
 
 
-velbus.register_module('VMB1TS', VMB1TSModule)
+register_module('VMB1TS', VMB1TSModule)

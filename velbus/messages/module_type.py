@@ -2,11 +2,13 @@
 :author: Thomas Delaet <thomas@delaet.org>
 """
 import struct
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
+from velbus.module_registry import MODULE_DIRECTORY
 
 COMMAND_CODE = 0xff
 
-class ModuleTypeMessage(velbus.Message):
+class ModuleTypeMessage(Message):
     """
     send by: VMB6IN, VMB4RYLD
     received by:
@@ -14,7 +16,7 @@ class ModuleTypeMessage(velbus.Message):
     #pylint: disable-msg=R0902
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.module_type = 0x00
         self.led_on = []
         self.led_slow_blinking = []
@@ -29,8 +31,8 @@ class ModuleTypeMessage(velbus.Message):
         """
         :return: str
         """
-        if self.module_type in velbus.MODULE_DIRECTORY.keys():
-            return velbus.MODULE_DIRECTORY[self.module_type]
+        if self.module_type in MODULE_DIRECTORY.keys():
+            return MODULE_DIRECTORY[self.module_type]
         return "Unknown"
 
     def populate(self, priority, address, rtr, data):
@@ -65,4 +67,4 @@ class ModuleTypeMessage(velbus.Message):
         ])
 
 
-velbus.register_command(COMMAND_CODE, ModuleTypeMessage)
+register_command(COMMAND_CODE, ModuleTypeMessage)

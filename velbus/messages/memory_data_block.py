@@ -1,19 +1,20 @@
 """
 :author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xcc
 
 
-class MemoryDataBlockMessage(velbus.Message):
+class MemoryDataBlockMessage(Message):
     """
     send by: VMB6IN, VMB4RYLD
     received by:
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.high_address = 0x00
         self.low_address = 0x00
         self.data = bytes([])
@@ -43,4 +44,4 @@ class MemoryDataBlockMessage(velbus.Message):
         ]) + self.data
 
 
-velbus.register_command(COMMAND_CODE, MemoryDataBlockMessage)
+register_command(COMMAND_CODE, MemoryDataBlockMessage)

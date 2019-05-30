@@ -1,15 +1,18 @@
 """
 :author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
+from velbus.module import Module
+from velbus.module_registry import register_module
+from velbus.messages.switch_relay_off import SwitchRelayOffMessage
+from velbus.messages.switch_relay_on import SwitchRelayOnMessage
+from velbus.messages.relay_status import RelayStatusMessage
 
-
-class VMB4RYModule(velbus.Module):
+class VMB4RYModule(Module):
     """
     Velbus Relay module.
     """
     def __init__(self, module_type, module_name, module_address, controller):
-        velbus.Module.__init__(self, module_type, module_name, module_address, controller)
+        Module.__init__(self, module_type, module_name, module_address, controller)
         self._is_on = {}
         self._callbacks = {}
 
@@ -37,7 +40,7 @@ class VMB4RYModule(velbus.Module):
                 """No-op"""
                 pass
             callback = callb
-        message = velbus.SwitchRelayOnMessage(self._address)
+        message = SwitchRelayOnMessage(self._address)
         message.relay_channels = [channel]
         self._controller.send(message, callback)
 
@@ -52,12 +55,12 @@ class VMB4RYModule(velbus.Module):
                 """No-op"""
                 pass
             callback = callb
-        message = velbus.SwitchRelayOffMessage(self._address)
+        message = SwitchRelayOffMessage(self._address)
         message.relay_channels = [channel]
         self._controller.send(message, callback)
 
     def _on_message(self, message):
-        if isinstance(message, velbus.RelayStatusMessage):
+        if isinstance(message, RelayStatusMessage):
             self._is_on[message.channel] = message.is_on()
             if message.channel in self._callbacks:
                 for callback in self._callbacks[message.channel]:
@@ -75,7 +78,7 @@ class VMB4RYModule(velbus.Module):
         return ['switch']
 
 
-velbus.register_module('VMB4RYLD', VMB4RYModule)
-velbus.register_module('VMB4RYNO', VMB4RYModule)
-velbus.register_module('VMB1RYNO', VMB4RYModule)
-velbus.register_module('VMB1RYNOS', VMB4RYModule)
+register_module('VMB4RYLD', VMB4RYModule)
+register_module('VMB4RYNO', VMB4RYModule)
+register_module('VMB1RYNO', VMB4RYModule)
+register_module('VMB1RYNOS', VMB4RYModule)

@@ -4,19 +4,20 @@
 import json
 import logging
 import struct
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0x06
 
 
-class CoverDownMessage(velbus.Message):
+class CoverDownMessage(Message):
     """
     sent by:
     received by: VMB2BLE
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.channel = 0
         self.delay_time = 0
         self.set_defaults(address)
@@ -59,14 +60,14 @@ class CoverDownMessage(velbus.Message):
         ]) + struct.pack('>L', self.delay_time)[-3:]
 
 
-class CoverDownMessage2(velbus.Message):
+class CoverDownMessage2(Message):
     """
     sent by:
     received by: VMB1BL VMB2BL
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.channel = 0
         self.delay_time = 0
         self.logger = logging.getLogger('velbus')
@@ -119,7 +120,7 @@ class CoverDownMessage2(velbus.Message):
             tmp
         ]) + struct.pack('>L', self.delay_time)[-3:]
 
-velbus.register_command(COMMAND_CODE, CoverDownMessage, 'VMB1BLE')
-velbus.register_command(COMMAND_CODE, CoverDownMessage, 'VMB2BLE')
-velbus.register_command(COMMAND_CODE, CoverDownMessage2, 'VMB1BL')
-velbus.register_command(COMMAND_CODE, CoverDownMessage2, 'VMB2BL')
+register_command(COMMAND_CODE, CoverDownMessage, 'VMB1BLE')
+register_command(COMMAND_CODE, CoverDownMessage, 'VMB2BLE')
+register_command(COMMAND_CODE, CoverDownMessage2, 'VMB1BL')
+register_command(COMMAND_CODE, CoverDownMessage2, 'VMB2BL')

@@ -1,19 +1,19 @@
 """
 :author: Maikel Punie <maikel.punie@gmail.com>
 """
-import velbus
-
+from velbus.message import Message
+from velbus.command_registry import register_command
 COMMAND_CODE = 0xe4
 
 
-class SetTemperatureMessage(velbus.Message):
+class SetTemperatureMessage(Message):
     """
     send by: VMB4RYLD
     received by: VMB6IN
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.temp_type = 0x00
         self.temp = 0x00
         self.set_defaults(address)
@@ -42,4 +42,4 @@ class SetTemperatureMessage(velbus.Message):
         ])
 
 
-velbus.register_command(COMMAND_CODE, SetTemperatureMessage)
+register_command(COMMAND_CODE, SetTemperatureMessage)

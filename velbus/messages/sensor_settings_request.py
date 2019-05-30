@@ -1,11 +1,12 @@
 """
 :author: Maikel Punie <maikel.punie@gmail.com>
 """
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xe7
 
-class SensorSettingsRequestMessage(velbus.Message):
+class SensorSettingsRequestMessage(Message):
     """
     send by:
     received by: VMB6IN, VMB4RYLD
@@ -32,4 +33,4 @@ class SensorSettingsRequestMessage(velbus.Message):
         """
         return bytes([])
 
-velbus.register_command(COMMAND_CODE, SensorSettingsRequestMessage)
+register_command(COMMAND_CODE, SensorSettingsRequestMessage)

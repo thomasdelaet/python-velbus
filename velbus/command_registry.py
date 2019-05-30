@@ -1,7 +1,7 @@
 """
 :author: Maikel Punie <maikel.punie@gmail.com> and Thomas Delaet <thomas@delaet.org>
 """
-
+from velbus.module_registry import MODULE_DIRECTORY
 
 class CommandRegistry:
 
@@ -50,3 +50,11 @@ class CommandRegistry:
                 return self._overrides[module_type][command_value]
         if command_value in self._default_commands:
             return self._default_commands[command_value]
+
+commandRegistry = CommandRegistry(MODULE_DIRECTORY)
+
+def register_command(command_value, command_class, module_type=0):
+    """
+    :return: None
+    """
+    commandRegistry.register_command(command_value, command_class, module_type)

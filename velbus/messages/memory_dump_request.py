@@ -1,12 +1,13 @@
 """
 :author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xcb
 
 
-class MemoryDumpRequestMessage(velbus.Message):
+class MemoryDumpRequestMessage(Message):
     """
     send by:
     received by: VMB6IN, VMB4RYLD
@@ -28,4 +29,4 @@ class MemoryDumpRequestMessage(velbus.Message):
         return bytes([COMMAND_CODE])
 
 
-velbus.register_command(COMMAND_CODE, MemoryDumpRequestMessage)
+register_command(COMMAND_CODE, MemoryDumpRequestMessage)

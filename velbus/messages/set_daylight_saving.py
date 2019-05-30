@@ -3,19 +3,20 @@
 """
 import json
 import logging
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 import time
 
 COMMAND_CODE = 0xAF
 
 
-class SetDaylightSaving(velbus.Message):
+class SetDaylightSaving(Message):
     """
     received by all modules
     """
 
     def __init__(self, address=0x00):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.logger = logging.getLogger('velbus')
         self._ds = None
         self.set_defaults(address)
@@ -57,4 +58,4 @@ class SetDaylightSaving(velbus.Message):
         ])
 
 
-velbus.register_command(COMMAND_CODE, SetDaylightSaving)
+register_command(COMMAND_CODE, SetDaylightSaving)

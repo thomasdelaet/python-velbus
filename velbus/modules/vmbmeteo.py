@@ -1,15 +1,18 @@
 """
 :author: Maikel Punie <maikel.punie@gmail.com>
 """
-import velbus
+from velbus.module import Module
+from velbus.module_registry import register_module
+from velbus.messages.sensor_temperature import SensorTemperatureMessage
+from velbus.messages.meteo_raw import MeteoRawMessage
 
 
-class VMBMETEOModule(velbus.Module):
+class VMBMETEOModule(Module):
     """
     Velbus input module with 6 channels
     """
     def __init__(self, module_type, module_name, module_address, controller):
-        velbus.Module.__init__(self, module_type, module_name, module_address, controller)
+        Module.__init__(self, module_type, module_name, module_address, controller)
         self._cur = None
         self._min = None
         self._max = None
@@ -28,13 +31,13 @@ class VMBMETEOModule(velbus.Module):
         return self._cur
 
     def _on_message(self, message):
-        if isinstance(message, velbus.SensorTemperatureMessage):
+        if isinstance(message, SensorTemperatureMessage):
             self._cur = message.cur
             self._min = message.min
             self._max = message.max
             for callback in self._callbacks:
                 callback(message.getCurTemp())
-        elif isinstance(message, velbus.MeteoRawMessage):
+        elif isinstance(message, MeteoRawMessage):
             self._rain = message.rain
             self._light = message.light
             self._wind = message.wind
@@ -72,4 +75,4 @@ class VMBMETEOModule(velbus.Module):
         return '°C'
 
 
-velbus.register_module('VMBMETEO', VMBMETEOModule)
+register_module('VMBMETEO', VMBMETEOModule)

@@ -1,19 +1,20 @@
 """
 :author: Thomas Delaet <thomas@delaet.org> and Maikel Punie <maikel.punie@gmail.com>
 """
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xef
 
 
-class ChannelNameRequestMessage(velbus.Message):
+class ChannelNameRequestMessage(Message):
     """
     send by:
     received by: VMB6IN, VMB4RYLD
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.channels = []
         self.set_defaults(address)
 
@@ -65,4 +66,4 @@ class ChannelNameRequestMessage2(ChannelNameRequestMessage):
         return bytes([COMMAND_CODE, tmp])
 
 
-velbus.register_command(COMMAND_CODE, ChannelNameRequestMessage)
+register_command(COMMAND_CODE, ChannelNameRequestMessage)

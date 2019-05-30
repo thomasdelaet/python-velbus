@@ -2,19 +2,20 @@
 :author: Thomas Delaet <thomas@delaet.org>
 """
 import json
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0x00
 
 
-class PushButtonStatusMessage(velbus.Message):
+class PushButtonStatusMessage(Message):
     """
     send by: VMB6IN, VMB4RYLD
     received by: VMB4RYLD
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.closed = []
         self.opened = []
         self.closed_long = []
@@ -67,4 +68,4 @@ class PushButtonStatusMessage(velbus.Message):
         ])
 
 
-velbus.register_command(COMMAND_CODE, PushButtonStatusMessage)
+register_command(COMMAND_CODE, PushButtonStatusMessage)

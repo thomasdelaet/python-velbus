@@ -1,12 +1,13 @@
 """
 :author: Thomas Delaet <thomas@delaet.org>
 """
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xd9
 
 
-class BusErrorStatusRequestMessage(velbus.Message):
+class BusErrorStatusRequestMessage(Message):
     """
     send by:
     received by: VMB6IN, VMB4RYLD
@@ -29,4 +30,4 @@ class BusErrorStatusRequestMessage(velbus.Message):
         return bytes([COMMAND_CODE])
 
 
-velbus.register_command(COMMAND_CODE, BusErrorStatusRequestMessage)
+register_command(COMMAND_CODE, BusErrorStatusRequestMessage)

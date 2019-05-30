@@ -1,26 +1,37 @@
 """
 :author: Maikel Punie <maikel.punie@gmail.com>
 """
-import velbus
+from velbus.module import Module
+from velbus.module_registry import register_module
+from velbus.messages.cover_down import CoverDownMessage, CoverDownMessage2
+from velbus.messages.cover_off import CoverOffMessage, CoverOffMessage2
+from velbus.messages.cover_up import CoverUpMessage, CoverUpMessage2
+from velbus.messages.blind_status import BlindStatusMessage, BlindStatusNgMessage
+from velbus.messages.channel_name_request import ChannelNameRequestMessage2
 
-
-class VMB1BLModule(velbus.Module):
+class VMB1BLModule(Module):
     """
     Velbus input module with 6 channels
     """
     def __init__(self, module_type, module_name, module_address, controller):
-        velbus.Module.__init__(self, module_type, module_name, module_address, controller)
+        Module.__init__(self, module_type, module_name, module_address, controller)
         self._state = {}
         self._callbacks = {}
+
+    def _call_callback(self, channel):
+        #FIXME: check _is_closed not being present
+        if channel in self._callbacks:
+            for callback in self._callbacks[channel]:
+                callback(self._is_closed[channel])
 
     def number_of_channels(self):
         return 1
 
     def _on_message(self, message):
-        if isinstance(message, velbus.BlindStatusNgMessage):
+        if isinstance(message, BlindStatusNgMessage):
             self._state[message.channel] = message.blind_position
             self._call_callback(message.channel)
-        if isinstance(message, velbus.BlindStatusMessage):
+        if isinstance(message, BlindStatusMessage):
             self._state[message.channel] = message.blind_position
             self._call_callback(message.channel)
 
@@ -36,22 +47,22 @@ class VMB1BLModule(velbus.Module):
         return ['cover']
 
     def _request_channel_name(self):
-        message = velbus.ChannelNameRequestMessage2(self._address)
+        message = ChannelNameRequestMessage2(self._address)
         message.channels = list(range(1, self.number_of_channels() + 1))
         self._controller.send(message)
 
     def open(self, channel):
-        message = velbus.CoverUpMessage2(self._address)
+        message = CoverUpMessage2(self._address)
         message.channel = channel
         self._controller.send(message)
 
     def close(self, channel):
-        message = velbus.CoverDownMessage2(self._address)
+        message = CoverDownMessage2(self._address)
         message.channel = channel
         self._controller.send(message)
 
     def stop(self, channel):
-        message = velbus.CoverOffMessage2(self._address)
+        message = CoverOffMessage2(self._address)
         message.channel = channel
         self._controller.send(message)
 
@@ -76,17 +87,17 @@ class VMB1BLEModule(VMB1BLModule):
         return 1
 
     def open(self, channel):
-        message = velbus.CoverUpMessage(self._address)
+        message = CoverUpMessage(self._address)
         message.channel = channel
         self._controller.send(message)
 
     def close(self, channel):
-        message = velbus.CoverDownMessage(self._address)
+        message = CoverDownMessage(self._address)
         message.channel = channel
         self._controller.send(message)
 
     def stop(self, channel):
-        message = velbus.CoverOffMessage(self._address)
+        message = CoverOffMessage(self._address)
         message.channel = channel
         self._controller.send(message)
 
@@ -96,7 +107,7 @@ class VMB2BLEModule(VMB1BLEModule):
         return 2
 
 
-velbus.register_module('VMB1BL', VMB1BLModule)
-velbus.register_module('VMB2BL', VMB2BLModule)
-velbus.register_module('VMB1BLE', VMB1BLEModule)
-velbus.register_module('VMB2BLE', VMB2BLEModule)
+register_module('VMB1BL', VMB1BLModule)
+register_module('VMB2BL', VMB2BLModule)
+register_module('VMB1BLE', VMB1BLEModule)
+register_module('VMB2BLE', VMB2BLEModule)

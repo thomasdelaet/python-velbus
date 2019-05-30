@@ -3,19 +3,20 @@
 """
 import json
 import logging
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 import time
 
 COMMAND_CODE = 0xB7
 
 
-class SetDate(velbus.Message):
+class SetDate(Message):
     """
     received by all modules
     """
 
     def __init__(self, address=0x00):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.logger = logging.getLogger('velbus')
         self._day = None
         self._mon = None
@@ -68,4 +69,4 @@ class SetDate(velbus.Message):
         ])
 
 
-velbus.register_command(COMMAND_CODE, SetDate)
+register_command(COMMAND_CODE, SetDate)

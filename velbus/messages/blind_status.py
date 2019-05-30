@@ -2,7 +2,8 @@
 :author: Tom Dupré <gitd8400@gmail.com>
 """
 import json
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xEC
 
@@ -45,14 +46,14 @@ UP_LED_FAST_BLINKING = 1 << 1
 UP_LED_VERY_FAST_BLINKING = 1
 
 
-class BlindStatusNgMessage(velbus.Message):
+class BlindStatusNgMessage(Message):
     """
     sent by: VMB2BLE
     received by:
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.channel = 0
         self.timeout = 0
         self.status = 0
@@ -140,14 +141,14 @@ class BlindStatusNgMessage(velbus.Message):
             ])
 
 
-class BlindStatusMessage(velbus.Message):
+class BlindStatusMessage(Message):
     """
     sent by: VMB2BLE
     received by:
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.channel = 0
         self.timeout = 0
         self.status = 0
@@ -193,8 +194,7 @@ class BlindStatusMessage(velbus.Message):
         json_dict['alarm_auto_mode_selection'] = self.alarm_auto_mode_selection
         return json.dumps(json_dict)
 
-
-velbus.register_command(COMMAND_CODE, BlindStatusNgMessage, 'VMB1BLE')
-velbus.register_command(COMMAND_CODE, BlindStatusNgMessage, 'VMB2BLE')
-velbus.register_command(COMMAND_CODE, BlindStatusMessage, 'VMB1BL')
-velbus.register_command(COMMAND_CODE, BlindStatusMessage, 'VMB2BL')
+register_command(COMMAND_CODE, BlindStatusNgMessage, 'VMB1BLE')
+register_command(COMMAND_CODE, BlindStatusNgMessage, 'VMB2BLE')
+register_command(COMMAND_CODE, BlindStatusMessage, 'VMB1BL')
+register_command(COMMAND_CODE, BlindStatusMessage, 'VMB2BL')

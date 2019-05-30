@@ -3,7 +3,8 @@
 """
 import struct
 import json
-import velbus
+from velbus.message import Message
+from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xfb
 
@@ -32,14 +33,14 @@ LED_FAST_BLINKING = 1 << 5
 LED_VERY_FAST_BLINKING = 1 << 4
 
 
-class RelayStatusMessage(velbus.Message):
+class RelayStatusMessage(Message):
     """
     send by: VMB4RYLD
     received by:
     """
 
     def __init__(self, address=None):
-        velbus.Message.__init__(self)
+        Message.__init__(self)
         self.channel = 0
         self.disable_inhibit_forced = 0
         self.status = 0
@@ -130,4 +131,4 @@ class RelayStatusMessage(velbus.Message):
         ]) + struct.pack('>L', self.delay_time)[-3:]
 
 
-velbus.register_command(COMMAND_CODE, RelayStatusMessage)
+register_command(COMMAND_CODE, RelayStatusMessage)

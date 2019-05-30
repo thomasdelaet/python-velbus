@@ -5,10 +5,11 @@ import time
 import threading
 import logging
 from queue import Queue
-import velbus
 import serial
 import serial.threaded
-
+from velbus.connections.connection import VelbusConnection
+from velbus.util import VelbusException
+from velbus.message import Message
 
 class Protocol(serial.threaded.Protocol):
     """Serial protocol."""
@@ -18,17 +19,7 @@ class Protocol(serial.threaded.Protocol):
         self.parser(data)
 
 
-class VelbusException(Exception):
-    """Velbus Exception."""
-    def __init__(self, value):
-        Exception.__init__(self)
-        self.value = value
-
-    def __str__(self):
-        return repr(self.value)
-
-
-class VelbusUSBConnection(velbus.VelbusConnection):
+class VelbusUSBConnection(VelbusConnection):
     """
     Wrapper for SerialPort connection configuration
     """
@@ -48,7 +39,7 @@ class VelbusUSBConnection(velbus.VelbusConnection):
     SLEEP_TIME = 60 / 1000
 
     def __init__(self, device, controller=None):
-        velbus.VelbusConnection.__init__(self)
+        VelbusConnection.__init__(self)
         self.logger = logging.getLogger('velbus')
         self._device = device
         self.controller = controller
@@ -91,7 +82,7 @@ class VelbusUSBConnection(velbus.VelbusConnection):
 
     def send(self, message, callback=None):
         """Add message to write queue."""
-        assert isinstance(message, velbus.Message)
+        assert isinstance(message, Message)
         self._write_queue.put_nowait((message, callback))
 
     def write_daemon(self):

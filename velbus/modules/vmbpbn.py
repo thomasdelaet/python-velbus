@@ -1,15 +1,18 @@
 """
 :author: Thomas Delaet <thomas@delaet.org
 """
-import velbus
+from velbus.module import Module
+from velbus.module_registry import register_module
+from velbus.messages.push_button_status import PushButtonStatusMessage
+from velbus.messages.module_status import ModuleStatusMessage2
 
 
-class VMB2PBNModule(velbus.Module):
+class VMB2PBNModule(Module):
     """
     Velbus input module with 6 channels
     """
     def __init__(self, module_type, module_name, module_address, controller):
-        velbus.Module.__init__(self, module_type, module_name, module_address, controller)
+        Module.__init__(self, module_type, module_name, module_address, controller)
         self._is_closed = {}
         self._is_enabled = {}
         self._callbacks = {}
@@ -23,7 +26,7 @@ class VMB2PBNModule(velbus.Module):
         return 2
 
     def _on_message(self, message):
-        if isinstance(message, velbus.PushButtonStatusMessage):
+        if isinstance(message, PushButtonStatusMessage):
             for channel in message.closed:
                 self._is_closed[channel] = True
             for channel in message.opened:
@@ -32,7 +35,7 @@ class VMB2PBNModule(velbus.Module):
                 if channel in self._callbacks:
                     for callback in self._callbacks[channel]:
                         callback(self._is_closed[channel])
-        elif isinstance(message, velbus.ModuleStatusMessage2):
+        elif isinstance(message, ModuleStatusMessage2):
             for channel in list(range(1, self.number_of_channels() + 1)):
                 if channel in message.closed:
                     self._is_closed[channel] = True
@@ -74,6 +77,6 @@ class VMB8PBUModule(VMB2PBNModule):
         return 6
 
 
-velbus.register_module('VMB2PBN', VMB2PBNModule)
-velbus.register_module('VMB6PBN', VMB6PBNModule)
-velbus.register_module('VMB8PBU', VMB8PBUModule)
+register_module('VMB2PBN', VMB2PBNModule)
+register_module('VMB6PBN', VMB6PBNModule)
+register_module('VMB8PBU', VMB8PBUModule)

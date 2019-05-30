@@ -3,7 +3,14 @@
 """
 import json
 import base64
-import velbus
+from velbus.constants import HIGH_PRIORITY, LOW_PRIORITY, LOW_ADDRESS, HIGH_ADDRESS, END_BYTE, START_BYTE, RTR, FIRMWARE_PRIORITY
+from velbus.util import checksum
+
+class ParserError(Exception):
+    """
+    Error when invalid message is received
+    """
+    pass
 
 
 class Message(object):
@@ -26,8 +33,8 @@ class Message(object):
         assert isinstance(priority, int)
         assert isinstance(address, int)
         assert isinstance(rtr, bool)
-        assert priority == velbus.HIGH_PRIORITY or priority == velbus.LOW_PRIORITY
-        assert address >= velbus.LOW_ADDRESS and address <= velbus.HIGH_ADDRESS
+        assert priority == HIGH_PRIORITY or priority == LOW_PRIORITY
+        assert address >= LOW_ADDRESS and address <= HIGH_ADDRESS
         self.priority = priority
         self.address = address
         self.rtr = rtr
@@ -64,8 +71,8 @@ class Message(object):
         :return: bytes
         """
         pre_checksum_data = self.__checksum_data()
-        checksum = velbus.checksum(pre_checksum_data)
-        return pre_checksum_data + checksum + bytes([velbus.END_BYTE])
+        _checksum = checksum(pre_checksum_data)
+        return pre_checksum_data + _checksum + bytes([END_BYTE])
 
     def to_base64(self):
         """
@@ -79,10 +86,10 @@ class Message(object):
         """
         data_bytes = self.data_to_binary()
         if self.rtr:
-            rtr_and_size = velbus.RTR | len(data_bytes)
+            rtr_and_size = RTR | len(data_bytes)
         else:
             rtr_and_size = len(data_bytes)
-        prefix = bytes([velbus.START_BYTE, self.priority, self.address,
+        prefix = bytes([START_BYTE, self.priority, self.address,
                         rtr_and_size])
         return prefix + data_bytes
 
@@ -162,7 +169,7 @@ class Message(object):
         """
         :return: None
         """
-        raise velbus.ParserError(self.__class__.__name__ + " " + message)
+        raise ParserError(self.__class__.__name__ + " " + message)
 
     def needs_rtr(self, rtr):
         """
@@ -197,42 +204,42 @@ class Message(object):
         :return: None
         """
         assert isinstance(priority, int)
-        if priority != velbus.LOW_PRIORITY:
+        if priority != LOW_PRIORITY:
             self.parser_error("needs low priority set")
 
     def set_low_priority(self):
         """
         :return: None
         """
-        self.priority = velbus.LOW_PRIORITY
+        self.priority = LOW_PRIORITY
 
     def needs_high_priority(self, priority):
         """
         :return: None
         """
         assert isinstance(priority, int)
-        if priority != velbus.HIGH_PRIORITY:
+        if priority != HIGH_PRIORITY:
             self.parser_error("needs high priority set")
 
     def set_high_priority(self):
         """
         :return: None
         """
-        self.priority = velbus.HIGH_PRIORITY
+        self.priority = HIGH_PRIORITY
 
     def needs_firmware_priority(self, priority):
         """
         :return: None
         """
         assert isinstance(priority, int)
-        if priority != velbus.FIRMWARE_PRIORITY:
+        if priority != FIRMWARE_PRIORITY:
             self.parser_error("needs firmware priority set")
 
     def set_firmware_priority(self):
         """
         :return: None
         """
-        self.priority = velbus.FIRMWARE_PRIORITY
+        self.priority = FIRMWARE_PRIORITY
 
     def needs_no_data(self, data):
         """
