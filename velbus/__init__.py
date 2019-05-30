@@ -3,5 +3,5 @@
 """
 from velbus.controller import Controller
 
-import velbus.messages
-import velbus.modules
+from velbus.messages import *
+from velbus.modules import *
