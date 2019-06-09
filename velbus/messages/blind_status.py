@@ -20,10 +20,6 @@ class BlindStatusNgMessage(Message):
         self.channel = 0
         self.timeout = 0
         self.status = 0
-        self.led_status = 0
-        self.blind_position = 0
-        self.locked_inhibit_forced = 0
-        self.alarm_auto_mode_selection = 0
         self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
@@ -39,10 +35,6 @@ class BlindStatusNgMessage(Message):
         self.needs_valid_channel(self.channel, 5)
         self.timeout = data[1] # Omzetter seconden ????
         self.status = data[2]
-        self.led_status = data[3]
-        self.blind_position = data[4]
-        self.locked_inhibit_forced = data[5]
-        self.alarm_auto_mode_selection = data[6]
 
     def to_json(self):
         """
@@ -52,10 +44,6 @@ class BlindStatusNgMessage(Message):
         json_dict['channel'] = self.channel
         json_dict['timeout'] = self.timeout
         json_dict['status'] = DSTATUS[self.status] 
-        json_dict['led_status'] = self.led_status
-        json_dict['blind_position'] = self.blind_position
-        json_dict['locked_inhibit_forced'] = self.locked_inhibit_forced
-        json_dict['alarm_auto_mode_selection'] = self.alarm_auto_mode_selection
         return json.dumps(json_dict)
 
     def is_up(self):
@@ -97,10 +85,6 @@ class BlindStatusMessage(Message):
         self.channel = 0
         self.timeout = 0
         self.status = 0
-        self.led_status = 0
-        self.blind_position = 0
-        self.locked_inhibit_forced = 0
-        self.alarm_auto_mode_selection = 0
         self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
@@ -119,11 +103,8 @@ class BlindStatusMessage(Message):
         self.channel = self.byte_to_channel(tmp)
         self.needs_valid_channel(self.channel, 5)
         self.timeout = data[1] # Omzetter seconden ????
-        self.status = data[2]
-        self.led_status = data[3]
-        self.blind_position = data[4]
-        self.locked_inhibit_forced = data[5]
-        self.alarm_auto_mode_selection = data[6]
+        # 2 bits per channel used
+        self.status = (data[2] >> ((self.channel - 1) * 2) ) 
 
     def to_json(self):
         """
@@ -133,10 +114,6 @@ class BlindStatusMessage(Message):
         json_dict['channel'] = self.channel
         json_dict['timeout'] = self.timeout
         json_dict['status'] = DSTATUS[self.status] 
-        json_dict['led_status'] = self.led_status
-        json_dict['blind_position'] = self.blind_position
-        json_dict['locked_inhibit_forced'] = self.locked_inhibit_forced
-        json_dict['alarm_auto_mode_selection'] = self.alarm_auto_mode_selection
         return json.dumps(json_dict)
 
     def is_up(self):
