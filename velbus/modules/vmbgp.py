@@ -171,7 +171,7 @@ class VMBGPxDModule(VMBGPxModule):
         return 33
 
 
-class VMBGPPirModule(Module):
+class VMBGPPirModule(VMBGPxModule):
     def number_of_channels(self):
         # 1-4 = buttons
         # 5 = dark/light
@@ -184,7 +184,6 @@ class VMBGPPirModule(Module):
     def get_categories(self, channel):
         if channel == 9:
             return ['sensor']
-        #FIXME: no member _is_enabled
         elif channel in self._is_enabled and self._is_enabled[channel]:
             return ['binary_sensor']
         else:
