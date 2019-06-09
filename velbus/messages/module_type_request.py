@@ -30,5 +30,3 @@ class ModuleTypeRequestMessage(Message):
         :return: bytes
         """
         return bytes([])
-
-#FIXME: Dont' we need to register this message in command_registry?
