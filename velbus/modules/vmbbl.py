@@ -24,7 +24,7 @@ class VMB1BLModule(Module):
     def _on_message(self, message):
         if isinstance(message, BlindStatusNgMessage):
             self._state[message.channel] = message.status
-            if channel in self._callbacks:
+            if message.channel in self._callbacks:
                 for callback in self._callbacks[message.channel]:
                     callback(message.is_down())
         if isinstance(message, BlindStatusMessage):

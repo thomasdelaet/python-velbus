@@ -6,7 +6,7 @@ from velbus.message import Message
 from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xEC
-DSTATUS = { 0: 'off', 1:'up', 2:'down' }
+DSTATUS = {0: 'off', 1: 'up', 2: 'down'}
 
 
 class BlindStatusNgMessage(Message):
@@ -43,7 +43,7 @@ class BlindStatusNgMessage(Message):
         json_dict = self.to_json_basic()
         json_dict['channel'] = self.channel
         json_dict['timeout'] = self.timeout
-        json_dict['status'] = DSTATUS[self.status] 
+        json_dict['status'] = DSTATUS[self.status]
         return json.dumps(json_dict)
 
     def is_up(self):
@@ -104,7 +104,7 @@ class BlindStatusMessage(Message):
         self.needs_valid_channel(self.channel, 5)
         self.timeout = data[1] # Omzetter seconden ????
         # 2 bits per channel used
-        self.status = (data[2] >> ((self.channel - 1) * 2) ) 
+        self.status = (data[2] >> ((self.channel - 1) * 2))
 
     def to_json(self):
         """
@@ -113,7 +113,7 @@ class BlindStatusMessage(Message):
         json_dict = self.to_json_basic()
         json_dict['channel'] = self.channel
         json_dict['timeout'] = self.timeout
-        json_dict['status'] = DSTATUS[self.status] 
+        json_dict['status'] = DSTATUS[self.status]
         return json.dumps(json_dict)
 
     def is_up(self):
