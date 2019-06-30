@@ -20,11 +20,6 @@ class MeteoRawMessage(Message):
         self.light = 0
         self.wind = 0
 
-    def getCurTemp(self):
-        #FIXME: self.cur does not exist
-        #return self.cur
-        pass
-
     def populate(self, priority, address, rtr, data):
         """
         data bytes (high + low)

@@ -18,22 +18,20 @@ class VMB1BLModule(Module):
         self._state = {}
         self._callbacks = {}
 
-    def _call_callback(self, channel):
-        #FIXME: check _is_closed not being present
-        if channel in self._callbacks:
-            for callback in self._callbacks[channel]:
-                callback(self._is_closed[channel])
-
     def number_of_channels(self):
         return 1
 
     def _on_message(self, message):
         if isinstance(message, BlindStatusNgMessage):
-            self._state[message.channel] = message.blind_position
-            self._call_callback(message.channel)
+            self._state[message.channel] = message.status
+            if message.channel in self._callbacks:
+                for callback in self._callbacks[message.channel]:
+                    callback(message.is_down())
         if isinstance(message, BlindStatusMessage):
-            self._state[message.channel] = message.blind_position
-            self._call_callback(message.channel)
+            self._state[message.channel] = message.status
+            if message.channel in self._callbacks:
+                for callback in self._callbacks[message.channel]:
+                    callback(message.is_down())
 
     def on_status_update(self, channel, callback):
         """
@@ -71,10 +69,15 @@ class VMB1BLModule(Module):
             return None
         return self._state[channel]
 
-    def _call_callback(self, channel):
-        if channel in self._callbacks:
-            for callback in self._callbacks[channel]:
-                callback(self._state[channel])
+    def is_closed(self, channel):
+        if self.get_state(channel) == 0x02:
+            return True
+        return False
+
+    def is_open(self, channel):
+        if self.get_state(channel) == 0x01:
+            return True
+        return False
 
 
 class VMB2BLModule(VMB1BLModule):

@@ -6,44 +6,7 @@ from velbus.message import Message
 from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xEC
-
-CHANNEL_NORMAL = 0x00
-
-CHANNEL_INHIBITED = 0x01
-
-CHANNEL_INHIBITED_PRESET_DOWN = 0x02
-
-CHANNEL_INHIBITED_PRESET_UP = 0x03
-
-CHANNEL_FORCED_DOWN = 0x04
-
-CHANNEL_FORCED_UP = 0x05
-
-CHANNEL_LOCKED = 0x06
-
-BLIND_OFF = 0x00
-
-BLIND_UP = 0x01
-
-BLIND_DOWN = 0x02
-
-LED_OFF = 0
-
-DOWN_LED_ON = 1 << 7
-
-DOWN_LED_SLOW_BLINKING = 1 << 6
-
-DOWN_LED_FAST_BLINKING = 1 << 5
-
-DOWN_LED_VERY_FAST_BLINKING = 1 << 4
-
-UP_LED_ON = 1 << 3
-
-UP_LED_SLOW_BLINKING = 1 << 2
-
-UP_LED_FAST_BLINKING = 1 << 1
-
-UP_LED_VERY_FAST_BLINKING = 1
+DSTATUS = {0: 'off', 1: 'up', 2: 'down'}
 
 
 class BlindStatusNgMessage(Message):
@@ -57,10 +20,6 @@ class BlindStatusNgMessage(Message):
         self.channel = 0
         self.timeout = 0
         self.status = 0
-        self.led_status = 0
-        self.blind_position = 0
-        self.locked_inhibit_forced = 0
-        self.alarm_auto_mode_selection = 0
         self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
@@ -76,10 +35,6 @@ class BlindStatusNgMessage(Message):
         self.needs_valid_channel(self.channel, 5)
         self.timeout = data[1] # Omzetter seconden ????
         self.status = data[2]
-        self.led_status = data[3]
-        self.blind_position = data[4]
-        self.locked_inhibit_forced = data[5]
-        self.alarm_auto_mode_selection = data[6]
 
     def to_json(self):
         """
@@ -88,42 +43,20 @@ class BlindStatusNgMessage(Message):
         json_dict = self.to_json_basic()
         json_dict['channel'] = self.channel
         json_dict['timeout'] = self.timeout
-        json_dict['status'] = self.status
-        json_dict['led_status'] = self.led_status
-        json_dict['blind_position'] = self.blind_position
-        json_dict['locked_inhibit_forced'] = self.locked_inhibit_forced
-        json_dict['alarm_auto_mode_selection'] = self.alarm_auto_mode_selection
+        json_dict['status'] = DSTATUS[self.status]
         return json.dumps(json_dict)
-
-    def is_normal(self):
-        """
-        :return: bool
-        """
-        return self.locked_inhibit_forced == CHANNEL_NORMAL
-
-    def is_inhibited(self):
-        """
-        :return: bool
-        """
-        return self.locked_inhibit_forced == CHANNEL_INHIBITED
-
-    def is_locked(self):
-        """
-        :return: bool
-        """
-        return self.locked_inhibit_forced == CHANNEL_LOCKED
 
     def is_up(self):
         """
         :return: bool
         """
-        return self.status == BLIND_UP
+        return self.status == 0x01
 
     def is_down(self):
         """
         :return: bool
         """
-        return self.status == BLIND_OFF
+        return self.status == 0x02
 
     def data_to_binary(self):
         """
@@ -152,10 +85,6 @@ class BlindStatusMessage(Message):
         self.channel = 0
         self.timeout = 0
         self.status = 0
-        self.led_status = 0
-        self.blind_position = 0
-        self.locked_inhibit_forced = 0
-        self.alarm_auto_mode_selection = 0
         self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
@@ -174,11 +103,8 @@ class BlindStatusMessage(Message):
         self.channel = self.byte_to_channel(tmp)
         self.needs_valid_channel(self.channel, 5)
         self.timeout = data[1] # Omzetter seconden ????
-        self.status = data[2]
-        self.led_status = data[3]
-        self.blind_position = data[4]
-        self.locked_inhibit_forced = data[5]
-        self.alarm_auto_mode_selection = data[6]
+        # 2 bits per channel used
+        self.status = (data[2] >> ((self.channel - 1) * 2))
 
     def to_json(self):
         """
@@ -187,12 +113,21 @@ class BlindStatusMessage(Message):
         json_dict = self.to_json_basic()
         json_dict['channel'] = self.channel
         json_dict['timeout'] = self.timeout
-        json_dict['status'] = self.status
-        json_dict['led_status'] = self.led_status
-        json_dict['blind_position'] = self.blind_position
-        json_dict['locked_inhibit_forced'] = self.locked_inhibit_forced
-        json_dict['alarm_auto_mode_selection'] = self.alarm_auto_mode_selection
+        json_dict['status'] = DSTATUS[self.status]
         return json.dumps(json_dict)
+
+    def is_up(self):
+        """
+        :return: bool
+        """
+        return self.status == 0x01
+
+    def is_down(self):
+        """
+        :return: bool
+        """
+        return self.status == 0x02
+
 
 register_command(COMMAND_CODE, BlindStatusNgMessage, 'VMB1BLE')
 register_command(COMMAND_CODE, BlindStatusNgMessage, 'VMB2BLE')
