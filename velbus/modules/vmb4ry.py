@@ -78,7 +78,13 @@ class VMB4RYModule(Module):
         return ['switch']
 
 
+class VMB4RY(VMB4RYModule):
+    def number_of_channels(self):
+        return 4
+
+
 register_module('VMB4RYLD', VMB4RYModule)
 register_module('VMB4RYNO', VMB4RYModule)
 register_module('VMB1RYNO', VMB4RYModule)
 register_module('VMB1RYNOS', VMB4RYModule)
+register_module('VMB4RY', VMB4RYModule)
