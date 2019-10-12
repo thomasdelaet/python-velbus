@@ -1,26 +1,28 @@
 """
-:author: Thomas Delaet <thomas@delaet.org>
+:author: Frank van Breugel
 """
 import struct
 import json
 from velbus.message import Message
 from velbus.command_registry import register_command
 
-COMMAND_CODE = 0xfb
+COMMAND_CODE = 0xEE
 
-CHANNEL_NORMAL = 0x00
+MODE_START_STOP = 0x00
 
-CHANNEL_INHIBITED = 0x01
+MODE_STAIRCASE = 0x01
 
-CHANNEL_FORCED_ON = 0x02
+MODE_DIMMER = 0x02
 
-CHANNEL_DISABLED = 0x03
+MODE_MEMORY = 0x03
 
-RELAY_ON = 0x01
+MODE_MULTI = 0x04
 
-RELAY_OFF = 0x00
+MODE_SLOW_ON = 0x05
 
-INTERVAL_TIMER_ON = 0x03
+MODE_SLOW_OFF = 0x06
+
+MODE_SLOW = 0x06
 
 LED_OFF = 0
 
@@ -33,9 +35,9 @@ LED_FAST_BLINKING = 1 << 5
 LED_VERY_FAST_BLINKING = 1 << 4
 
 
-class RelayStatusMessage(Message):
+class DimmerStatusMessage(Message):
     """
-    send by: VMB4RYLD
+    sent by: VMBDME
     received by:
     """
 
@@ -43,10 +45,12 @@ class RelayStatusMessage(Message):
         Message.__init__(self)
         self.channel = 0
         self.disable_inhibit_forced = 0
-        self.status = 0
+        self.dimmer_mode = 0
+        self.dimmer_state = 0
         self.led_status = 0
         self.delay_time = 0
         self.set_defaults(address)
+        self.dimmer_config = 0
 
     def populate(self, priority, address, rtr, data):
         """
@@ -57,12 +61,12 @@ class RelayStatusMessage(Message):
         self.needs_no_rtr(rtr)
         self.needs_data(data, 7)
         self.set_attributes(priority, address, rtr)
-        self.channel = self.byte_to_channel(data[0])
-        self.needs_valid_channel(self.channel, 5)
-        self.disable_inhibit_forced = data[1]
-        self.status = data[2]
-        self.led_status = data[3]
+        self.dimmer_mode = data[0]
+        self.dimmer_state = data[1]
+        self.needs_valid_channel(self.channel, 1)
+        self.led_status = data[2]
         (self.delay_time,) = struct.unpack('>L', bytes([0]) + data[4:])
+        self.dimmer_config = data[6] 
 
     def to_json(self):
         """
@@ -70,62 +74,65 @@ class RelayStatusMessage(Message):
         """
         json_dict = self.to_json_basic()
         json_dict['channel'] = self.channel
-        json_dict['disable_inhibit_forced'] = self.disable_inhibit_forced
-        json_dict['status'] = self.status
+        json_dict['dimmer_mode'] = self.dimmer_mode
+        json_dict['dimmer_state'] = self.dimmer_state
         json_dict['led_status'] = self.led_status
         json_dict['delay_time'] = self.delay_time
         return json.dumps(json_dict)
 
-    def is_normal(self):
+    def is_start_stop(self):
         """
         :return: bool
         """
-        return self.disable_inhibit_forced == CHANNEL_NORMAL
+        return self.dimmer_mode == MODE_START_STOP
 
-    def is_inhibited(self):
+    def is_dimmer(self):
         """
         :return: bool
         """
-        return self.disable_inhibit_forced == CHANNEL_INHIBITED
+        return self.dimmer_mode == MODE_DIMMER
 
-    def is_forced_on(self):
+    def is_dimmer_memory(self):
         """
         :return: bool
         """
-        return self.disable_inhibit_forced == CHANNEL_FORCED_ON
+        return self.dimmer_mode == MODE_MEMORY
 
-    def is_disabled(self):
+    def is_staircase(self):
         """
         :return: bool
         """
-        return self.disable_inhibit_forced == CHANNEL_DISABLED
+        return self.dimmer_mode == MODE_STAIRCASE
 
-    def is_on(self):
+    def is_multi(self):
         """
         :return: bool
         """
-        return self.status == RELAY_ON
+        return self.dimmer_mode == MODE_MULTI
 
-    def is_off(self):
+    def is_slow(self):
         """
         :return: bool
         """
-        return self.status == RELAY_OFF
+        return self.dimmer_mode == MODE_SLOW
 
-    def channel_is_on(self):
+    def is_slow_on(self):
         """
         :return: bool
         """
-        if self.channel == self.status:
-            return True
-        else:
-            return False    
+        return self.dimmer_mode == MODE_SLOW_ON
 
-    def has_interval_timer_on(self):
+    def is_slow_off(self):
         """
         :return: bool
         """
-        return self.status == INTERVAL_TIMER_ON
+        return self.dimmer_mode == MODE_SLOW_OFF
+    
+    def cur_dimmer_state(self):
+        """
+        :return: int
+        """
+        return self.dimmer_state
 
     def data_to_binary(self):
         """
@@ -133,11 +140,9 @@ class RelayStatusMessage(Message):
         """
         return bytes([
             COMMAND_CODE,
-            self.channels_to_byte([self.channel]),
-            self.disable_inhibit_forced,
-            self.status,
+            self.dimmer_mode,
+            self.dimmer_state,
             self.led_status
         ]) + struct.pack('>L', self.delay_time)[-3:]
 
-
-register_command(COMMAND_CODE, RelayStatusMessage)
+register_command(COMMAND_CODE, DimmerStatusMessage, 'VMBDME')

@@ -59,3 +59,8 @@ from velbus.messages.meteo_raw import MeteoRawMessage
 from velbus.messages.set_realtime_clock import SetRealtimeClock
 from velbus.messages.set_date import SetDate
 from velbus.messages.set_daylight_saving import SetDaylightSaving
+from velbus.messages.dimmer_channel_status import DimmerChannelStatusMessage
+from velbus.messages.dimmer_status import DimmerStatusMessage
+from velbus.messages.set_dimmer import SetDimmerMessage
+from velbus.messages.restore_dimmer import RestoreDimmerMessage
+from velbus.messages.slider_status import SliderStatusMessage
