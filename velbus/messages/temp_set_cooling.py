@@ -6,7 +6,7 @@ import logging
 from velbus.message import Message
 from velbus.command_registry import register_command
 
-COMMAND_CODE = 0xdf
+COMMAND_CODE = 0xDF
 
 
 class TempSetCoolingMessage(Message):
@@ -37,9 +37,7 @@ class TempSetCoolingMessage(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            0xaa
-        ])
+        return bytes([COMMAND_CODE, 0xAA])
+
 
 register_command(COMMAND_CODE, TempSetCoolingMessage)

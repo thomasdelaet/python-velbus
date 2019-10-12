@@ -1,17 +1,20 @@
 import os
 from velbus.constants import MINIMUM_MESSAGE_SIZE, MAXIMUM_MESSAGE_SIZE
 
+
 def on_app_engine():
     """
     :return: bool
     """
-    if 'SERVER_SOFTWARE' in os.environ:
-        server_software = os.environ['SERVER_SOFTWARE']
-        if server_software.startswith('Google App Engine') or \
-                server_software.startswith('Development'):
+    if "SERVER_SOFTWARE" in os.environ:
+        server_software = os.environ["SERVER_SOFTWARE"]
+        if server_software.startswith(
+            "Google App Engine"
+        ) or server_software.startswith("Development"):
             return True
         return False
     return False
+
 
 def checksum(data):
     """
@@ -33,6 +36,7 @@ def checksum(data):
 
 class VelbusException(Exception):
     """Velbus Exception."""
+
     def __init__(self, value):
         Exception.__init__(self)
         self.value = value

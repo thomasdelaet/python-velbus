@@ -12,10 +12,12 @@ from velbus.messages.module_type import ModuleTypeMessage
 from velbus.messages.module_status_request import ModuleStatusRequestMessage
 from velbus.messages.channel_name_request import ChannelNameRequestMessage
 
+
 class Module(object):
     """
     Abstract class for Velbus hardware modules.
     """
+
     def __init__(self, module_type, module_name, module_address, controller):
         self._type = module_type
         self._name = module_name
@@ -75,11 +77,17 @@ class Module(object):
         """
         if message.address != self._address:
             return
-        if isinstance(message, ChannelNamePart1Message) or isinstance(message, ChannelNamePart1Message2):
+        if isinstance(message, ChannelNamePart1Message) or isinstance(
+            message, ChannelNamePart1Message2
+        ):
             self._process_channel_name_message(1, message)
-        elif isinstance(message, ChannelNamePart2Message) or isinstance(message, ChannelNamePart2Message2):
+        elif isinstance(message, ChannelNamePart2Message) or isinstance(
+            message, ChannelNamePart2Message2
+        ):
             self._process_channel_name_message(2, message)
-        elif isinstance(message, ChannelNamePart3Message) or isinstance(message, ChannelNamePart3Message2):
+        elif isinstance(message, ChannelNamePart3Message) or isinstance(
+            message, ChannelNamePart3Message2
+        ):
             self._process_channel_name_message(3, message)
         elif isinstance(message, ModuleTypeMessage):
             self._process_module_type_message(message)
@@ -94,9 +102,11 @@ class Module(object):
         Retrieve names of channels
         """
         if callback is None:
+
             def callb():
                 """No-op"""
                 pass
+
             callback = callb
         if len(self._loaded_callbacks) == 0:
             self._request_module_status()
@@ -137,7 +147,9 @@ class Module(object):
         for channel in range(1, self.number_of_channels() + 1):
             name_parts = self._name_data[channel]
             name = name_parts[1] + name_parts[2] + name_parts[3]
-            self._channel_names[channel] = ''.join(filter(lambda x: x in string.printable, name))
+            self._channel_names[channel] = "".join(
+                filter(lambda x: x in string.printable, name)
+            )
         self._name_data = {}
         self.loaded = True
         for callback in self._loaded_callbacks:

@@ -13,10 +13,12 @@ from velbus.messages.switch_to_day import SwitchToDayMessage
 from velbus.messages.switch_to_comfort import SwitchToComfortMessage
 from velbus.messages.set_temperature import SetTemperatureMessage
 
+
 class VMBGPxModule(Module):
     """
     Velbus input module with 6 channels
     """
+
     def __init__(self, module_type, module_name, module_address, controller):
         Module.__init__(self, module_type, module_name, module_address, controller)
         self._is_closed = {}
@@ -91,9 +93,9 @@ class VMBGPxModule(Module):
 
     def get_categories(self, channel):
         if channel == 9:
-            return ['sensor']
+            return ["sensor"]
         elif channel in self._is_enabled and self._is_enabled[channel]:
-            return ['binary_sensor']
+            return ["binary_sensor"]
         else:
             return []
 
@@ -109,20 +111,21 @@ class VMBGPxModule(Module):
         Can only be called for channel 9
         So ignore channel
         """
-        return 'temperature'
+        return "temperature"
 
     def get_unit(self, channel):
         """
         Can only be called for channel 9
         So ignore channel
         """
-        return '°C'
+        return "°C"
 
 
 class VMBGPxDModule(VMBGPxModule):
-
     def __init__(self, module_type, module_name, module_address, controller):
-        VMBGPxModule.__init__(self, module_type, module_name, module_address, controller)
+        VMBGPxModule.__init__(
+            self, module_type, module_name, module_address, controller
+        )
         self._cmode = None
         self._target = None
 
@@ -139,9 +142,9 @@ class VMBGPxDModule(VMBGPxModule):
 
     def get_categories(self, channel):
         if channel == 33:
-            return ['sensor', 'climate']
+            return ["sensor", "climate"]
         elif channel in self._is_enabled and self._is_enabled[channel]:
-            return ['binary_sensor']
+            return ["binary_sensor"]
         else:
             return []
 
@@ -183,16 +186,16 @@ class VMBGPPirModule(VMBGPxModule):
 
     def get_categories(self, channel):
         if channel == 9:
-            return ['sensor']
+            return ["sensor"]
         elif channel in self._is_enabled and self._is_enabled[channel]:
-            return ['binary_sensor']
+            return ["binary_sensor"]
         else:
             return []
 
 
-register_module('VMBGP1', VMBGPxModule)
-register_module('VMBGP2', VMBGPxModule)
-register_module('VMBGP4', VMBGPxModule)
-register_module('VMBGP0', VMBGPxDModule)
-register_module('VMBGPOD', VMBGPxDModule)
-register_module('VMBGP4PIR', VMBGPPirModule)
+register_module("VMBGP1", VMBGPxModule)
+register_module("VMBGP2", VMBGPxModule)
+register_module("VMBGP4", VMBGPxModule)
+register_module("VMBGP0", VMBGPxDModule)
+register_module("VMBGPOD", VMBGPxDModule)
+register_module("VMBGP4PIR", VMBGPPirModule)

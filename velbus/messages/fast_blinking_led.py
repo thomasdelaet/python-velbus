@@ -4,7 +4,7 @@
 from velbus.message import Message
 from velbus.command_registry import register_command
 
-COMMAND_CODE = 0xf8
+COMMAND_CODE = 0xF8
 
 
 class FastBlinkingLedMessage(Message):

@@ -11,6 +11,7 @@ from velbus.connections.connection import VelbusConnection
 from velbus.util import VelbusException
 from velbus.message import Message
 
+
 class Protocol(serial.threaded.Protocol):
     """Serial protocol."""
 
@@ -40,28 +41,33 @@ class VelbusUSBConnection(VelbusConnection):
 
     def __init__(self, device, controller=None):
         VelbusConnection.__init__(self)
-        self.logger = logging.getLogger('velbus')
+        self.logger = logging.getLogger("velbus")
         self._device = device
         self.controller = controller
         try:
-            self.serial = serial.Serial(port=device,
-                                        baudrate=self.BAUD_RATE,
-                                        bytesize=self.BYTE_SIZE,
-                                        parity=self.PARITY,
-                                        stopbits=self.STOPBITS,
-                                        xonxoff=self.XONXOFF,
-                                        rtscts=self.RTSCTS)
+            self.serial = serial.Serial(
+                port=device,
+                baudrate=self.BAUD_RATE,
+                bytesize=self.BYTE_SIZE,
+                parity=self.PARITY,
+                stopbits=self.STOPBITS,
+                xonxoff=self.XONXOFF,
+                rtscts=self.RTSCTS,
+            )
         except serial.serialutil.SerialException:
-            self.logger.error("Could not open serial port, \
-                              no messages are read or written to the bus")
+            self.logger.error(
+                "Could not open serial port, \
+                              no messages are read or written to the bus"
+            )
             raise VelbusException("Could not open serial port")
         self._reader = serial.threaded.ReaderThread(self.serial, Protocol)
         self._reader.start()
         self._reader.protocol.parser = self.feed_parser
         self._reader.connect()
         self._write_queue = Queue()
-        self._write_process = threading.Thread(None, self.write_daemon,
-                                               "write_packets_process", (), {})
+        self._write_process = threading.Thread(
+            None, self.write_daemon, "write_packets_process", (), {}
+        )
         self._write_process.daemon = True
         self._write_process.start()
 

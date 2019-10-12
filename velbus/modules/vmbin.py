@@ -10,10 +10,12 @@ from velbus.messages.counter_status_request import CounterStatusRequestMessage
 from velbus.messages.read_data_from_memory import ReadDataFromMemoryMessage
 from velbus.messages.memory_data import MemoryDataMessage
 
+
 class VMB6INModule(Module):
     """
     Velbus input module with 6 channels
     """
+
     def __init__(self, module_type, module_name, module_address, controller):
         Module.__init__(self, module_type, module_name, module_address, controller)
         self._is_closed = {}
@@ -58,13 +60,14 @@ class VMB6INModule(Module):
         self._callbacks[channel].append(callback)
 
     def get_categories(self, channel):
-        return ['binary_sensor']
+        return ["binary_sensor"]
 
 
 class VMB7INModule(VMB6INModule):
     """
     Velbus input module with 7 channels
     """
+
     def __init__(self, module_type, module_name, module_address, controller):
         Module.__init__(self, module_type, module_name, module_address, controller)
         self._is_closed = {}
@@ -88,7 +91,7 @@ class VMB7INModule(VMB6INModule):
         # get the unit for the counters
         message = ReadDataFromMemoryMessage(self._address)
         message.high_address = 0x03
-        message.low_address = 0xfe
+        message.low_address = 0xFE
         self._controller.send(message)
 
     def number_of_channels(self):
@@ -119,11 +122,11 @@ class VMB7INModule(VMB6INModule):
                 val = message.data >> ((chan - 1) * 2)
                 inp = val & 0x03
                 if inp == 0x01:
-                    self._unit[chan] = 'l/h'
+                    self._unit[chan] = "l/h"
                 elif inp == 0x02:
-                    self._unit[chan] = 'm3/h'
+                    self._unit[chan] = "m3/h"
                 elif inp == 0x03:
-                    self._unit[chan] = 'W'
+                    self._unit[chan] = "W"
 
     def on_status_update(self, channel, callback):
         """
@@ -135,9 +138,9 @@ class VMB7INModule(VMB6INModule):
 
     def get_categories(self, channel):
         if channel in self._is_counter:
-            return ['sensor']
+            return ["sensor"]
         else:
-            return ['binary_sensor']
+            return ["binary_sensor"]
 
     def get_state(self, channel):
         """
@@ -146,12 +149,12 @@ class VMB7INModule(VMB6INModule):
         val = None
         if channel not in self._unit:
             return val
-        if self._unit[channel] == 'l/h':
-            val = ((1000 * 3600) / (self._delay[channel] * self._pulses[channel]))
-        elif self._unit[channel] == 'm3/h':
-            val = ((1000 * 3600) / (self._delay[channel] * self._pulses[channel]))
-        elif self._unit[channel] == 'W':
-            val = ((1000 * 1000 * 3600) / (self._delay[channel] * self._pulses[channel]))
+        if self._unit[channel] == "l/h":
+            val = (1000 * 3600) / (self._delay[channel] * self._pulses[channel])
+        elif self._unit[channel] == "m3/h":
+            val = (1000 * 3600) / (self._delay[channel] * self._pulses[channel])
+        elif self._unit[channel] == "W":
+            val = (1000 * 1000 * 3600) / (self._delay[channel] * self._pulses[channel])
             if val < 55:
                 val = 0
         return round(val, 2)
@@ -160,7 +163,7 @@ class VMB7INModule(VMB6INModule):
         """
         Ignore channel
         """
-        return 'counter'
+        return "counter"
 
     def get_unit(self, channel):
         """
@@ -172,5 +175,5 @@ class VMB7INModule(VMB6INModule):
             return None
 
 
-register_module('VMB7IN', VMB7INModule)
-register_module('VMB6IN', VMB6INModule)
+register_module("VMB7IN", VMB7INModule)
+register_module("VMB6IN", VMB6INModule)

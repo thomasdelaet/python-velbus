@@ -4,7 +4,7 @@
 from velbus.message import Message
 from velbus.command_registry import register_command
 
-COMMAND_CODE = 0xfa
+COMMAND_CODE = 0xFA
 
 
 class ModuleStatusRequestMessage(Message):
@@ -34,10 +34,7 @@ class ModuleStatusRequestMessage(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.channels_to_byte(self.channels)
-        ])
+        return bytes([COMMAND_CODE, self.channels_to_byte(self.channels)])
 
 
 register_command(COMMAND_CODE, ModuleStatusRequestMessage)

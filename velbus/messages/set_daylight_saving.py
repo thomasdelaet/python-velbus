@@ -17,7 +17,7 @@ class SetDaylightSaving(Message):
 
     def __init__(self, address=0x00):
         Message.__init__(self)
-        self.logger = logging.getLogger('velbus')
+        self.logger = logging.getLogger("velbus")
         self._ds = None
         self.set_defaults(address)
 
@@ -45,17 +45,14 @@ class SetDaylightSaving(Message):
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['ds'] = self._ds
+        json_dict["ds"] = self._ds
         return json.dumps(json_dict)
 
     def data_to_binary(self):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self._ds
-        ])
+        return bytes([COMMAND_CODE, self._ds])
 
 
 register_command(COMMAND_CODE, SetDaylightSaving)

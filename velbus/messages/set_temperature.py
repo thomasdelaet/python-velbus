@@ -3,7 +3,8 @@
 """
 from velbus.message import Message
 from velbus.command_registry import register_command
-COMMAND_CODE = 0xe4
+
+COMMAND_CODE = 0xE4
 
 
 class SetTemperatureMessage(Message):
@@ -35,11 +36,7 @@ class SetTemperatureMessage(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            int(self.temp_type),
-            int(self.temp)
-        ])
+        return bytes([COMMAND_CODE, int(self.temp_type), int(self.temp)])
 
 
 register_command(COMMAND_CODE, SetTemperatureMessage)

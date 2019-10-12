@@ -33,15 +33,15 @@ class CoverUpMessage(Message):
         self.set_attributes(priority, address, rtr)
         self.channel = self.byte_to_channel(data[0])
         self.needs_valid_channel(self.channel, 2)
-        (self.delay_time,) = struct.unpack('>L', bytes([0]) + data[1:])
+        (self.delay_time,) = struct.unpack(">L", bytes([0]) + data[1:])
 
     def to_json(self):
         """
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['channel'] = self.channel
-        json_dict['delay_time'] = self.delay_time
+        json_dict["channel"] = self.channel
+        json_dict["delay_time"] = self.delay_time
         return json.dumps(json_dict)
 
     def set_defaults(self, address):
@@ -54,10 +54,10 @@ class CoverUpMessage(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.channels_to_byte([self.channel])
-        ]) + struct.pack('>L', self.delay_time)[-3:]
+        return (
+            bytes([COMMAND_CODE, self.channels_to_byte([self.channel])])
+            + struct.pack(">L", self.delay_time)[-3:]
+        )
 
 
 class CoverUpMessage2(Message):
@@ -87,15 +87,15 @@ class CoverUpMessage2(Message):
         tmp = (data[0] >> 1) & 0x03
         self.channel = self.byte_to_channel(tmp)
         self.needs_valid_channel(self.channel, 2)
-        (self.delay_time,) = struct.unpack('>L', bytes([0]) + data[1:])
+        (self.delay_time,) = struct.unpack(">L", bytes([0]) + data[1:])
 
     def to_json(self):
         """
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['channel'] = self.channel
-        json_dict['delay_time'] = self.delay_time
+        json_dict["channel"] = self.channel
+        json_dict["delay_time"] = self.delay_time
         return json.dumps(json_dict)
 
     def set_defaults(self, address):
@@ -112,13 +112,10 @@ class CoverUpMessage2(Message):
             tmp = 0x03
         else:
             tmp = 0x0C
-        return bytes([
-            COMMAND_CODE,
-            tmp
-        ]) + struct.pack('>L', self.delay_time)[-3:]
+        return bytes([COMMAND_CODE, tmp]) + struct.pack(">L", self.delay_time)[-3:]
 
 
-register_command(COMMAND_CODE, CoverUpMessage2, 'VMB1BL')
-register_command(COMMAND_CODE, CoverUpMessage2, 'VMB2BL')
-register_command(COMMAND_CODE, CoverUpMessage, 'VMB1BLE')
-register_command(COMMAND_CODE, CoverUpMessage, 'VMB2BLE')
+register_command(COMMAND_CODE, CoverUpMessage2, "VMB1BL")
+register_command(COMMAND_CODE, CoverUpMessage2, "VMB2BL")
+register_command(COMMAND_CODE, CoverUpMessage, "VMB1BLE")
+register_command(COMMAND_CODE, CoverUpMessage, "VMB2BLE")

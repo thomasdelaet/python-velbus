@@ -3,13 +3,30 @@
 """
 # pylint: disable-msg=C0301
 from velbus.messages.bus_active import BusActiveMessage
-from velbus.messages.bus_error_counter_status_request import BusErrorStatusRequestMessage
+from velbus.messages.bus_error_counter_status_request import (
+    BusErrorStatusRequestMessage,
+)
 from velbus.messages.bus_error_counter_status import BusErrorCounterStatusMessage
 from velbus.messages.bus_off import BusOffMessage
-from velbus.messages.channel_name_part1 import ChannelNamePart1Message, ChannelNamePart1Message2, ChannelNamePart1Message3
-from velbus.messages.channel_name_part2 import ChannelNamePart2Message, ChannelNamePart2Message2, ChannelNamePart2Message3
-from velbus.messages.channel_name_part3 import ChannelNamePart3Message, ChannelNamePart3Message2, ChannelNamePart3Message3
-from velbus.messages.channel_name_request import ChannelNameRequestMessage, ChannelNameRequestMessage2
+from velbus.messages.channel_name_part1 import (
+    ChannelNamePart1Message,
+    ChannelNamePart1Message2,
+    ChannelNamePart1Message3,
+)
+from velbus.messages.channel_name_part2 import (
+    ChannelNamePart2Message,
+    ChannelNamePart2Message2,
+    ChannelNamePart2Message3,
+)
+from velbus.messages.channel_name_part3 import (
+    ChannelNamePart3Message,
+    ChannelNamePart3Message2,
+    ChannelNamePart3Message3,
+)
+from velbus.messages.channel_name_request import (
+    ChannelNameRequestMessage,
+    ChannelNameRequestMessage2,
+)
 from velbus.messages.clear_led import ClearLedMessage
 from velbus.messages.fast_blinking_led import FastBlinkingLedMessage
 from velbus.messages.interface_status_request import InterfaceStatusRequestMessage
@@ -44,10 +61,12 @@ from velbus.messages.update_led_status import UpdateLedStatusMessage
 from velbus.messages.very_fast_blinking_led import VeryFastBlinkingLedMessage
 from velbus.messages.write_data_to_memory import WriteDataToMemoryMessage
 from velbus.messages.write_memory_block import WriteMemoryBlockMessage
-from velbus.messages.write_module_address_and_serial_number import WriteModuleAddressAndSerialNumberMessage
+from velbus.messages.write_module_address_and_serial_number import (
+    WriteModuleAddressAndSerialNumberMessage,
+)
 from velbus.messages.cover_down import CoverDownMessage, CoverDownMessage2
 from velbus.messages.cover_up import CoverUpMessage, CoverUpMessage2
-from velbus.messages.cover_off import CoverOffMessage, CoverOffMessage2 
+from velbus.messages.cover_off import CoverOffMessage, CoverOffMessage2
 from velbus.messages.blind_status import BlindStatusMessage, BlindStatusNgMessage
 from velbus.messages.sensor_temperature import SensorTemperatureMessage
 from velbus.messages.kwh_status import KwhStatusMessage

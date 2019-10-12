@@ -2,12 +2,20 @@
 :author: Thomas Delaet <thomas@delaet.org>
 """
 import logging
-from velbus.constants import START_BYTE, PRIORITY, END_BYTE, MINIMUM_MESSAGE_SIZE, MAXIMUM_MESSAGE_SIZE, RTR
+from velbus.constants import (
+    START_BYTE,
+    PRIORITY,
+    END_BYTE,
+    MINIMUM_MESSAGE_SIZE,
+    MAXIMUM_MESSAGE_SIZE,
+    RTR,
+)
 from velbus.util import checksum
 from velbus.message import Message
 from velbus.messages.module_type import ModuleTypeMessage
 from velbus.messages.module_type_request import ModuleTypeRequestMessage
 from velbus.command_registry import commandRegistry
+
 
 class VelbusParser(object):
     """
@@ -15,7 +23,7 @@ class VelbusParser(object):
     """
 
     def __init__(self, controller):
-        self.logger = logging.getLogger('velbus')
+        self.logger = logging.getLogger("velbus")
         self.controller = controller
         self.buffer = bytes([])
 
@@ -53,8 +61,7 @@ class VelbusParser(object):
         Check if a valid body is waiting in buffer
         """
         # 0f f8 be 04 00 08 00 00 2f 04
-        packet_size = MINIMUM_MESSAGE_SIZE + \
-            (self.buffer[3] & 0x0F)
+        packet_size = MINIMUM_MESSAGE_SIZE + (self.buffer[3] & 0x0F)
         if len(self.buffer) < packet_size:
             self.logger.debug("Buffer does not yet contain full message")
             result = False
@@ -63,8 +70,11 @@ class VelbusParser(object):
             result = result and self.buffer[packet_size - 1] == END_BYTE
             if not result:
                 self.logger.warning("End byte not recognized")
-            result = result and checksum(
-                self.buffer[0:packet_size - 2])[0] == self.buffer[packet_size - 2]
+            result = (
+                result
+                and checksum(self.buffer[0 : packet_size - 2])[0]
+                == self.buffer[packet_size - 2]
+            )
             if not result:
                 self.logger.warning("Checksum not recognized")
         self.logger.debug("Valid Body Waiting: %s (%s)", result, str(self.buffer))
@@ -83,7 +93,7 @@ class VelbusParser(object):
             self.buffer = self.buffer[start_byte_index:]
         if self.valid_header_waiting() and self.valid_body_waiting():
             next_packet = self.extract_packet()
-            self.buffer = self.buffer[len(next_packet):]
+            self.buffer = self.buffer[len(next_packet) :]
             message = self.parse(next_packet)
             if isinstance(message, Message):
                 self.controller.new_message(message)
@@ -92,8 +102,7 @@ class VelbusParser(object):
         """
         Extract packet from buffer
         """
-        packet_size = MINIMUM_MESSAGE_SIZE + \
-            (self.buffer[3] & 0x0F)
+        packet_size = MINIMUM_MESSAGE_SIZE + (self.buffer[3] & 0x0F)
         packet = self.buffer[0:packet_size]
         return packet
 
@@ -108,8 +117,11 @@ class VelbusParser(object):
         assert data[0] == START_BYTE
         self.logger.debug("Processing message %s", str(data))
         if len(data) > MAXIMUM_MESSAGE_SIZE:
-            self.logger.warning("Velbus message are maximum %s bytes, this one is %s", str(
-                MAXIMUM_MESSAGE_SIZE), str(len(data)))
+            self.logger.warning(
+                "Velbus message are maximum %s bytes, this one is %s",
+                str(MAXIMUM_MESSAGE_SIZE),
+                str(len(data)),
+            )
             return
         if data[-1] != END_BYTE:
             self.logger.warning("end byte not correct")
@@ -123,13 +135,14 @@ class VelbusParser(object):
         data_size = data[3] & 0x0F
         if data_size + MINIMUM_MESSAGE_SIZE != len(data):
             self.logger.warning(
-                "length of data size does not match actual length of message")
+                "length of data size does not match actual length of message"
+            )
             return
         if not checksum(data[:-2])[0] == data[-2]:
             self.logger.warning("Packet has no valid checksum")
             return
         if data_size >= 1:
-            if data[4] == 0xff:
+            if data[4] == 0xFF:
                 message = ModuleTypeMessage()
                 message.populate(priority, address, rtr, data[5:-2])
                 return message
@@ -142,9 +155,18 @@ class VelbusParser(object):
                     message.populate(priority, address, rtr, data[5:-2])
                     return message
                 else:
-                    self.logger.warning("received unrecognized command %s from module %s (%s)", str(data[4]), str(address), str(module_type))
+                    self.logger.warning(
+                        "received unrecognized command %s from module %s (%s)",
+                        str(data[4]),
+                        str(address),
+                        str(module_type),
+                    )
             else:
-                self.logger.warning("received unrecognized command %s from module %s", str(data[4]), str(address))
+                self.logger.warning(
+                    "received unrecognized command %s from module %s",
+                    str(data[4]),
+                    str(address),
+                )
         else:
             if rtr:
                 message = ModuleTypeRequestMessage()

@@ -4,7 +4,7 @@
 from velbus.message import Message
 from velbus.command_registry import register_command
 
-COMMAND_CODE = 0xc9
+COMMAND_CODE = 0xC9
 
 
 class ReadDataBlockFromMemoryMessage(Message):
@@ -35,11 +35,7 @@ class ReadDataBlockFromMemoryMessage(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.high_address,
-            self.low_address
-        ])
+        return bytes([COMMAND_CODE, self.high_address, self.low_address])
 
 
 register_command(COMMAND_CODE, ReadDataBlockFromMemoryMessage)

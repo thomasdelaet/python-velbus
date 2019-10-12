@@ -11,6 +11,7 @@ class VMBMETEOModule(Module):
     """
     Velbus input module with 6 channels
     """
+
     def __init__(self, module_type, module_name, module_address, controller):
         Module.__init__(self, module_type, module_name, module_address, controller)
         self._cur = None
@@ -54,7 +55,7 @@ class VMBMETEOModule(Module):
         self._callbacks.append(callback)
 
     def get_categories(self, channel):
-        return ['sensor']
+        return ["sensor"]
 
     def get_state(self, channel):
         """
@@ -66,13 +67,13 @@ class VMBMETEOModule(Module):
         """
         Ignore channel
         """
-        return 'temperature'
+        return "temperature"
 
     def get_unit(self, channel):
         """
         Ignore channel
         """
-        return '°C'
+        return "°C"
 
 
-register_module('VMBMETEO', VMBMETEOModule)
+register_module("VMBMETEO", VMBMETEOModule)

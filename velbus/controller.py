@@ -18,13 +18,14 @@ from velbus.messages.set_realtime_clock import SetRealtimeClock
 from velbus.messages.set_daylight_saving import SetDaylightSaving
 from velbus.messages.set_date import SetDate
 
+
 class Controller(object):
     """
     Velbus Bus connection controller
     """
 
     def __init__(self, port):
-        self.logger = logging.getLogger('velbus')
+        self.logger = logging.getLogger("velbus")
         self.parser = VelbusParser(self)
         self.__subscribers = []
         self.__scan_callback = None
@@ -87,20 +88,23 @@ class Controller(object):
 
         :return: None
         """
+
         def scan_finished():
             """
             Callback when scan is finished
             """
             time.sleep(3)
-            logging.info('Scan finished')
+            logging.info("Scan finished")
             self._nb_of_modules_loaded = 0
 
             def module_loaded():
                 self._nb_of_modules_loaded += 1
                 if self._nb_of_modules_loaded >= len(self._modules):
                     callback()
+
             for module in self._modules:
                 self._modules[module].load(module_loaded)
+
         for address in range(0, 256):
             message = ModuleTypeRequestMessage(address)
             if address == 255:
@@ -136,7 +140,9 @@ class Controller(object):
             address = message.address
             m_type = message.module_type
             if name == "Unknown":
-                self.logger.warning("Unknown module (code: " + str(message.module_type) + ')')
+                self.logger.warning(
+                    "Unknown module (code: " + str(message.module_type) + ")"
+                )
                 return
             if name in ModuleRegistry:
                 module = ModuleRegistry[name](m_type, name, address, self)

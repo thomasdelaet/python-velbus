@@ -5,7 +5,7 @@ from velbus.message import Message
 from velbus.command_registry import register_command
 import json
 
-COMMAND_CODE = 0xed
+COMMAND_CODE = 0xED
 
 
 class ModuleStatusMessage(Message):
@@ -40,17 +40,18 @@ class ModuleStatusMessage(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.channels_to_byte(self.closed),
-            self.channels_to_byte(self.led_on),
-            self.channels_to_byte(self.led_slow_blinking),
-            self.channels_to_byte(self.led_fast_blinking)
-        ])
+        return bytes(
+            [
+                COMMAND_CODE,
+                self.channels_to_byte(self.closed),
+                self.channels_to_byte(self.led_on),
+                self.channels_to_byte(self.led_slow_blinking),
+                self.channels_to_byte(self.led_fast_blinking),
+            ]
+        )
 
 
 class ModuleStatusMessage2(Message):
-
     def __init__(self, address=None):
         Message.__init__(self)
         self.closed = []
@@ -75,39 +76,40 @@ class ModuleStatusMessage2(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.channels_to_byte(self.closed),
-            self.channels_to_byte(self.enabled),
-            self.channels_to_byte(self.normal),
-            self.channels_to_byte(self.locked)
-        ])
+        return bytes(
+            [
+                COMMAND_CODE,
+                self.channels_to_byte(self.closed),
+                self.channels_to_byte(self.enabled),
+                self.channels_to_byte(self.normal),
+                self.channels_to_byte(self.locked),
+            ]
+        )
 
     def to_json(self):
         """
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['closed'] = self.closed
-        json_dict['enabled'] = self.enabled
-        json_dict['normal'] = self.normal
-        json_dict['locked'] = self.locked
+        json_dict["closed"] = self.closed
+        json_dict["enabled"] = self.enabled
+        json_dict["normal"] = self.normal
+        json_dict["locked"] = self.locked
         return json.dumps(json_dict)
 
 
 class ModuleStatusPirMessage(Message):
-
     def __init__(self, address=None):
         Message.__init__(self)
         # in data[0]
-        self.dark = False               # bit 1
-        self.light = False              # bit 2
-        self.motion1 = False            # bit 3
-        self.light_motion1 = False      # bit 4
-        self.motion2 = False            # bit 5
-        self.light_motion2 = False      # bit 6
-        self.low_temp_alarm = False     # bit 7
-        self.high_temp_alarm = False    # bit 8
+        self.dark = False  # bit 1
+        self.light = False  # bit 2
+        self.motion1 = False  # bit 3
+        self.light_motion1 = False  # bit 4
+        self.motion2 = False  # bit 5
+        self.light_motion2 = False  # bit 6
+        self.low_temp_alarm = False  # bit 7
+        self.high_temp_alarm = False  # bit 8
         # in data[1] and data[2]
         self.light_value = 0
 
@@ -117,14 +119,14 @@ class ModuleStatusPirMessage(Message):
         self.needs_no_rtr(rtr)
         self.needs_data(data, 7)
         self.set_attributes(priority, address, rtr)
-        self.dark = (0x01 & data[0])
-        self.light = (0x02 & data[0])
-        self.motion1 = (0x04 & data[0])
-        self.light_motion1 = (0x08 & data[0])
-        self.motion2 = (0x10 & data[0])
-        self.light_motion2 = (0x20 & data[0])
-        self.low_temp_alarm = (0x40 & data[0])
-        self.high_temp_alarm = (0x80 & data[0])
+        self.dark = 0x01 & data[0]
+        self.light = 0x02 & data[0]
+        self.motion1 = 0x04 & data[0]
+        self.light_motion1 = 0x08 & data[0]
+        self.motion2 = 0x10 & data[0]
+        self.light_motion2 = 0x20 & data[0]
+        self.low_temp_alarm = 0x40 & data[0]
+        self.high_temp_alarm = 0x80 & data[0]
         self.light_value = (data[1] << 8) + data[2]
 
     def data_to_binary(self):
@@ -135,14 +137,14 @@ class ModuleStatusPirMessage(Message):
 
 
 register_command(COMMAND_CODE, ModuleStatusMessage)
-register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMB8PBU')
-register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMB6PBN')
-register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMB2PBN')
-register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMB6PBB')
-register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBGP1')
-register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBGP2')
-register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBGP4')
-register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBGP0')
-register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMBGPOD')
-register_command(COMMAND_CODE, ModuleStatusMessage2, 'VMB7IN')
-register_command(COMMAND_CODE, ModuleStatusPirMessage, 'VMBIRO')
+register_command(COMMAND_CODE, ModuleStatusMessage2, "VMB8PBU")
+register_command(COMMAND_CODE, ModuleStatusMessage2, "VMB6PBN")
+register_command(COMMAND_CODE, ModuleStatusMessage2, "VMB2PBN")
+register_command(COMMAND_CODE, ModuleStatusMessage2, "VMB6PBB")
+register_command(COMMAND_CODE, ModuleStatusMessage2, "VMBGP1")
+register_command(COMMAND_CODE, ModuleStatusMessage2, "VMBGP2")
+register_command(COMMAND_CODE, ModuleStatusMessage2, "VMBGP4")
+register_command(COMMAND_CODE, ModuleStatusMessage2, "VMBGP0")
+register_command(COMMAND_CODE, ModuleStatusMessage2, "VMBGPOD")
+register_command(COMMAND_CODE, ModuleStatusMessage2, "VMB7IN")
+register_command(COMMAND_CODE, ModuleStatusPirMessage, "VMBIRO")

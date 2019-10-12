@@ -11,6 +11,7 @@ class VMB2PBNModule(Module):
     """
     Velbus input module with 6 channels
     """
+
     def __init__(self, module_type, module_name, module_address, controller):
         Module.__init__(self, module_type, module_name, module_address, controller)
         self._is_closed = {}
@@ -56,7 +57,7 @@ class VMB2PBNModule(Module):
 
     def get_categories(self, channel):
         if channel in self._is_enabled and self._is_enabled[channel]:
-            return ['binary_sensor']
+            return ["binary_sensor"]
         else:
             return []
 
@@ -65,6 +66,7 @@ class VMB6PBNModule(VMB2PBNModule):
     """
     Velbus input module with 7 channels
     """
+
     def number_of_channels(self):
         return 6
 
@@ -73,10 +75,11 @@ class VMB8PBUModule(VMB2PBNModule):
     """
     Velbus input module with 7 channels
     """
+
     def number_of_channels(self):
         return 6
 
 
-register_module('VMB2PBN', VMB2PBNModule)
-register_module('VMB6PBN', VMB6PBNModule)
-register_module('VMB8PBU', VMB8PBUModule)
+register_module("VMB2PBN", VMB2PBNModule)
+register_module("VMB6PBN", VMB6PBNModule)
+register_module("VMB8PBU", VMB8PBUModule)

@@ -6,14 +6,16 @@ from velbus.message import Message
 from velbus.command_registry import register_command
 from velbus.module_registry import MODULE_DIRECTORY
 
-COMMAND_CODE = 0xff
+COMMAND_CODE = 0xFF
+
 
 class ModuleTypeMessage(Message):
     """
     send by: VMB6IN, VMB4RYLD
     received by:
     """
-    #pylint: disable-msg=R0902
+
+    # pylint: disable-msg=R0902
 
     def __init__(self, address=None):
         Message.__init__(self)
@@ -45,8 +47,7 @@ class ModuleTypeMessage(Message):
         self.needs_data(data, 4)
         self.set_attributes(priority, address, rtr)
         self.module_type = data[0]
-        (self.serial,) = struct.unpack(
-            '>L', bytes([0, 0, data[1], data[2]]))
+        (self.serial,) = struct.unpack(">L", bytes([0, 0, data[1], data[2]]))
         self.memory_map_version = data[3]
         if len(data) > 4:
             self.build_year = data[4]
@@ -56,15 +57,17 @@ class ModuleTypeMessage(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.module_type,
-            self.channels_to_byte(self.led_on),
-            self.channels_to_byte(self.led_slow_blinking),
-            self.channels_to_byte(self.led_fast_blinking),
-            self.build_year,
-            self.build_week
-        ])
+        return bytes(
+            [
+                COMMAND_CODE,
+                self.module_type,
+                self.channels_to_byte(self.led_on),
+                self.channels_to_byte(self.led_slow_blinking),
+                self.channels_to_byte(self.led_fast_blinking),
+                self.build_year,
+                self.build_week,
+            ]
+        )
 
 
 register_command(COMMAND_CODE, ModuleTypeMessage)

@@ -3,7 +3,8 @@
 """
 from velbus.message import Message
 from velbus.command_registry import register_command
-COMMAND_CODE = 0xf5
+
+COMMAND_CODE = 0xF5
 
 
 class ClearLedMessage(Message):
