@@ -114,4 +114,5 @@ class DimmerChannelStatusMessage(Message):
             self.led_status
         ]) + struct.pack('>L', self.delay_time)[-3:]
 
+
 register_command(COMMAND_CODE, DimmerChannelStatusMessage)

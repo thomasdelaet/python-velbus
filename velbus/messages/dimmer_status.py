@@ -66,7 +66,7 @@ class DimmerStatusMessage(Message):
         self.needs_valid_channel(self.channel, 1)
         self.led_status = data[2]
         (self.delay_time,) = struct.unpack('>L', bytes([0]) + data[4:])
-        self.dimmer_config = data[6] 
+        self.dimmer_config = data[6]
 
     def to_json(self):
         """
@@ -127,7 +127,7 @@ class DimmerStatusMessage(Message):
         :return: bool
         """
         return self.dimmer_mode == MODE_SLOW_OFF
-    
+
     def cur_dimmer_state(self):
         """
         :return: int
@@ -144,5 +144,6 @@ class DimmerStatusMessage(Message):
             self.dimmer_state,
             self.led_status
         ]) + struct.pack('>L', self.delay_time)[-3:]
+
 
 register_command(COMMAND_CODE, DimmerStatusMessage, 'VMBDME')

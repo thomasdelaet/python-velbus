@@ -119,7 +119,7 @@ class RelayStatusMessage(Message):
         if self.channel == self.status:
             return True
         else:
-            return False    
+            return False
 
     def has_interval_timer_on(self):
         """
