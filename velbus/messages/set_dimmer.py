@@ -27,7 +27,7 @@ class SetDimmerMessage(Message):
             self.set_address(address)
         self.set_high_priority()
         self.set_no_rtr()
-        
+
     def populate(self, priority, address, rtr, data):
         """
         :return: None
@@ -47,7 +47,7 @@ class SetDimmerMessage(Message):
         json_dict = self.to_json_basic()
         json_dict['channels'] = self.dimmer_channels
         return json.dumps(json_dict)
-        
+
     def data_to_binary(self):
         """
         :return: bytes
@@ -59,5 +59,6 @@ class SetDimmerMessage(Message):
             0,
             0
         ])
+
 
 register_command(COMMAND_CODE, SetDimmerMessage, 'VMBDME')

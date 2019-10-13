@@ -62,4 +62,5 @@ class SliderStatusMessage(Message):
             self.slider_long_pressed
         ])
 
+
 register_command(COMMAND_CODE, SliderStatusMessage)

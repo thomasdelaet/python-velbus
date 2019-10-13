@@ -1,13 +1,13 @@
 """
 :author: Frank van Breugel
 """
-import logging
 from velbus.module import Module
 from velbus.module_registry import register_module
 from velbus.messages.set_dimmer import SetDimmerMessage
 from velbus.messages.restore_dimmer import RestoreDimmerMessage
 from velbus.messages.dimmer_status import DimmerStatusMessage
 from velbus.messages.slider_status import SliderStatusMessage
+
 
 class VMB4DCModule(Module):
     """
@@ -84,5 +84,6 @@ class VMB4DCModule(Module):
 
     def get_categories(self, channel):
         return ['light']
+
 
 register_module('VMB4DC', VMB4DCModule)

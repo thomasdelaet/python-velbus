@@ -1,12 +1,12 @@
 """
 :author: Thomas Delaet <thomas@delaet.org>
 """
-import logging
 from velbus.module import Module
 from velbus.module_registry import register_module
 from velbus.messages.switch_relay_off import SwitchRelayOffMessage
 from velbus.messages.switch_relay_on import SwitchRelayOnMessage
 from velbus.messages.relay_status import RelayStatusMessage
+
 
 class VMB4RYModule(Module):
     """
@@ -89,6 +89,7 @@ class VMB4RY(VMB4RYModule):
             if message.channel in self._callbacks:
                 for callback in self._callbacks[message.channel]:
                     callback(message.is_on())
+
 
 register_module('VMB4RYLD', VMB4RYModule)
 register_module('VMB4RYNO', VMB4RYModule)
