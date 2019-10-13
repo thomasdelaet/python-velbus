@@ -54,29 +54,31 @@ The following Velbus modules are currently supported by this library:
 
 | Module name | Description | Status | Comments |
 | ----------- | ----------- | ------ | -------- |
-| VMB6IN | 6 channel input module | SUPPORTED | All messages are supported |
-| VMB7IN | 7 channel input module | SUPPORTED | All messages are supported |
+| VMB1BL | 1 channel blind module | SUPPORTED | All messages are supported |
+| VMB1RS | Serial interface | SUPPORTED | All messages are supported |
+| VMB1RYNO | 1 channel relay module | SUPPORTED | All messages are supported |
+| VMB1RYNOS | 1 channel relay module | SUPPORTED | All messages are supported |
+| VMB1TS | 1 channel temperatue sensor | SUPPORTED | Temperature supported |
+| VMB1USB | USB configuration module | SUPPORTED | All messages are supported |
+| VMB2BL | 2 channel blind module | SUPPORTED | All messages are supported |
+| VMB2BLE | 2 channel blind module | SUPPORTED | All messages are supported |
+| VMB2PBN | 2 channel input module | SUPPORTED | All messages are supported |
+| VMB4DC | 4 channel 0-10 dimmer module | SUPPORTED | All messages are supported |
 | VMB4RY | 4 channel relay module | SUPPORTED | All messages are supported |
 | VMB4RYLD | 4 channel relay module | SUPPORTED | All messages are supported |
 | VMB4RYNO | 4 channel relay module | SUPPORTED | All messages are supported |
-| VMB1RYNO | 1 channel relay module | SUPPORTED | All messages are supported |
-| VMB1RYNOS | 1 channel relay module | SUPPORTED | All messages are supported |
-| VMB2PBN | 2 channel input module | SUPPORTED | All messages are supported |
+| VMB6IN | 6 channel input module | SUPPORTED | All messages are supported |
 | VMB6PBN | 6 channel input module | SUPPORTED | All messages are supported |
+| VMB7IN | 7 channel input module | SUPPORTED | All messages are supported |
 | VMB8PBU | 8 channel input module | SUPPORTED | All messages are supported |
+| VMBDME | 1 channel dimmer module | SUPPORTED | All messages are supported |
 | VMBGP1 | 1 channel glass panel | SUPPORTED | Input and Temperature supported |
 | VMBGP2 | 2 channel glass panel | SUPPORTED | Input and Temperature supported |
 | VMBGP4 | 4 channel glass panel | SUPPORTED | Input and Temperature supported |
 | VMBGPO | 72 channel glass panel with oled | SUPPORTED | Input and Temperature supported |
 | VMBGPOD | 72 channel glass panel with oled and thermostat | SUPPORTED | Input and Temperature supported |
-| VMB1TS | 1 channel temperatue sensor | SUPPORTED | Temperature supported |
-| VMB1BL | 1 channel blind module | SUPPORTED | All messages are supported |
-| VMB2BL | 2 channel blind module | SUPPORTED | All messages are supported |
-| VMB2BLE | 2 channel blind module | SUPPORTED | All messages are supported |
-| VMB1RS | Serial interface | SUPPORTED | All messages are supported |
-| VMB1USB | USB configuration module | SUPPORTED | All messages are supported |
-| VMBRSUSB | Configuration module with USB and RS-232 interface | SUPPORTED | All messages are supported |
 | VMBMETEO | meteo modules | SUPPORTED | Temperature, wind, rain and light sensor supported |
+| VMBRSUSB | Configuration module with USB and RS-232 interface | SUPPORTED | All messages are supported |
 
 # Adding support for other modules
 
