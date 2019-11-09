@@ -7,6 +7,7 @@ from velbus.messages.switch_relay_off import SwitchRelayOffMessage
 from velbus.messages.switch_relay_on import SwitchRelayOnMessage
 from velbus.messages.relay_status import RelayStatusMessage
 
+
 class VMB4RYModule(Module):
     """
     Velbus Relay module.
@@ -82,9 +83,16 @@ class VMB4RY(VMB4RYModule):
     def number_of_channels(self):
         return 4
 
+    def _on_message(self, message):
+        if isinstance(message, RelayStatusMessage):
+            self._is_on[message.channel] = message.channel_is_on()
+            if message.channel in self._callbacks:
+                for callback in self._callbacks[message.channel]:
+                    callback(message.is_on())
+
 
 register_module('VMB4RYLD', VMB4RYModule)
 register_module('VMB4RYNO', VMB4RYModule)
 register_module('VMB1RYNO', VMB4RYModule)
 register_module('VMB1RYNOS', VMB4RYModule)
-register_module('VMB4RY', VMB4RYModule)
+register_module('VMB4RY', VMB4RY)
