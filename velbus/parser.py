@@ -23,9 +23,12 @@ class VelbusParser(object):
         """
         Add new incoming data to buffer and try to process
         """
-        self.buffer += data
-        while len(self.buffer) >= 6:
-            self.next_packet()
+        try:
+            self.buffer += data
+            while len(self.buffer) >= 6:
+                self.next_packet()
+        except Exception:
+            self.logger.error("Error while processing received data")
 
     def valid_header_waiting(self):
         """
