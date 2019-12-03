@@ -5,7 +5,7 @@ from velbus.module import Module
 from velbus.module_registry import register_module
 from velbus.messages.set_dimmer import SetDimmerMessage
 from velbus.messages.restore_dimmer import RestoreDimmerMessage
-from velbus.messages.dimmer_status import DimmerStatusMessage
+from velbus.messages.dimmer_channel_status import DimmerChannelStatusMessage
 from velbus.messages.slider_status import SliderStatusMessage
 
 
@@ -76,7 +76,7 @@ class VMB4DCModule(Module):
         self._controller.send(message, callback)
 
     def _on_message(self, message):
-        if isinstance(message, DimmerStatusMessage):
+        if isinstance(message, DimmerChannelStatusMessage):
             self._dimmer_state[message.channel] = message.cur_dimmer_state()
             if message.channel in self._callbacks:
                 for callback in self._callbacks[message.channel]:
