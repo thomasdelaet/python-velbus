@@ -32,7 +32,7 @@ class SliderStatusMessage(Message):
         self.set_attributes(priority, address, rtr)
         self.channel = self.byte_to_channel(data[0])
         self.needs_valid_channel(self.channel, 5)
-        self.slider_state = data[1]
+        self.slider_state = int.from_bytes([data[1]], byteorder='big')
         self.slider_long_pressed = data[2]
 
     def to_json(self):
@@ -63,4 +63,5 @@ class SliderStatusMessage(Message):
         ])
 
 
-register_command(COMMAND_CODE, SliderStatusMessage)
+register_command(COMMAND_CODE, SliderStatusMessage, 'VMBDME')
+register_command(COMMAND_CODE, SliderStatusMessage, 'VMB4DC')
