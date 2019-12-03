@@ -21,6 +21,19 @@ class VMBDMEModule(Module):
     def number_of_channels(self):
         return 1
 
+    def is_on(self, channel):
+        """
+        Check if a dimmer is turned on
+
+        :return: bool
+        """
+        if channel in self._dimmer_state:
+            if self._dimmer_state[channel] == 0:
+                return False
+            else:
+                return True
+        return False
+
     def get_dimmer_state(self, channel):
         """
         Return the dimmer state
