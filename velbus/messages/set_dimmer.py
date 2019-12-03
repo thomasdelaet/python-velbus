@@ -20,6 +20,7 @@ class SetDimmerMessage(Message):
         self.dimmer_channels = []
         self.logger = logging.getLogger('velbus')
         self.dimmer_state = 0
+        self.dimmer_transitiontime = 0
         self.set_defaults(address)
 
     def set_defaults(self, address):
@@ -39,6 +40,7 @@ class SetDimmerMessage(Message):
         self.set_attributes(priority, address, rtr)
         self.dimmer_channels = self.byte_to_channels(data[0])
         self.dimmer_state = data[1]
+        self.dimmer_transitiontime = int.from_bytes(data[[2,3]], byteorder="big", signed=False)
 
     def to_json(self):
         """
@@ -46,6 +48,8 @@ class SetDimmerMessage(Message):
         """
         json_dict = self.to_json_basic()
         json_dict['channels'] = self.dimmer_channels
+        json_dict['state'] = self.dimmer_state
+        json_dict['transitiontime'] = self.dimmer_transitiontime
         return json.dumps(json_dict)
 
     def data_to_binary(self):
@@ -56,9 +60,8 @@ class SetDimmerMessage(Message):
             COMMAND_CODE,
             self.channels_to_byte(self.dimmer_channels),
             self.dimmer_state,
-            0,
-            0
-        ])
+        ]) + self.dimmer_transitiontime.to_bytes(2, byteorder="big", signed=False)
 
 
 register_command(COMMAND_CODE, SetDimmerMessage, 'VMBDME')
+register_command(COMMAND_CODE, SetDimmerMessage, 'VMB4DC')
