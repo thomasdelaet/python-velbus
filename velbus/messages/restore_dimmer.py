@@ -2,7 +2,6 @@
 :author: Frank van Breugel
 """
 import json
-import logging
 from velbus.message import Message
 from velbus.command_registry import register_command
 
@@ -19,7 +18,6 @@ class RestoreDimmerMessage(Message):
     def __init__(self, address=None):
         Message.__init__(self)
         self.dimmer_channels = []
-        self.logger = logging.getLogger('velbus')
         self.set_defaults(address)
 
     def set_defaults(self, address):
