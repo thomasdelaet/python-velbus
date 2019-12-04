@@ -116,7 +116,7 @@ class RelayStatusMessage(Message):
         """
         :return: bool
         """
-        if ((self.status >> (self.channel-1))&1 != 0):
+        if ((self.status >> (self.channel-1)) & 1 != 0):
             return True
         else:
             return False

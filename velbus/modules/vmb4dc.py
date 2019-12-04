@@ -13,9 +13,10 @@ class VMB4DCModule(Module):
     """
     Velbus dimmer module with 4 dimmer channels
     """
+
     def __init__(self, module_type, module_name, module_address, controller):
-        Module.__init__(self, module_type, module_name, module_address, \
-            controller)
+        Module.__init__(self, module_type, module_name, module_address,
+                        controller)
         self._dimmer_state = {}
         self._callbacks = {}
 
@@ -45,8 +46,8 @@ class VMB4DCModule(Module):
             return self._dimmer_state[channel]
         return 0
 
-    def set_dimmer_state(self, channel, slider, transitiontime=0, \
-        callback=None):
+    def set_dimmer_state(self, channel, slider, transitiontime=0,
+                         callback=None):
         """
         Set dimmer to slider
 
