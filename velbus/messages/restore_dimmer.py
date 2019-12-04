@@ -36,7 +36,8 @@ class RestoreDimmerMessage(Message):
         self.needs_data(data, 1)
         self.set_attributes(priority, address, rtr)
         self.dimmer_channels = self.byte_to_channels(data[0])
-        self.dimmer_transitiontime = int.from_bytes(data[[2,3]], byteorder="big", signed=False)
+        self.dimmer_transitiontime = int.from_bytes(data[[2, 3]], \
+            byteorder="big", signed=False)
 
     def to_json(self):
         """
@@ -55,7 +56,8 @@ class RestoreDimmerMessage(Message):
             COMMAND_CODE,
             self.channels_to_byte(self.dimmer_channels),
             0,
-        ]) + self.dimmer_transitiontime.to_bytes(2, byteorder="big", signed=False)
+        ]) + self.dimmer_transitiontime.to_bytes(2, byteorder="big", \
+            signed=False)
 
 
 register_command(COMMAND_CODE, RestoreDimmerMessage)

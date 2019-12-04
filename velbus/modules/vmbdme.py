@@ -14,7 +14,8 @@ class VMBDMEModule(Module):
     Velbus dimmer module with 1 channel
     """
     def __init__(self, module_type, module_name, module_address, controller):
-        Module.__init__(self, module_type, module_name, module_address, controller)
+        Module.__init__(self, module_type, module_name, module_address, \
+            controller)
         self._dimmer_state = {}
         self._callbacks = {}
 
@@ -44,7 +45,8 @@ class VMBDMEModule(Module):
             return self._dimmer_state[channel]
         return 0
 
-    def set_dimmer_state(self, channel, slider, transitiontime=0, callback=None):
+    def set_dimmer_state(self, channel, slider, transitiontime=0, \
+        callback=None):
         """
         Set dimmer to slider
 
@@ -61,7 +63,8 @@ class VMBDMEModule(Module):
         message.dimmer_transitiontime = transitiontime
         self._controller.send(message, callback)
 
-    def restore_dimmer_state(self, channel, transitiontime=0, callback=None):
+    def restore_dimmer_state(self, channel, transitiontime=0, \
+        callback=None):
         """
         restore dimmer to last known state
 
