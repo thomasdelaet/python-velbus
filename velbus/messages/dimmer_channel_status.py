@@ -35,11 +35,10 @@ class DimmerChannelStatusMessage(Message):
 
     def __init__(self, address=None):
         Message.__init__(self)
-        self.channel = 0
+        self.channel = 1
         self.disable_inhibit_forced = 0
         self.dimmer_state = 0
         self.led_status = 0
-        self.status = 0
         self.delay_time = 0
         self.set_defaults(address)
 
@@ -55,8 +54,8 @@ class DimmerChannelStatusMessage(Message):
         self.channel = self.byte_to_channel(data[0])
         self.needs_valid_channel(self.channel, 5)
         self.disable_inhibit_forced = data[1]
-        self.dimmer_state = data[2]
-        self.status = data[2]
+        self.dimmer_state = int.from_bytes([data[2]], byteorder='big',
+                                           signed=False)
         self.led_status = data[3]
         (self.delay_time,) = struct.unpack('>L', bytes([0]) + data[4:])
 
@@ -96,7 +95,7 @@ class DimmerChannelStatusMessage(Message):
         """
         return self.disable_inhibit_forced == CHANNEL_DISABLED
 
-    def get_dimmer_state(self):
+    def cur_dimmer_state(self):
         """
         :return: int
         """
@@ -115,4 +114,4 @@ class DimmerChannelStatusMessage(Message):
         ]) + struct.pack('>L', self.delay_time)[-3:]
 
 
-register_command(COMMAND_CODE, DimmerChannelStatusMessage)
+register_command(COMMAND_CODE, DimmerChannelStatusMessage, 'VMB4DC')

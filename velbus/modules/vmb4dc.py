@@ -5,7 +5,7 @@ from velbus.module import Module
 from velbus.module_registry import register_module
 from velbus.messages.set_dimmer import SetDimmerMessage
 from velbus.messages.restore_dimmer import RestoreDimmerMessage
-from velbus.messages.dimmer_status import DimmerStatusMessage
+from velbus.messages.dimmer_channel_status import DimmerChannelStatusMessage
 from velbus.messages.slider_status import SliderStatusMessage
 
 
@@ -13,13 +13,28 @@ class VMB4DCModule(Module):
     """
     Velbus dimmer module with 4 dimmer channels
     """
+
     def __init__(self, module_type, module_name, module_address, controller):
-        Module.__init__(self, module_type, module_name, module_address, controller)
+        Module.__init__(self, module_type, module_name, module_address,
+                        controller)
         self._dimmer_state = {}
         self._callbacks = {}
 
     def number_of_channels(self):
         return 4
+
+    def is_on(self, channel):
+        """
+        Check if a dimmer is turned on
+
+        :return: bool
+        """
+        if channel in self._dimmer_state:
+            if self._dimmer_state[channel] == 0:
+                return False
+            else:
+                return True
+        return False
 
     def get_dimmer_state(self, channel):
         """
@@ -31,7 +46,8 @@ class VMB4DCModule(Module):
             return self._dimmer_state[channel]
         return 0
 
-    def set_dimmer_state(self, channel, slider, callback=None):
+    def set_dimmer_state(self, channel, slider, transitiontime=0,
+                         callback=None):
         """
         Set dimmer to slider
 
@@ -45,9 +61,11 @@ class VMB4DCModule(Module):
         message = SetDimmerMessage(self._address)
         message.dimmer_channels = [channel]
         message.dimmer_state = slider
+        message.dimmer_transitiontime = transitiontime
+        self._dimmer_state[channel] = slider
         self._controller.send(message, callback)
 
-    def restore_dimmer_state(self, channel, callback=None):
+    def restore_dimmer_state(self, channel, transitiontime=0, callback=None):
         """
         restore dimmer to last known state
 
@@ -60,10 +78,11 @@ class VMB4DCModule(Module):
             callback = callb
         message = RestoreDimmerMessage(self._address)
         message.dimmer_channels = [channel]
+        message.dimmer_transitiontime = transitiontime
         self._controller.send(message, callback)
 
     def _on_message(self, message):
-        if isinstance(message, DimmerStatusMessage):
+        if isinstance(message, DimmerChannelStatusMessage):
             self._dimmer_state[message.channel] = message.cur_dimmer_state()
             if message.channel in self._callbacks:
                 for callback in self._callbacks[message.channel]:

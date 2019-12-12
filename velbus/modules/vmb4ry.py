@@ -88,7 +88,7 @@ class VMB4RY(VMB4RYModule):
             self._is_on[message.channel] = message.channel_is_on()
             if message.channel in self._callbacks:
                 for callback in self._callbacks[message.channel]:
-                    callback(message.is_on())
+                    callback(message.channel_is_on())
 
 
 register_module('VMB4RYLD', VMB4RYModule)

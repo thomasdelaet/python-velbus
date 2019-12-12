@@ -43,7 +43,7 @@ class DimmerStatusMessage(Message):
 
     def __init__(self, address=None):
         Message.__init__(self)
-        self.channel = 0
+        self.channel = 1
         self.disable_inhibit_forced = 0
         self.dimmer_mode = 0
         self.dimmer_state = 0
@@ -62,7 +62,9 @@ class DimmerStatusMessage(Message):
         self.needs_data(data, 7)
         self.set_attributes(priority, address, rtr)
         self.dimmer_mode = data[0]
-        self.dimmer_state = data[1]
+        self.channel = 1
+        self.dimmer_state = int.from_bytes([data[1]], byteorder='big',
+                                           signed=False)
         self.needs_valid_channel(self.channel, 1)
         self.led_status = data[2]
         (self.delay_time,) = struct.unpack('>L', bytes([0]) + data[4:])

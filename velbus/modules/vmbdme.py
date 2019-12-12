@@ -13,13 +13,28 @@ class VMBDMEModule(Module):
     """
     Velbus dimmer module with 1 channel
     """
+
     def __init__(self, module_type, module_name, module_address, controller):
-        Module.__init__(self, module_type, module_name, module_address, controller)
+        Module.__init__(self, module_type, module_name, module_address,
+                        controller)
         self._dimmer_state = {}
         self._callbacks = {}
 
     def number_of_channels(self):
         return 1
+
+    def is_on(self, channel):
+        """
+        Check if a dimmer is turned on
+
+        :return: bool
+        """
+        if channel in self._dimmer_state:
+            if self._dimmer_state[channel] == 0:
+                return False
+            else:
+                return True
+        return False
 
     def get_dimmer_state(self, channel):
         """
@@ -31,7 +46,8 @@ class VMBDMEModule(Module):
             return self._dimmer_state[channel]
         return 0
 
-    def set_dimmer_state(self, channel, slider, callback=None):
+    def set_dimmer_state(self, channel, slider, transitiontime=0,
+                         callback=None):
         """
         Set dimmer to slider
 
@@ -45,9 +61,11 @@ class VMBDMEModule(Module):
         message = SetDimmerMessage(self._address)
         message.dimmer_channels = [channel]
         message.dimmer_state = slider
+        message.dimmer_transitiontime = transitiontime
         self._controller.send(message, callback)
 
-    def restore_dimmer_state(self, channel, callback=None):
+    def restore_dimmer_state(
+            self, channel, transitiontime=0, callback=None):
         """
         restore dimmer to last known state
 
@@ -60,6 +78,7 @@ class VMBDMEModule(Module):
             callback = callb
         message = RestoreDimmerMessage(self._address)
         message.dimmer_channels = [channel]
+        message.dimmer_transitiontime = transitiontime
         self._controller.send(message, callback)
 
     def _on_message(self, message):
