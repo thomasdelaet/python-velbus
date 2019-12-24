@@ -63,6 +63,6 @@ class ModuleSubTypeMessage(Message):
 register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGP1')
 register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGP2')
 register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGP4')
-register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGP0')
 register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGPOD')
+#register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGPO')
 

@@ -193,6 +193,6 @@ class VMBGPPirModule(VMBGPxModule):
 register_module('VMBGP1', VMBGPxModule)
 register_module('VMBGP2', VMBGPxModule)
 register_module('VMBGP4', VMBGPxModule)
-register_module('VMBGP0', VMBGPxDModule)
+register_module('VMBGPO', VMBGPxDModule)
 register_module('VMBGPOD', VMBGPxDModule)
 register_module('VMBGP4PIR', VMBGPPirModule)
