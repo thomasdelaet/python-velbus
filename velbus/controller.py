@@ -146,7 +146,6 @@ class Controller(object):
             else:
                 self.logger.warning("Module " + name + " is not yet supported")
         if isinstance(message, ModuleSubTypeMessage):
-            self.logger.error("Module subtype response received from address " + str(message.address))
             self.logger.debug("Module subtype response received from address " + str(message.address))
             name = message.module_name()
             address = message.address
