@@ -15,7 +15,8 @@ from velbus.messages.set_temperature import SetTemperatureMessage
 
 class VMBGPxModule(Module):
     """
-    Velbus input module with 6 channels
+    Velbus input module with 32 input channels and 1 temperature sensor
+    Input channel 9 up to 32 are addressable by sub modules
     """
     def __init__(self, module_type, module_name, module_address, controller):
         Module.__init__(self, module_type, module_name, module_address, controller)
@@ -246,7 +247,7 @@ class VMBGPPirModule(VMBGPxModule):
         # 5 = dark/light
         # 6 = Motion
         # 7 = light dependant motion
-        # 8 = absece
+        # 8 = absence
         # 9 = temperature
         return 9
 

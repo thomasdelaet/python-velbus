@@ -118,7 +118,7 @@ class Module(object):
 
     def number_of_channels(self):
         """
-        Retrieve the number of avaiable channels in this module
+        Retrieve the number of available channels in this module
 
         :return: int
         """
