@@ -98,6 +98,7 @@ class Controller(object):
 
             def module_loaded():
                 self._nb_of_modules_loaded += 1
+                self.logger.debug("Loaded modules " + str(self._nb_of_modules_loaded) + " of " + str(len(self._modules)))
                 if self._nb_of_modules_loaded >= len(self._modules):
                     callback()
             for module in self._modules:
@@ -132,7 +133,7 @@ class Controller(object):
         if isinstance(message, ReceiveBufferFullMessage):
             self.logger.error("Velbus receive buffer full message received")
         if isinstance(message, ModuleTypeMessage):
-            self.logger.debug("Module type response received")
+            self.logger.debug("Module type response received from address " + str(message.address))
             name = message.module_name()
             address = message.address
             m_type = message.module_type
@@ -146,6 +147,7 @@ class Controller(object):
                 self.logger.warning("Module " + name + " is not yet supported")
         if isinstance(message, ModuleSubTypeMessage):
             self.logger.error("Module subtype response received from address " + str(message.address))
+            self.logger.debug("Module subtype response received from address " + str(message.address))
             name = message.module_name()
             address = message.address
             m_type = message.module_type
