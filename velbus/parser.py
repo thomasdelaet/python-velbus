@@ -6,6 +6,7 @@ from velbus.constants import START_BYTE, PRIORITY, END_BYTE, MINIMUM_MESSAGE_SIZ
 from velbus.util import checksum
 from velbus.message import Message
 from velbus.messages.module_type import ModuleTypeMessage
+from velbus.messages.module_subtype import ModuleSubTypeMessage
 from velbus.messages.module_type_request import ModuleTypeRequestMessage
 from velbus.command_registry import commandRegistry
 
@@ -134,6 +135,10 @@ class VelbusParser(object):
         if data_size >= 1:
             if data[4] == 0xff:
                 message = ModuleTypeMessage()
+                message.populate(priority, address, rtr, data[5:-2])
+                return message
+            if data[4] == 0xb0:
+                message = ModuleSubTypeMessage()
                 message.populate(priority, address, rtr, data[5:-2])
                 return message
             elif address in self.controller._modules:
