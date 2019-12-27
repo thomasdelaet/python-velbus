@@ -25,6 +25,7 @@ class VMBGPxModule(Module):
         self._min = None
         self._max = None
         self._callbacks = {}
+        self._controllable_channels = 8
 
     def is_closed(self, channel):
         if channel in self._is_closed:
@@ -46,19 +47,107 @@ class VMBGPxModule(Module):
         return self._cur
 
     def number_of_channels(self):
-        # 1-8 = inputs
-        # 9 = temp sensor
-        return 9
+        # 1-32 = inputs
+        # 33 = temperature sensor
+        return 33
 
     def _on_message(self, message):
         if isinstance(message, SensorTemperatureMessage):
             self._cur = message.cur
             self._min = message.min
             self._max = message.max
-            if 9 in self._callbacks:
-                for callback in self._callbacks[9]:
+            if 33 in self._callbacks:
+                for callback in self._callbacks[33]:
                     callback(message.getCurTemp())
         elif isinstance(message, PushButtonStatusMessage):
+            for channel in message.closed:
+                self._is_closed[channel] = True
+            for channel in message.opened:
+                self._is_closed[channel] = False
+            for channel in message.get_channels():
+                if channel in self._callbacks:
+                    for callback in self._callbacks[channel]:
+                        callback(self._is_closed[channel])
+        elif isinstance(message, ModuleStatusMessage2):
+            for channel in list(range(1, self._controllable_channels + 1)):
+                if channel in message.closed:
+                    self._is_closed[channel] = True
+                else:
+                    self._is_closed[channel] = False
+                if channel in message.enabled:
+                    self._is_enabled[channel] = True
+                else:
+                    self._is_enabled[channel] = False
+                if channel in self._callbacks:
+                    for callback in self._callbacks[channel]:
+                        callback(self._is_closed[channel])
+
+    def on_status_update(self, channel, callback):
+        """
+        Callback to execute on status of update of channel
+        """
+        if channel not in self._callbacks:
+            self._callbacks[channel] = []
+        self._callbacks[channel].append(callback)
+
+    def get_categories(self, channel):
+        if channel == 33:
+            return ['sensor']
+        elif channel in self._is_enabled and self._is_enabled[channel]:
+            return ['binary_sensor']
+        else:
+            return []
+
+    def get_state(self, channel):
+        """
+        Can only be called for channel 33
+        So ignore channel
+        """
+        return self._cur
+
+    def get_class(self, channel):
+        """
+        Can only be called for channel 33
+        So ignore channel
+        """
+        return 'temperature'
+
+    def get_unit(self, channel):
+        """
+        Can only be called for channel 33
+        So ignore channel
+        """
+        return '°C'
+
+
+class VMBGPxSubModule(Module):
+    """
+    Velbus input sub module with 8 input channels
+    """
+
+    def __init__(self, module_type, module_name, module_address, master_address, sub_module, controller):
+        Module.__init__(self, module_type, module_name, module_address, controller)
+        self._is_closed = {}
+        self._is_enabled = {}
+        self._callbacks = {}
+        self._master_address = master_address
+        self.sub_module = sub_module
+
+    def _is_submodule(self):
+        return True
+
+    def is_closed(self, channel):
+        if channel in self._is_closed:
+            return self._is_closed[channel]
+        return False
+
+    def is_enabled(self, channel):
+        if channel in self._is_enabled:
+            return self._is_enabled[channel]
+        return False
+
+    def _on_message(self, message):
+        if isinstance(message, PushButtonStatusMessage):
             for channel in message.closed:
                 self._is_closed[channel] = True
             for channel in message.opened:
@@ -77,9 +166,9 @@ class VMBGPxModule(Module):
                     self._is_enabled[channel] = True
                 else:
                     self._is_enabled[channel] = False
-            if channel in self._callbacks:
-                for callback in self._callbacks[channel]:
-                    callback(self._is_closed[channel])
+                if channel in self._callbacks:
+                    for callback in self._callbacks[channel]:
+                        callback(self._is_closed[channel])
 
     def on_status_update(self, channel, callback):
         """
@@ -90,33 +179,13 @@ class VMBGPxModule(Module):
         self._callbacks[channel].append(callback)
 
     def get_categories(self, channel):
-        if channel == 9:
-            return ['sensor']
-        elif channel in self._is_enabled and self._is_enabled[channel]:
+        if channel in self._is_enabled and self._is_enabled[channel]:
             return ['binary_sensor']
         else:
             return []
 
-    def get_state(self, channel):
-        """
-        Can only be called for channel 9
-        So ignore channel
-        """
-        return self._cur
-
-    def get_class(self, channel):
-        """
-        Can only be called for channel 9
-        So ignore channel
-        """
-        return 'temperature'
-
-    def get_unit(self, channel):
-        """
-        Can only be called for channel 9
-        So ignore channel
-        """
-        return '°C'
+    def number_of_channels(self):
+        return 8
 
 
 class VMBGPxDModule(VMBGPxModule):
@@ -193,6 +262,7 @@ class VMBGPPirModule(VMBGPxModule):
 register_module('VMBGP1', VMBGPxModule)
 register_module('VMBGP2', VMBGPxModule)
 register_module('VMBGP4', VMBGPxModule)
-register_module('VMBGPO', VMBGPxDModule)
+register_module('VMBGPO', VMBGPxModule)
 register_module('VMBGPOD', VMBGPxDModule)
+register_module('SUB_VMBGPO', VMBGPxSubModule)
 register_module('VMBGP4PIR', VMBGPPirModule)

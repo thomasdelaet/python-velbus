@@ -9,6 +9,7 @@ from velbus.messages.channel_name_part2 import ChannelNamePart2Message2
 from velbus.messages.channel_name_part3 import ChannelNamePart3Message
 from velbus.messages.channel_name_part3 import ChannelNamePart3Message2
 from velbus.messages.module_type import ModuleTypeMessage
+from velbus.messages.module_subtype import ModuleSubTypeMessage
 from velbus.messages.module_status_request import ModuleStatusRequestMessage
 from velbus.messages.channel_name_request import ChannelNameRequestMessage
 
@@ -20,6 +21,8 @@ class Module(object):
         self._type = module_type
         self._name = module_name
         self._address = module_address
+        self._master_address = 0xff
+        self.sub_module = 0
         self.serial = 0
         self.memory_map_version = 0
         self.build_year = 0
@@ -73,18 +76,23 @@ class Module(object):
         """
         Process received message
         """
-        if message.address != self._address:
-            return
         if isinstance(message, ChannelNamePart1Message) or isinstance(message, ChannelNamePart1Message2):
-            self._process_channel_name_message(1, message)
+            if (message.address == self._address) or (self._is_submodule() and (message.address == self._master_address)):
+                self._process_channel_name_message(1, message)
         elif isinstance(message, ChannelNamePart2Message) or isinstance(message, ChannelNamePart2Message2):
-            self._process_channel_name_message(2, message)
+            if (message.address == self._address) or (self._is_submodule() and (message.address == self._master_address)):
+                self._process_channel_name_message(2, message)
         elif isinstance(message, ChannelNamePart3Message) or isinstance(message, ChannelNamePart3Message2):
-            self._process_channel_name_message(3, message)
-        elif isinstance(message, ModuleTypeMessage):
-            self._process_module_type_message(message)
+            if (message.address == self._address) or (self._is_submodule() and (message.address == self._master_address)):
+                self._process_channel_name_message(3, message)
         else:
-            self._on_message(message)
+            if (message.address == self._address):
+                if isinstance(message, ModuleTypeMessage):
+                    self._process_module_type_message(message)
+                elif isinstance(message, ModuleSubTypeMessage):
+                    self._process_module_subtype_message(message)
+                else:
+                    self._on_message(message)
 
     def _on_message(self, message):
         pass
@@ -100,7 +108,8 @@ class Module(object):
             callback = callb
         if len(self._loaded_callbacks) == 0:
             self._request_module_status()
-            self._request_channel_name()
+            if self._is_submodule() == False:
+                self._request_channel_name()
         self._loaded_callbacks.append(callback)
         self._load()
 
@@ -115,22 +124,38 @@ class Module(object):
         """
         raise NotImplementedError
 
+    def _is_submodule(self):
+        return False
+
     def _name_count_needed(self):
         return self.number_of_channels() * 3
 
     def _process_channel_name_message(self, part, message):
         channel = message.channel
-        if channel not in self._name_data:
-            self._name_data[channel] = {}
-        self._name_data[channel][part] = message.name
-        if self._name_messages_complete():
-            self._generate_names()
+        if self._is_submodule():
+            channel = channel - (self.number_of_channels() * self.sub_module)
+            if 1 <= channel <= self.number_of_channels():
+                if channel not in self._name_data:
+                    self._name_data[channel] = {}
+                self._name_data[channel][part] = message.name
+                if self._name_messages_complete():
+                    self._generate_names()
+        else:
+            if channel <= self.number_of_channels():
+                if channel not in self._name_data:
+                    self._name_data[channel] = {}
+                self._name_data[channel][part] = message.name
+                if self._name_messages_complete():
+                    self._generate_names()
 
     def _process_module_type_message(self, message):
         self.serial = message.serial
         self.memory_map_version = message.memory_map_version
         self.build_year = message.build_year
         self.build_week = message.build_week
+
+    def _process_module_subtype_message(self, message):
+        self.serial = message.serial
 
     def _generate_names(self):
         assert self._name_messages_complete()

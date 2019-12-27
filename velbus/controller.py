@@ -14,6 +14,7 @@ from velbus.messages.bus_off import BusOffMessage
 from velbus.module_registry import ModuleRegistry
 from velbus.messages.receive_buffer_full import ReceiveBufferFullMessage
 from velbus.messages.module_type import ModuleTypeMessage
+from velbus.messages.module_subtype import ModuleSubTypeMessage
 from velbus.messages.set_realtime_clock import SetRealtimeClock
 from velbus.messages.set_daylight_saving import SetDaylightSaving
 from velbus.messages.set_date import SetDate
@@ -142,7 +143,30 @@ class Controller(object):
                 module = ModuleRegistry[name](m_type, name, address, self)
                 self._modules[address] = module
             else:
-                self.logger.warning("Module " + name + " is not yet supported.")
+                self.logger.warning("Module " + name + " is not yet supported")
+        if isinstance(message, ModuleSubTypeMessage):
+            self.logger.error("Module subtype response received from address " + str(message.address))
+            name = message.module_name()
+            address = message.address
+            m_type = message.module_type
+            if name == "Unknown":
+                self.logger.warning("Unknown module (code: " + str(message.module_type) + ')')
+                return
+            if "SUB_" + name in ModuleRegistry:
+                if message.sub_address_1 != 0xff:
+                    module = ModuleRegistry["SUB_" + name](m_type, "SUB_" + name, message.sub_address_1, address, 1, self)
+                    self._modules[message.sub_address_1] = module
+                if message.sub_address_2 != 0xff:
+                    module = ModuleRegistry["SUB_" + name](m_type, "SUB_" + name, message.sub_address_2, address, 2, self)
+                    self._modules[message.sub_address_2] = module
+                if message.sub_address_3 != 0xff:
+                    module = ModuleRegistry["SUB_" + name](m_type, "SUB_" + name, message.sub_address_3, address, 3, self)
+                    self._modules[message.sub_address_3] = module
+                if message.sub_address_4 != 0xff:
+                    module = ModuleRegistry["SUB_" + name](m_type, "SUB_" + name, message.sub_address_4, address, 4, self)
+                    self._modules[message.sub_address_4] = module
+            else:
+                self.logger.warning("Module " + name + " does not yet support sub modules")
         for subscriber in self.__subscribers:
             subscriber(message)
 
