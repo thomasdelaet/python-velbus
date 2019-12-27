@@ -39,7 +39,7 @@ class VMBGPxModule(Module):
     def getMinTemp(self):
         return self._min
 
-    def getMiaxTemp(self):
+    def getMaxTemp(self):
         return self._max
 
     def getCurTemp(self):
