@@ -33,7 +33,7 @@ MODULE_DIRECTORY = {
     0x1e: 'VMBGP1',
     0x1f: 'VMBGP2',
     0x20: 'VMBGP4',
-    0x21: 'VMBGP0',
+    0x21: 'VMBGPO',
     0x22: 'VMB7IN',
     0x28: 'VMBGPOD',
     0x29: 'VMB1RYNOS',

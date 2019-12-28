@@ -24,6 +24,7 @@ class ModuleSubTypeMessage(Message):
         self.sub_address_3 = 0xff
         self.sub_address_4 = 0xff
         self.set_defaults(address)
+        self.serial = 0
 
     def module_name(self):
         """
@@ -43,6 +44,8 @@ class ModuleSubTypeMessage(Message):
         #self.needs_data(data, 6)
         self.set_attributes(priority, address, rtr)
         self.module_type = data[0]
+        (self.serial,) = struct.unpack(
+            '>L', bytes([0, 0, data[1], data[2]]))
         self.sub_address_1 = data[3]
         self.sub_address_2 = data[4]
         self.sub_address_3 = data[5]
@@ -60,9 +63,5 @@ class ModuleSubTypeMessage(Message):
         json_dict['sub_4'] = self.sub_address_4
         return json.dumps(json_dict)
 
-register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGP1')
-register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGP2')
-register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGP4')
-register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGP0')
-register_command(COMMAND_CODE, ModuleSubTypeMessage, 'VMBGPOD')
 
+register_command(COMMAND_CODE, ModuleSubTypeMessage)
