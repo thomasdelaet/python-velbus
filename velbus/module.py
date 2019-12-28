@@ -77,13 +77,23 @@ class Module(object):
         Process received message
         """
         if isinstance(message, ChannelNamePart1Message) or isinstance(message, ChannelNamePart1Message2):
-            if (message.address == self._address) or (self._is_submodule() and (message.address == self._master_address)):
+        if isinstance(message, ChannelNamePart1Message) \
+            or isinstance(message, ChannelNamePart1Message2):
+            if (message.address == self._address) \
+                or (self._is_submodule() \
+                and (message.address == self._master_address)):
                 self._process_channel_name_message(1, message)
-        elif isinstance(message, ChannelNamePart2Message) or isinstance(message, ChannelNamePart2Message2):
-            if (message.address == self._address) or (self._is_submodule() and (message.address == self._master_address)):
+        elif isinstance(message, ChannelNamePart2Message) \
+            or isinstance(message, ChannelNamePart2Message2):
+            if (message.address == self._address) \
+                or (self._is_submodule() \
+                and (message.address == self._master_address)):
                 self._process_channel_name_message(2, message)
-        elif isinstance(message, ChannelNamePart3Message) or isinstance(message, ChannelNamePart3Message2):
-            if (message.address == self._address) or (self._is_submodule() and (message.address == self._master_address)):
+        elif isinstance(message, ChannelNamePart3Message) \
+            or isinstance(message, ChannelNamePart3Message2):
+            if (message.address == self._address) \
+                or (self._is_submodule() \
+                and (message.address == self._master_address)):
                 self._process_channel_name_message(3, message)
         else:
             if (message.address == self._address):
@@ -108,7 +118,7 @@ class Module(object):
             callback = callb
         if len(self._loaded_callbacks) == 0:
             self._request_module_status()
-            if self._is_submodule() == False:
+            if not self._is_submodule():
                 self._request_channel_name()
         self._loaded_callbacks.append(callback)
         self._load()

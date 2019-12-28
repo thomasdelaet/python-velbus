@@ -126,8 +126,10 @@ class VMBGPxSubModule(Module):
     Velbus input sub module with 8 input channels
     """
 
-    def __init__(self, module_type, module_name, module_address, master_address, sub_module, controller):
-        Module.__init__(self, module_type, module_name, module_address, controller)
+    def __init__(self, module_type, module_name, module_address,
+                 master_address, sub_module, controller):
+        Module.__init__(self, module_type, module_name, module_address,
+                        controller)
         self._is_closed = {}
         self._is_enabled = {}
         self._callbacks = {}

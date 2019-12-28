@@ -63,4 +63,5 @@ class ModuleSubTypeMessage(Message):
         json_dict['sub_4'] = self.sub_address_4
         return json.dumps(json_dict)
 
+
 register_command(COMMAND_CODE, ModuleSubTypeMessage)
