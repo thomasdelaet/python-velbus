@@ -160,25 +160,26 @@ class Controller(object):
                                     + str(message.module_type) + ')')
                 return
             if "SUB_" + name in ModuleRegistry:
+                subname = "SUB_" + name
                 if message.sub_address_1 != 0xff:
-                    module = ModuleRegistry["SUB_" + name]\
-                        (m_type, "SUB_" + name,
-                         message.sub_address_1, address, 1, self)
+                    module = ModuleRegistry[subname](m_type, subname,
+                                                     message.sub_address_1,
+                                                     address, 1, self)
                     self._modules[message.sub_address_1] = module
                 if message.sub_address_2 != 0xff:
-                    module = ModuleRegistry["SUB_" + name]\
-                        (m_type, "SUB_" + name,
-                         message.sub_address_2, address, 2, self)
+                    module = ModuleRegistry[subname](m_type, subname,
+                                                     message.sub_address_2,
+                                                     address, 2, self)
                     self._modules[message.sub_address_2] = module
                 if message.sub_address_3 != 0xff:
-                    module = ModuleRegistry["SUB_" + name]\
-                        (m_type, "SUB_" + name,
-                         message.sub_address_3, address, 3, self)
+                    module = ModuleRegistry[subname](m_type, subname,
+                                                     message.sub_address_3,
+                                                     address, 3, self)
                     self._modules[message.sub_address_3] = module
                 if message.sub_address_4 != 0xff:
-                    module = ModuleRegistry["SUB_" + name]\
-                        (m_type, "SUB_" + name,
-                         message.sub_address_4, address, 4, self)
+                    module = ModuleRegistry[subname](m_type, subname,
+                                                     message.sub_address_4,
+                                                     address, 4, self)
                     self._modules[message.sub_address_4] = module
             else:
                 self.logger.warning("Module " + name
