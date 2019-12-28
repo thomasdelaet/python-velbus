@@ -76,7 +76,6 @@ class Module(object):
         """
         Process received message
         """
-        if isinstance(message, ChannelNamePart1Message) or isinstance(message, ChannelNamePart1Message2):
         if isinstance(message, ChannelNamePart1Message) \
             or isinstance(message, ChannelNamePart1Message2):
             if (message.address == self._address) \
