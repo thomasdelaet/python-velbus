@@ -77,22 +77,22 @@ class Module(object):
         Process received message
         """
         if isinstance(message, ChannelNamePart1Message) \
-            or isinstance(message, ChannelNamePart1Message2):
+                or isinstance(message, ChannelNamePart1Message2):
             if (message.address == self._address) \
-                or (self._is_submodule() \
-                and (message.address == self._master_address)):
+                    or (self._is_submodule()
+                    and (message.address == self._master_address)):
                 self._process_channel_name_message(1, message)
         elif isinstance(message, ChannelNamePart2Message) \
-            or isinstance(message, ChannelNamePart2Message2):
+                or isinstance(message, ChannelNamePart2Message2):
             if (message.address == self._address) \
-                or (self._is_submodule() \
-                and (message.address == self._master_address)):
+                    or (self._is_submodule()
+                    and (message.address == self._master_address)):
                 self._process_channel_name_message(2, message)
         elif isinstance(message, ChannelNamePart3Message) \
-            or isinstance(message, ChannelNamePart3Message2):
+                or isinstance(message, ChannelNamePart3Message2):
             if (message.address == self._address) \
-                or (self._is_submodule() \
-                and (message.address == self._master_address)):
+                    or (self._is_submodule()
+                    and (message.address == self._master_address)):
                 self._process_channel_name_message(3, message)
         else:
             if (message.address == self._address):
