@@ -14,7 +14,8 @@ class CommandRegistry:
         assert isinstance(command_value, int)
         assert command_value >= 0 and command_value <= 255
         assert isinstance(command_class, type)
-        assert module_name in self._module_directory.values() or module_name == 0 or module_name[:4] == "SUB_"
+        assert module_name in self._module_directory.values() \
+            or module_name == 0 or module_name[:4] == "SUB_"
         if module_name:
             module_type = next((mtype for mtype, mname in self._module_directory.items() if mname == module_name), None)
             self._register_override(command_value, command_class, module_type)
