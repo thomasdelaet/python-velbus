@@ -7,14 +7,14 @@ from velbus.command_registry import register_command
 from velbus.module_registry import MODULE_DIRECTORY
 
 COMMAND_CODE = 0xff
-
 MODULES_WITHOUT_SERIAL = {
+    0x01: 'VMB8PB',
+    0x02: 'VMB1RY',
+    0x03: 'VMB1BL',
+    0x05: 'VMB6IN',
+    0x07: 'VMB1DM',
     0x08: 'VMB4RY',
-    0x14: 'VMBDME',
-}
-
-MODULES_WITHOUT_MEMORY_MAP = {
-    0x08: 'VMB4RY',
+    0x09: 'VMB2BL',
     0x14: 'VMBDME',
 }
 
@@ -58,7 +58,6 @@ class ModuleTypeMessage(Message):
         if data[0] not in MODULES_WITHOUT_SERIAL:
             (self.serial,) = struct.unpack(
                 '>L', bytes([0, 0, data[1], data[2]]))
-        if data[0] not in MODULES_WITHOUT_MEMORY_MAP:
             self.memory_map_version = data[3]
         self.build_year = data[-2]
         self.build_week = data[-1]
