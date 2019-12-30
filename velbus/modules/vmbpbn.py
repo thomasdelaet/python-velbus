@@ -52,7 +52,7 @@ class VMB2PBNModule(Module):
                 else:
                     self._is_enabled[channel] = False
         elif isinstance(message, UpdateLedStatusMessage):
-            for channel in list(range(1, self.number_of_channels()+ 1)):
+            for channel in list(range(1, self.number_of_channels() + 1)):
                 self._led_state[channel] = "off"
                 if channel in message.led_slow_blinking:
                     self._led_state[channel] = "slow"
@@ -64,28 +64,28 @@ class VMB2PBNModule(Module):
                     for callback in self._callbacks[channel]:
                         callback(self._led_state[channel])
         elif isinstance(message, SetLedMessage):
-            for channel in list(range(1, self.number_of_channels()+ 1)):
+            for channel in list(range(1, self.number_of_channels() + 1)):
                 if channel in message.leds:
                     self._led_state[channel] = "on"
                 if channel in self._led_state and channel in self._callbacks:
                     for callback in self._callbacks[channel]:
                         callback(self._led_state[channel])
         elif isinstance(message, ClearLedMessage):
-            for channel in list(range(1, self.number_of_channels()+ 1)):
+            for channel in list(range(1, self.number_of_channels() + 1)):
                 if channel in message.leds:
                     self._led_state[channel] = "off"
                 if channel in self._led_state and channel in self._callbacks:
                     for callback in self._callbacks[channel]:
                         callback(self._led_state[channel])
         elif isinstance(message, SlowBlinkingLedMessage):
-            for channel in list(range(1, self.number_of_channels()+ 1)):
+            for channel in list(range(1, self.number_of_channels() + 1)):
                 if channel in message.leds:
                     self._led_state[channel] = "slow"
                 if channel in self._led_state and channel in self._callbacks:
                     for callback in self._callbacks[channel]:
                         callback(self._led_state[channel])
         elif isinstance(message, FastBlinkingLedMessage):
-            for channel in list(range(1, self.number_of_channels()+ 1)):
+            for channel in list(range(1, self.number_of_channels() + 1)):
                 if channel in message.leds:
                     self._led_state[channel] = "fast"
                 if channel in self._led_state and channel in self._callbacks:
