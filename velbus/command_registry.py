@@ -18,6 +18,8 @@ class CommandRegistry:
             or module_name == 0 or module_name[:4] == "SUB_"
         if module_name:
             module_type = next((mtype for mtype, mname in self._module_directory.items() if mname == module_name), None)
+            if module_type is None and module_name[:4] == "SUB_":
+                module_type = module_name
             self._register_override(command_value, command_class, module_type)
         else:
             self._register_default(command_value, command_class)
