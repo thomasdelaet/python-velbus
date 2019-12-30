@@ -8,6 +8,16 @@ from velbus.module_registry import MODULE_DIRECTORY
 
 COMMAND_CODE = 0xff
 
+MODULES_WITHOUT_SERIAL = {
+    0x08: 'VMB4RY',
+    0x14: 'VMBDME',
+}
+
+MODULES_WITHOUT_MEMORY_MAP = {
+    0x08: 'VMB4RY',
+    0x14: 'VMBDME',
+}
+
 class ModuleTypeMessage(Message):
     """
     send by: VMB6IN, VMB4RYLD
@@ -45,12 +55,13 @@ class ModuleTypeMessage(Message):
         self.needs_data(data, 4)
         self.set_attributes(priority, address, rtr)
         self.module_type = data[0]
-        (self.serial,) = struct.unpack(
-            '>L', bytes([0, 0, data[1], data[2]]))
-        self.memory_map_version = data[3]
-        if len(data) > 4:
-            self.build_year = data[4]
-            self.build_week = data[5]
+        if data[0] not in MODULES_WITHOUT_SERIAL:
+            (self.serial,) = struct.unpack(
+                '>L', bytes([0, 0, data[1], data[2]]))
+        if data[0] not in MODULES_WITHOUT_MEMORY_MAP:
+            self.memory_map_version = data[3]
+        self.build_year = data[-2]
+        self.build_week = data[-1]
 
     def data_to_binary(self):
         """
