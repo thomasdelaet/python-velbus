@@ -143,7 +143,7 @@ class VMB2PBNModule(Module):
 
     def get_categories(self, channel):
         if channel in self._is_enabled and self._is_enabled[channel]:
-            return ['binary_sensor', 'light']]
+            return ['binary_sensor', 'light']
         else:
             return []
 
