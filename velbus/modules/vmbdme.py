@@ -104,5 +104,8 @@ class VMBDMEModule(Module):
     def get_categories(self, channel):
         return ['light']
 
+    def light_is_buttonled(self, channel):
+        return False
+
 
 register_module('VMBDME', VMBDMEModule)

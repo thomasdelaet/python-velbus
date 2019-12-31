@@ -14,7 +14,7 @@ class ClearLedMessage(Message):
 
     def __init__(self, address=None):
         Message.__init__(self)
-        self.clear_leds = []
+        self.leds = []
         self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
@@ -26,13 +26,13 @@ class ClearLedMessage(Message):
         self.needs_no_rtr(rtr)
         self.needs_data(data, 1)
         self.set_attributes(priority, address, rtr)
-        self.clear_leds = self.byte_to_channels(data[0])
+        self.leds = self.byte_to_channels(data[0])
 
     def data_to_binary(self):
         """
         :return: bytes
         """
-        return bytes([COMMAND_CODE, self.channels_to_byte(self.clear_leds)])
+        return bytes([COMMAND_CODE, self.channels_to_byte(self.leds)])
 
 
 register_command(COMMAND_CODE, ClearLedMessage)
