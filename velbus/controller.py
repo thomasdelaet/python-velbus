@@ -176,7 +176,8 @@ class Controller(object):
                                                      message.sub_address_3,
                                                      address, 3, self)
                     self._modules[message.sub_address_3] = module
-                if message.sub_address_4 != 0xff:
+                #Disable sub_address_4 for the VMBGPOD module
+                if message.sub_address_4 != 0xff and name != "VMBGPOD":
                     module = ModuleRegistry[subname](m_type, subname,
                                                      message.sub_address_4,
                                                      address, 4, self)
