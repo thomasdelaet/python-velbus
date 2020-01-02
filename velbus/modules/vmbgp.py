@@ -255,7 +255,7 @@ class VMBGPxDModule(VMBGPxModule):
         if channel == 33:
             return ['sensor', 'climate']
         elif channel in self._is_enabled and self._is_enabled[channel]:
-            return ['binary_sensor']
+            return ['binary_sensor', 'light']
         else:
             return []
 
