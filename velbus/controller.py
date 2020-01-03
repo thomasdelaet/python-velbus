@@ -176,7 +176,7 @@ class Controller(object):
                                                      message.sub_address_3,
                                                      address, 3, self)
                     self._modules[message.sub_address_3] = module
-                if message.sub_address_4 != 0xff and name != "VMBGPOD":
+                if message.sub_address_4 != 0xff and name != "VMBGPOD" and name != "VMBGPO":
                     module = ModuleRegistry[subname](m_type, subname,
                                                      message.sub_address_4,
                                                      address, 4, self)
