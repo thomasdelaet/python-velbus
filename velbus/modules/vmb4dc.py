@@ -61,7 +61,7 @@ class VMB4DCModule(Module):
         message = SetDimmerMessage(self._address)
         message.dimmer_channels = [channel]
         message.dimmer_state = slider
-        message.dimmer_transitiontime = transitiontime
+        message.dimmer_transitiontime = int(transitiontime)
         self._dimmer_state[channel] = slider
         self._controller.send(message, callback)
 
@@ -78,7 +78,7 @@ class VMB4DCModule(Module):
             callback = callb
         message = RestoreDimmerMessage(self._address)
         message.dimmer_channels = [channel]
-        message.dimmer_transitiontime = transitiontime
+        message.dimmer_transitiontime = int(transitiontime)
         self._controller.send(message, callback)
 
     def _on_message(self, message):
