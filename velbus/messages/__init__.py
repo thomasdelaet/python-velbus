@@ -48,6 +48,7 @@ from velbus.messages.write_module_address_and_serial_number import WriteModuleAd
 from velbus.messages.cover_down import CoverDownMessage, CoverDownMessage2
 from velbus.messages.cover_up import CoverUpMessage, CoverUpMessage2
 from velbus.messages.cover_off import CoverOffMessage, CoverOffMessage2 
+from velbus.messages.cover_position import CoverPosMessage 
 from velbus.messages.blind_status import BlindStatusMessage, BlindStatusNgMessage
 from velbus.messages.sensor_temperature import SensorTemperatureMessage
 from velbus.messages.kwh_status import KwhStatusMessage

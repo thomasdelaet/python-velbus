@@ -6,6 +6,7 @@ from velbus.module_registry import register_module
 from velbus.messages.cover_down import CoverDownMessage, CoverDownMessage2
 from velbus.messages.cover_off import CoverOffMessage, CoverOffMessage2
 from velbus.messages.cover_up import CoverUpMessage, CoverUpMessage2
+from velbus.messages.cover_position import CoverPosMessage
 from velbus.messages.blind_status import BlindStatusMessage, BlindStatusNgMessage
 from velbus.messages.channel_name_request import ChannelNameRequestMessage2
 
@@ -16,7 +17,11 @@ class VMB1BLModule(Module):
     def __init__(self, module_type, module_name, module_address, controller):
         Module.__init__(self, module_type, module_name, module_address, controller)
         self._state = {}
+        self._position = {}
         self._callbacks = {}
+
+    def support_position(self):
+        return False
 
     def number_of_channels(self):
         return 1
@@ -24,6 +29,7 @@ class VMB1BLModule(Module):
     def _on_message(self, message):
         if isinstance(message, BlindStatusNgMessage):
             self._state[message.channel] = message.status
+            self._position[message.channel] = message.position
             if message.channel in self._callbacks:
                 for callback in self._callbacks[message.channel]:
                     callback(message.is_down())
@@ -64,6 +70,11 @@ class VMB1BLModule(Module):
         message.channel = channel
         self._controller.send(message)
 
+    def get_position(self, channel):
+        if channel not in self._position:
+            return None
+        return self._position[channel]
+
     def get_state(self, channel):
         if channel not in self._state:
             return None
@@ -86,8 +97,8 @@ class VMB2BLModule(VMB1BLModule):
 
 
 class VMB1BLEModule(VMB1BLModule):
-    def number_of_channels(self):
-        return 1
+    def support_position(self):
+        return True
 
     def open(self, channel):
         message = CoverUpMessage(self._address)
@@ -103,7 +114,12 @@ class VMB1BLEModule(VMB1BLModule):
         message = CoverOffMessage(self._address)
         message.channel = channel
         self._controller.send(message)
-
+    
+    def set(self, channel, position):
+        message = CoverPosMessage(self._address)
+        message.channel = channel
+        message.position = position
+        self._controller.send(message)
 
 class VMB2BLEModule(VMB1BLEModule):
     def number_of_channels(self):
