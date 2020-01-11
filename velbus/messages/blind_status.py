@@ -20,6 +20,7 @@ class BlindStatusNgMessage(Message):
         self.channel = 0
         self.timeout = 0
         self.status = 0
+        self.position = None
         self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
@@ -35,6 +36,7 @@ class BlindStatusNgMessage(Message):
         self.needs_valid_channel(self.channel, 5)
         self.timeout = data[1] # Omzetter seconden ????
         self.status = data[2]
+        self.position = data[4]
 
     def to_json(self):
         """

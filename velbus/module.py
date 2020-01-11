@@ -133,6 +133,9 @@ class Module(object):
         """
         raise NotImplementedError
 
+    def light_is_buttonled(self, channel):
+        return False
+
     def _is_submodule(self):
         return False
 
