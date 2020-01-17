@@ -56,6 +56,7 @@ The following Velbus modules are currently supported by this library:
 | ----------- | ----------- | ------ | -------- |
 | VMB1BL | 1 channel blind module | SUPPORTED | All messages are supported |
 | VMB1RS | Serial interface | SUPPORTED | All messages are supported |
+| VMB1RY | 1 channel relay module | SUPPORTED | All messages are supported |
 | VMB1RYNO | 1 channel relay module | SUPPORTED | All messages are supported |
 | VMB1RYNOS | 1 channel relay module | SUPPORTED | All messages are supported |
 | VMB1TS | 1 channel temperatue sensor | SUPPORTED | Temperature supported |
