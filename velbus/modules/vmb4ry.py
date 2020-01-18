@@ -12,6 +12,7 @@ class VMB4RYModule(Module):
     """
     Velbus Relay module.
     """
+
     def __init__(self, module_type, module_name, module_address, controller):
         Module.__init__(self, module_type, module_name, module_address, controller)
         self._is_on = {}
@@ -37,9 +38,11 @@ class VMB4RYModule(Module):
         :return: None
         """
         if callback is None:
+
             def callb():
                 """No-op"""
                 pass
+
             callback = callb
         message = SwitchRelayOnMessage(self._address)
         message.relay_channels = [channel]
@@ -52,9 +55,11 @@ class VMB4RYModule(Module):
         :return: None
         """
         if callback is None:
+
             def callb():
                 """No-op"""
                 pass
+
             callback = callb
         message = SwitchRelayOffMessage(self._address)
         message.relay_channels = [channel]
@@ -91,8 +96,21 @@ class VMB4RY(VMB4RYModule):
                     callback(message.channel_is_on())
 
 
+class VMB1RY(VMB4RYModule):
+    def number_of_channels(self):
+        return 1
+
+    def _on_message(self, message):
+        if isinstance(message, RelayStatusMessage):
+            self._is_on[message.channel] = message.channel_is_on()
+            if message.channel in self._callbacks:
+                for callback in self._callbacks[message.channel]:
+                    callback(message.channel_is_on())
+
+
 register_module('VMB4RYLD', VMB4RYModule)
 register_module('VMB4RYNO', VMB4RYModule)
 register_module('VMB1RYNO', VMB4RYModule)
 register_module('VMB1RYNOS', VMB4RYModule)
+register_module('VMB1RY', VMB1RY)
 register_module('VMB4RY', VMB4RY)
