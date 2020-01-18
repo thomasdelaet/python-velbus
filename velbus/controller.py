@@ -20,6 +20,7 @@ from velbus.messages.set_realtime_clock import SetRealtimeClock
 from velbus.messages.set_daylight_saving import SetDaylightSaving
 from velbus.messages.set_date import SetDate
 
+
 class Controller(object):
     """
     Velbus Bus connection controller
@@ -89,6 +90,7 @@ class Controller(object):
 
         :return: None
         """
+
         def scan_finished():
             """
             Callback when scan is finished
@@ -100,9 +102,12 @@ class Controller(object):
 
             def module_loaded():
                 self._nb_of_modules_loaded += 1
-                self.logger.debug("Loaded modules "
-                                  + str(self._nb_of_modules_loaded)
-                                  + " of " + str(len(self._modules)))
+                self.logger.debug(
+                    "Loaded modules "
+                    + str(self._nb_of_modules_loaded)
+                    + " of "
+                    + str(len(self._modules))
+                )
                 if self._nb_of_modules_loaded >= len(self._modules):
                     self._load_finished = True
                     callback()
@@ -122,6 +127,7 @@ class Controller(object):
             self.load_timeout = threading.Timer(60, timeout_expired).start()
             for module in self._modules:
                 self._modules[module].load(module_loaded)
+
         for address in range(0, 256):
             message = ModuleTypeRequestMessage(address)
             if address == 255:
@@ -152,14 +158,16 @@ class Controller(object):
         if isinstance(message, ReceiveBufferFullMessage):
             self.logger.error("Velbus receive buffer full message received")
         if isinstance(message, ModuleTypeMessage):
-            self.logger.debug("Module type response received from address "
-                              + str(message.address))
+            self.logger.debug(
+                "Module type response received from address " + str(message.address)
+            )
             name = message.module_name()
             address = message.address
             m_type = message.module_type
             if name == "Unknown":
-                self.logger.warning("Unknown module (code: "
-                                    + str(message.module_type) + ')')
+                self.logger.warning(
+                    "Unknown module (code: " + str(message.module_type) + ')'
+                )
                 return
             if name in ModuleRegistry:
                 module = ModuleRegistry[name](m_type, name, address, self)
@@ -167,41 +175,47 @@ class Controller(object):
             else:
                 self.logger.warning("Module " + name + " is not yet supported")
         if isinstance(message, ModuleSubTypeMessage):
-            self.logger.debug("Module subtype response received from address "
-                              + str(message.address))
+            self.logger.debug(
+                "Module subtype response received from address " + str(message.address)
+            )
             name = message.module_name()
             address = message.address
             m_type = message.module_type
             if name == "Unknown":
-                self.logger.warning("Unknown module (code: "
-                                    + str(message.module_type) + ')')
+                self.logger.warning(
+                    "Unknown module (code: " + str(message.module_type) + ')'
+                )
                 return
             if "SUB_" + name in ModuleRegistry:
                 subname = "SUB_" + name
-                if message.sub_address_1 != 0xff:
-                    module = ModuleRegistry[subname](m_type, subname,
-                                                     message.sub_address_1,
-                                                     address, 1, self)
+                if message.sub_address_1 != 0xFF:
+                    module = ModuleRegistry[subname](
+                        m_type, subname, message.sub_address_1, address, 1, self
+                    )
                     self._modules[message.sub_address_1] = module
-                if message.sub_address_2 != 0xff:
-                    module = ModuleRegistry[subname](m_type, subname,
-                                                     message.sub_address_2,
-                                                     address, 2, self)
+                if message.sub_address_2 != 0xFF:
+                    module = ModuleRegistry[subname](
+                        m_type, subname, message.sub_address_2, address, 2, self
+                    )
                     self._modules[message.sub_address_2] = module
-                if message.sub_address_3 != 0xff:
-                    module = ModuleRegistry[subname](m_type, subname,
-                                                     message.sub_address_3,
-                                                     address, 3, self)
+                if message.sub_address_3 != 0xFF:
+                    module = ModuleRegistry[subname](
+                        m_type, subname, message.sub_address_3, address, 3, self
+                    )
                     self._modules[message.sub_address_3] = module
-                if message.sub_address_4 != 0xff and name != "VMBGPOD" \
-                    and name != "VMBGPO":
-                    module = ModuleRegistry[subname](m_type, subname,
-                                                     message.sub_address_4,
-                                                     address, 4, self)
+                if (
+                    message.sub_address_4 != 0xFF
+                    and name != "VMBGPOD"
+                    and name != "VMBGPO"
+                ):
+                    module = ModuleRegistry[subname](
+                        m_type, subname, message.sub_address_4, address, 4, self
+                    )
                     self._modules[message.sub_address_4] = module
             else:
-                self.logger.warning("Module " + name
-                                    + " does not yet support sub modules")
+                self.logger.warning(
+                    "Module " + name + " does not yet support sub modules"
+                )
         for subscriber in self.__subscribers:
             subscriber(message)
 
