@@ -3,6 +3,7 @@
 """
 import logging
 import time
+import threading
 from velbus.parser import VelbusParser
 from velbus.connections.socket import SocketConnection
 from velbus.connections.serial import VelbusUSBConnection
@@ -95,6 +96,7 @@ class Controller(object):
             time.sleep(3)
             logging.info('Scan finished')
             self._nb_of_modules_loaded = 0
+            self._load_finished = False
 
             def module_loaded():
                 self._nb_of_modules_loaded += 1
@@ -102,7 +104,22 @@ class Controller(object):
                                   + str(self._nb_of_modules_loaded)
                                   + " of " + str(len(self._modules)))
                 if self._nb_of_modules_loaded >= len(self._modules):
+                    self._load_finished = True
                     callback()
+
+            def timeout_expired():
+                if not self._load_finished:
+                    self.logger.warning(
+                        "Not all modules successful loaded ("
+                        + str(self._nb_of_modules_loaded)
+                        + " of "
+                        + str(len(self._modules))
+                        + ") before timeout expired."
+                    )
+                    callback()
+
+            # 60 second timeout for loading modules
+            self.load_timeout = threading.Timer(60, timeout_expired).start()
             for module in self._modules:
                 self._modules[module].load(module_loaded)
         for address in range(0, 256):
