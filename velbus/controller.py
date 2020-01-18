@@ -114,13 +114,19 @@ class Controller(object):
 
             def timeout_expired():
                 if not self._load_finished:
-                    self.logger.warning(
-                        "Not all modules successful loaded ("
-                        + str(self._nb_of_modules_loaded)
-                        + " of "
-                        + str(len(self._modules))
-                        + ") before timeout expired."
-                    )
+                    modules_not_loaded = []
+                    for module in self._modules:
+                        if not self._modules[module].loaded:
+                            self.logger.warning(
+                                "Failed to completely load module "
+                                + str(self._modules[module].get_module_name())
+                                + " at address "
+                                + str(self._modules[module].get_module_address())
+                                + " before timeout expired."
+                            )
+                            modules_not_loaded.append(module)
+                    for module in modules_not_loaded:
+                        del self._modules[module]
                     callback()
 
             # 60 second timeout for loading modules
