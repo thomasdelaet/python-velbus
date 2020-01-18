@@ -18,6 +18,7 @@ from velbus.messages.slow_blinking_led import SlowBlinkingLedMessage
 from velbus.messages.fast_blinking_led import FastBlinkingLedMessage
 from velbus.messages.clear_led import ClearLedMessage
 
+
 class VMBGPxModule(Module):
     """
     Velbus input module with 32 input channels and 1 temperature sensor
@@ -150,9 +151,11 @@ class VMBGPxModule(Module):
         :return: None
         """
         if callback is None:
+
             def callb():
                 """No-op"""
                 pass
+
             callback = callb
         if state == "on":
             message = SetLedMessage(self._address)
@@ -214,10 +217,18 @@ class VMBGPxSubModule(VMBGPxModule):
     Velbus input sub module with 8 input channels
     """
 
-    def __init__(self, module_type, module_name, module_address,
-                 master_address, sub_module, controller):
-        VMBGPxModule.__init__(self, module_type, module_name, module_address,
-                        controller)
+    def __init__(
+        self,
+        module_type,
+        module_name,
+        module_address,
+        master_address,
+        sub_module,
+        controller,
+    ):
+        VMBGPxModule.__init__(
+            self, module_type, module_name, module_address, controller
+        )
         self._master_address = master_address
         self.sub_module = sub_module
 
@@ -239,7 +250,9 @@ class VMBGP124Module(VMBGPxModule):
     Velbus VMBGP1, VMBGP2 and VMBGP4 modules
     """
     def __init__(self, module_type, module_name, module_address, controller):
-        VMBGPxModule.__init__(self, module_type, module_name, module_address, controller)
+        VMBGPxModule.__init__(
+            self, module_type, module_name, module_address, controller
+        )
         self._temperature_channel = 9
 
     def number_of_channels(self):
@@ -251,7 +264,9 @@ class VMBGP124Module(VMBGPxModule):
 class VMBGPxDModule(VMBGPxModule):
 
     def __init__(self, module_type, module_name, module_address, controller):
-        VMBGPxModule.__init__(self, module_type, module_name, module_address, controller)
+        VMBGPxModule.__init__(
+            self, module_type, module_name, module_address, controller
+        )
         self._cmode = None
         self._target = None
         self._temperature_channel = 33
