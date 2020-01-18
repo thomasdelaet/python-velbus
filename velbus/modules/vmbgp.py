@@ -33,6 +33,7 @@ class VMBGPxModule(Module):
         self._max = None
         self._callbacks = {}
         self._controllable_channels = 8
+        self._temperature_channel = 33
 
     def is_closed(self, channel):
         if channel in self._is_closed:
@@ -63,8 +64,8 @@ class VMBGPxModule(Module):
             self._cur = message.cur
             self._min = message.min
             self._max = message.max
-            if 33 in self._callbacks:
-                for callback in self._callbacks[33]:
+            if self._temperature_channel in self._callbacks:
+                for callback in self._callbacks[self._temperature_channel]:
                     callback(message.getCurTemp())
         elif isinstance(message, PushButtonStatusMessage):
             for channel in message.closed:
@@ -179,7 +180,7 @@ class VMBGPxModule(Module):
         self._callbacks[channel].append(callback)
 
     def get_categories(self, channel):
-        if channel == 33:
+        if channel == self._temperature_channel:
             return ['sensor']
         elif channel in self._is_enabled and self._is_enabled[channel]:
             return ['binary_sensor', 'light']
@@ -233,12 +234,27 @@ class VMBGPxSubModule(VMBGPxModule):
         return 8
 
 
+class VMBGP124Module(VMBGPxModule):
+    """
+    Velbus VMBGP1, VMBGP2 and VMBGP4 modules
+    """
+    def __init__(self, module_type, module_name, module_address, controller):
+        VMBGPxModule.__init__(self, module_type, module_name, module_address, controller)
+        self._temperature_channel = 9
+
+    def number_of_channels(self):
+        # 1-8 = inputs
+        # 9 = temperature sensor
+        return 9
+
+
 class VMBGPxDModule(VMBGPxModule):
 
     def __init__(self, module_type, module_name, module_address, controller):
         VMBGPxModule.__init__(self, module_type, module_name, module_address, controller)
         self._cmode = None
         self._target = None
+        self._temperature_channel = 33
 
     def _on_message(self, message):
         if isinstance(message, TempSensorStatusMessage):
@@ -246,13 +262,13 @@ class VMBGPxDModule(VMBGPxModule):
             self._target = message.target_temp
             self._cmode = message.mode_str
             self._cstatus = message.status_str
-            if 33 in self._callbacks:
-                for callback in self._callbacks[33]:
+            if self._temperature_channel in self._callbacks:
+                for callback in self._callbacks[self._temperature_channel]:
                     callback(message.getCurTemp())
         VMBGPxModule._on_message(self, message)
 
     def get_categories(self, channel):
-        if channel == 33:
+        if channel == self._temperature_channel:
             return ['sensor', 'climate']
         elif channel in self._is_enabled and self._is_enabled[channel]:
             return ['binary_sensor', 'light']
@@ -304,9 +320,9 @@ class VMBGPPirModule(VMBGPxModule):
             return []
 
 
-register_module('VMBGP1', VMBGPxModule)
-register_module('VMBGP2', VMBGPxModule)
-register_module('VMBGP4', VMBGPxModule)
+register_module('VMBGP1', VMBGP124Module)
+register_module('VMBGP2', VMBGP124Module)
+register_module('VMBGP4', VMBGP124Module)
 register_module('VMBGPO', VMBGPxModule)
 register_module('VMBGPOD', VMBGPxDModule)
 register_module('SUB_VMBGPO', VMBGPxSubModule)
