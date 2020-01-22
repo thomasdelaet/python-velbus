@@ -74,12 +74,20 @@ The following Velbus modules are currently supported by this library:
 | VMB8PBU | 8 channel input module | SUPPORTED | All messages are supported |
 | VMBDME | 1 channel dimmer module | SUPPORTED | All messages are supported |
 | VMBGP1 | 1 channel glass panel | SUPPORTED | Input and Temperature supported |
+| VMBGP1-2 | 1 channel glass panel | SUPPORTED | Input and Temperature supported |
 | VMBGP2 | 2 channel glass panel | SUPPORTED | Input and Temperature supported |
+| VMBGP2-2 | 2 channel glass panel | SUPPORTED | Input and Temperature supported |
 | VMBGP4 | 4 channel glass panel | SUPPORTED | Input and Temperature supported |
+| VMBGP4-2 | 4 channel glass panel | SUPPORTED | Input and Temperature supported |
 | VMBGPO | 72 channel glass panel with oled | SUPPORTED | Input and Temperature supported |
 | VMBGPOD | 72 channel glass panel with oled and thermostat | SUPPORTED | Input and Temperature supported |
 | VMBMETEO | meteo modules | SUPPORTED | Temperature, wind, rain and light sensor supported |
 | VMBRSUSB | Configuration module with USB and RS-232 interface | SUPPORTED | All messages are supported |
+| VMBEL1 | 1 channel glass panel Edge Lit | SUPPORTED | Input and Temperature supported |
+| VMBEL2 | 2 channel glass panel Edge Lit | SUPPORTED | Input and Temperature supported |
+| VMBEL2 | 2 channel glass panel Edge Lit | SUPPORTED | Input and Temperature supported |
+| VMBEL4 | 4 channel glass panel Edge Lit | SUPPORTED | Input and Temperature supported |
+| VMBELO | 72 channel glass panel Edge Lit with thermostat and oled screen | SUPPORTED | Input and Temperature supported |
 
 # Adding support for other modules
 
