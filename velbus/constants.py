@@ -29,4 +29,3 @@ VOLUME_CUBIC_METER: str = "m3"  # Not an official constant at HA yet
 VOLUME_CUBIC_METER_HOUR: str = "m3/h"  # Not an official constant at HA yet
 VOLUME_LITERS: str = "L"
 VOLUME_LITERS_HOUR: str = "L/h"  # Not an official constant at HA yet
-
