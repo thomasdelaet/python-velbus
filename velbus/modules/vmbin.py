@@ -18,6 +18,7 @@ from velbus.messages.counter_status_request import CounterStatusRequestMessage
 from velbus.messages.read_data_from_memory import ReadDataFromMemoryMessage
 from velbus.messages.memory_data import MemoryDataMessage
 
+
 class VMB6INModule(Module):
     """
     Velbus input module with 6 channels
@@ -91,7 +92,7 @@ class VMB7INModule(VMB6INModule):
         return False
 
     def _load(self):
-        # request the counter statuis
+        # request the counter status
         message = CounterStatusRequestMessage(self._address)
         self._controller.send(message)
         # get the unit for the counters
@@ -162,9 +163,6 @@ class VMB7INModule(VMB6INModule):
         return None
 
     def get_state(self, channel):
-        """
-        Ignore channel
-        """
         val = None
         if channel not in self._unit:
             return val
@@ -185,9 +183,6 @@ class VMB7INModule(VMB6INModule):
         return 'counter'
 
     def get_unit(self, channel):
-        """
-        Ignore channel
-        """
         if channel in self._unit:
             return self._unit[channel]
         else:
