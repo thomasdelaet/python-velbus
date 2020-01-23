@@ -6,8 +6,8 @@ from velbus.constants import (
     ENERGY_WATT_HOUR,
     VOLUME_CUBIC_METER,
     VOLUME_CUBIC_METER_HOUR,
-    VOLUME_LITERS, 
-    VOLUME_LITERS_HOUR, 
+    VOLUME_LITERS,
+    VOLUME_LITERS_HOUR,
 )
 from velbus.module import Module
 from velbus.module_registry import register_module

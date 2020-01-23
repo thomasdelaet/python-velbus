@@ -23,10 +23,6 @@ NO_RTR = 0x00
 
 SIX_CHANNEL_INPUT_MODULE_TYPE = 0x05
 
-
-#### Home Assistant constants ####
-
-## Units ##
 ENERGY_KILO_WATT_HOUR: str = "kWh"
 ENERGY_WATT_HOUR: str = "Wh"
 VOLUME_CUBIC_METER: str = "m3"  # Not an official constant at HA yet
