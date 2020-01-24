@@ -1,6 +1,14 @@
 """
 :author: Thomas Delaet <thomas@delaet.org
 """
+from velbus.constants import (
+    ENERGY_KILO_WATT_HOUR,
+    ENERGY_WATT_HOUR,
+    VOLUME_CUBIC_METER,
+    VOLUME_CUBIC_METER_HOUR,
+    VOLUME_LITERS,
+    VOLUME_LITERS_HOUR,
+)
 from velbus.module import Module
 from velbus.module_registry import register_module
 from velbus.messages.push_button_status import PushButtonStatusMessage
@@ -9,6 +17,7 @@ from velbus.messages.counter_status import CounterStatusMessage
 from velbus.messages.counter_status_request import CounterStatusRequestMessage
 from velbus.messages.read_data_from_memory import ReadDataFromMemoryMessage
 from velbus.messages.memory_data import MemoryDataMessage
+
 
 class VMB6INModule(Module):
     """
@@ -74,6 +83,7 @@ class VMB7INModule(VMB6INModule):
         self._delay = {}
         self._is_counter = []
         self._unit = {}
+        self._counter_unit = {}
         self._callbacks = {}
 
     def is_closed(self, channel):
@@ -82,7 +92,7 @@ class VMB7INModule(VMB6INModule):
         return False
 
     def _load(self):
-        # request the counter statuis
+        # request the counter status
         message = CounterStatusRequestMessage(self._address)
         self._controller.send(message)
         # get the unit for the counters
@@ -119,11 +129,14 @@ class VMB7INModule(VMB6INModule):
                 val = message.data >> ((chan - 1) * 2)
                 inp = val & 0x03
                 if inp == 0x01:
-                    self._unit[chan] = 'l/h'
+                    self._unit[chan] = VOLUME_LITERS_HOUR
+                    self._counter_unit[chan] = VOLUME_LITERS
                 elif inp == 0x02:
-                    self._unit[chan] = 'm3/h'
+                    self._unit[chan] = VOLUME_CUBIC_METER_HOUR
+                    self._counter_unit[chan] = VOLUME_CUBIC_METER
                 elif inp == 0x03:
-                    self._unit[chan] = 'W'
+                    self._unit[chan] = ENERGY_WATT_HOUR
+                    self._counter_unit[chan] = ENERGY_KILO_WATT_HOUR
 
     def on_status_update(self, channel, callback):
         """
@@ -139,18 +152,25 @@ class VMB7INModule(VMB6INModule):
         else:
             return ['binary_sensor']
 
+    def get_counter_state(self, channel):
+        if channel in self._counter:
+            return self._counter[channel]
+        return None
+
+    def get_counter_unit(self, channel):
+        if channel in self._counter_unit:
+            return self._counter_unit[channel]
+        return None
+
     def get_state(self, channel):
-        """
-        Ignore channel
-        """
         val = None
         if channel not in self._unit:
             return val
-        if self._unit[channel] == 'l/h':
+        if self._unit[channel] == VOLUME_LITERS_HOUR:
             val = ((1000 * 3600) / (self._delay[channel] * self._pulses[channel]))
-        elif self._unit[channel] == 'm3/h':
+        elif self._unit[channel] == VOLUME_CUBIC_METER_HOUR:
             val = ((1000 * 3600) / (self._delay[channel] * self._pulses[channel]))
-        elif self._unit[channel] == 'W':
+        elif self._unit[channel] == ENERGY_WATT_HOUR:
             val = ((1000 * 1000 * 3600) / (self._delay[channel] * self._pulses[channel]))
             if val < 55:
                 val = 0
@@ -163,9 +183,6 @@ class VMB7INModule(VMB6INModule):
         return 'counter'
 
     def get_unit(self, channel):
-        """
-        Ignore channel
-        """
         if channel in self._unit:
             return self._unit[channel]
         else:
