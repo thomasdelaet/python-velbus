@@ -1,7 +1,6 @@
 """
 :author: Maikel Punie <maikel.punie@gmail.com>
 """
-import json
 from velbus.message import Message
 from velbus.command_registry import register_command
 
@@ -38,7 +37,10 @@ class MemoTextMessage(Message):
         """
         while len(self.memo_text) < 5:
             self.memo_text += chr(0)
-        return bytes([COMMAND_CODE, 0x00, self.start]) + bytes(self.memo_text, 'utf-8')
-
+        return bytes([
+            COMMAND_CODE,
+            0x00,
+            self.start
+            ]) + bytes(self.memo_text, 'utf-8')
 
 register_command(COMMAND_CODE, MemoTextMessage)
