@@ -19,7 +19,6 @@ class CoverOffMessage(Message):
     def __init__(self, address=None):
         Message.__init__(self)
         self.channel = 0
-        self.delay_time = 0
         self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
@@ -40,7 +39,6 @@ class CoverOffMessage(Message):
         """
         json_dict = self.to_json_basic()
         json_dict['channel'] = self.channel
-        json_dict['delay_time'] = self.delay_time
         return json.dumps(json_dict)
 
     def set_defaults(self, address):
@@ -56,7 +54,7 @@ class CoverOffMessage(Message):
         return bytes([
             COMMAND_CODE,
             self.channels_to_byte([self.channel])
-        ]) + struct.pack('>L', self.delay_time)[-3:]
+        ])
 
         
 class CoverOffMessage2(Message):
