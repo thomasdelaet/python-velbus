@@ -65,3 +65,4 @@ from velbus.messages.dimmer_status import DimmerStatusMessage
 from velbus.messages.set_dimmer import SetDimmerMessage
 from velbus.messages.restore_dimmer import RestoreDimmerMessage
 from velbus.messages.slider_status import SliderStatusMessage
+from velbus.messages.memo_text import MemoTextMessage

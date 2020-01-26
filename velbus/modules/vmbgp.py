@@ -17,6 +17,7 @@ from velbus.messages.set_led import SetLedMessage
 from velbus.messages.slow_blinking_led import SlowBlinkingLedMessage
 from velbus.messages.fast_blinking_led import FastBlinkingLedMessage
 from velbus.messages.clear_led import ClearLedMessage
+from velbus.messages.memo_text import MemoTextMessage
 
 
 class VMBGPxModule(Module):
@@ -211,6 +212,23 @@ class VMBGPxModule(Module):
         """
         return '°C'
 
+    def set_memo_text(self, text_message=""):
+        """
+        set the memo text
+        Empty message clears memo
+        """
+        assert isinstance(text_message, str)
+        assert len(text_message) <= 64
+        message = MemoTextMessage(self._address)
+        msgcntr = 0
+        for char in text_message:
+            message.memo_text += char
+            if len(message.memo_text) >= 5:
+                msgcntr += 5
+                self._controller.send(message)
+                message = MemoTextMessage(self._address)
+                message.start = msgcntr
+        self._controller.send(message)
 
 class VMBGPxSubModule(VMBGPxModule):
     """
