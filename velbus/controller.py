@@ -230,6 +230,7 @@ class Controller(object):
                     message.sub_address_4 != 0xFF
                     and name != "VMBGPOD"
                     and name != "VMBGPO"
+                    and name != "VMBELO"
                 ):
                     module = ModuleRegistry[subname](
                         m_type,
