@@ -115,7 +115,7 @@ class Module(object):
                             if typ == "moduleName":
                                 self._moduleName_is_complete()
                         else:
-                            idx = [i for i,x in enumerate(self._memoryRead[typ]) if x == (message.high_address, message.low_address)]
+                            idx = [i for i, x in enumerate(self._memoryRead[typ]) if x == (message.high_address, message.low_address)]
                             self._memoryRead[typ][idx[0]] = chr(message.data)
                         break
         else:
@@ -229,7 +229,7 @@ class Module(object):
         for char in self._memoryRead['moduleName']:
             if type(char) is str:
                 self._name = self._name + char
-        del( self._memoryRead['moduleName'] )
+        del(self._memoryRead['moduleName'])
 
     def _request_module_status(self):
         message = ModuleStatusRequestMessage(self._address)
@@ -242,7 +242,7 @@ class Module(object):
         self._controller.send(message)
 
     def _load_memory(self):
-        if not 'memory' in self._data:
+        if 'memory' not in self._data:
             return
 
         for memoryType, matchData in self._data['memory'].items():
@@ -253,9 +253,8 @@ class Module(object):
                 addrR = addrRange.split('-')
                 for addr in range(int(addrR[0], 0), int(addrR[1], 0)):
                     addr = struct.unpack('>BB', struct.pack('>h', addr))
-                    self._memoryRead[memoryType].append(addr) 
+                    self._memoryRead[memoryType].append(addr)
                     message = ReadDataFromMemoryMessage(self._address)
                     message.high_address = addr[0]
                     message.low_address = addr[1]
                     self._controller.send(message)
-
