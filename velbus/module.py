@@ -119,8 +119,10 @@ class Module(object):
                             if typ == "moduleName":
                                 self._moduleName_is_complete()
                         else:
-                            idx = [i for i, x in enumerate(self._memoryRead[typ]) 
-                              if x == (message.high_address, message.low_address)]
+                            idx = [
+                              i for i, x in enumerate(self._memoryRead[typ]) 
+                              if x == (message.high_address, message.low_address)
+                            ]
                             self._memoryRead[typ][idx[0]] = chr(message.data)
                         break
         else:
