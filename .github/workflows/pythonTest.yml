@@ -17,6 +17,12 @@ jobs:
     name: Python ${{ matrix.python-version }} test
     steps:
       - uses: actions/checkout@v1
+      - name: Black Code Formatter
+        uses: lgeiger/black-action@master
+        with:
+          args: ". --check"
+      - name: Pylint
+        uses: cclauss/GitHub-Action-for-pylint@0.7.0
       - name: Setup python
         uses: actions/setup-python@v1
         with:
