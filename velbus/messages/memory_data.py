@@ -5,7 +5,7 @@ import json
 from velbus.message import Message
 from velbus.command_registry import register_command
 
-COMMAND_CODE = 0xfe
+COMMAND_CODE = 0xFE
 
 
 class MemoryDataMessage(Message):
@@ -38,20 +38,16 @@ class MemoryDataMessage(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.high_address,
-            self.low_address
-        ]) + self.data
+        return bytes([COMMAND_CODE, self.high_address, self.low_address]) + self.data
 
     def to_json(self):
         """
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['high_add'] = self.high_address
-        json_dict['low_addr'] = self.low_address
-        json_dict['data'] = self.data
+        json_dict["high_add"] = self.high_address
+        json_dict["low_addr"] = self.low_address
+        json_dict["data"] = self.data
         return json.dumps(json_dict)
 
 

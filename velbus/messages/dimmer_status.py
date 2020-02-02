@@ -63,11 +63,10 @@ class DimmerStatusMessage(Message):
         self.set_attributes(priority, address, rtr)
         self.dimmer_mode = data[0]
         self.channel = 1
-        self.dimmer_state = int.from_bytes([data[1]], byteorder='big',
-                                           signed=False)
+        self.dimmer_state = int.from_bytes([data[1]], byteorder="big", signed=False)
         self.needs_valid_channel(self.channel, 1)
         self.led_status = data[2]
-        (self.delay_time,) = struct.unpack('>L', bytes([0]) + data[4:])
+        (self.delay_time,) = struct.unpack(">L", bytes([0]) + data[4:])
         self.dimmer_config = data[6]
 
     def to_json(self):
@@ -75,11 +74,11 @@ class DimmerStatusMessage(Message):
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['channel'] = self.channel
-        json_dict['dimmer_mode'] = self.dimmer_mode
-        json_dict['dimmer_state'] = self.dimmer_state
-        json_dict['led_status'] = self.led_status
-        json_dict['delay_time'] = self.delay_time
+        json_dict["channel"] = self.channel
+        json_dict["dimmer_mode"] = self.dimmer_mode
+        json_dict["dimmer_state"] = self.dimmer_state
+        json_dict["led_status"] = self.led_status
+        json_dict["delay_time"] = self.delay_time
         return json.dumps(json_dict)
 
     def is_start_stop(self):
@@ -140,12 +139,10 @@ class DimmerStatusMessage(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.dimmer_mode,
-            self.dimmer_state,
-            self.led_status
-        ]) + struct.pack('>L', self.delay_time)[-3:]
+        return (
+            bytes([COMMAND_CODE, self.dimmer_mode, self.dimmer_state, self.led_status])
+            + struct.pack(">L", self.delay_time)[-3:]
+        )
 
 
-register_command(COMMAND_CODE, DimmerStatusMessage, 'VMBDME')
+register_command(COMMAND_CODE, DimmerStatusMessage, "VMBDME")

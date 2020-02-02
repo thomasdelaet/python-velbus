@@ -10,6 +10,7 @@ from velbus.command_registry import register_command
 
 COMMAND_CODE = 0x04
 
+
 class CoverOffMessage(Message):
     """
     sent by:
@@ -38,7 +39,7 @@ class CoverOffMessage(Message):
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['channel'] = self.channel
+        json_dict["channel"] = self.channel
         return json.dumps(json_dict)
 
     def set_defaults(self, address):
@@ -51,12 +52,9 @@ class CoverOffMessage(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.channels_to_byte([self.channel])
-        ])
+        return bytes([COMMAND_CODE, self.channels_to_byte([self.channel])])
 
-        
+
 class CoverOffMessage2(Message):
     """
     sent by:
@@ -89,8 +87,8 @@ class CoverOffMessage2(Message):
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['channel'] = self.channel
-        json_dict['delay_time'] = self.delay_time
+        json_dict["channel"] = self.channel
+        json_dict["delay_time"] = self.delay_time
         return json.dumps(json_dict)
 
     def set_defaults(self, address):
@@ -108,14 +106,10 @@ class CoverOffMessage2(Message):
         else:
             tmp = 0x0C
 
-        return bytes([
-            COMMAND_CODE,
-            tmp
-        ]) + struct.pack('>L', self.delay_time)[-3:]
+        return bytes([COMMAND_CODE, tmp]) + struct.pack(">L", self.delay_time)[-3:]
 
 
-
-register_command(COMMAND_CODE, CoverOffMessage2, 'VMB1BL')
-register_command(COMMAND_CODE, CoverOffMessage2, 'VMB2BL')
-register_command(COMMAND_CODE, CoverOffMessage, 'VMB1BLE')
-register_command(COMMAND_CODE, CoverOffMessage, 'VMB2BLE')
+register_command(COMMAND_CODE, CoverOffMessage2, "VMB1BL")
+register_command(COMMAND_CODE, CoverOffMessage2, "VMB2BL")
+register_command(COMMAND_CODE, CoverOffMessage, "VMB1BLE")
+register_command(COMMAND_CODE, CoverOffMessage, "VMB2BLE")

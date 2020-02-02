@@ -4,7 +4,7 @@
 from velbus.message import Message
 from velbus.command_registry import register_command
 
-COMMAND_CODE = 0x0e
+COMMAND_CODE = 0x0E
 
 
 class InterfaceStatusRequestMessage(Message):

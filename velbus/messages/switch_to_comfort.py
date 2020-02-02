@@ -5,7 +5,7 @@ import json
 from velbus.message import Message
 from velbus.command_registry import register_command
 
-COMMAND_CODE = 0xdb
+COMMAND_CODE = 0xDB
 
 
 class SwitchToComfortMessage(Message):
@@ -31,18 +31,14 @@ class SwitchToComfortMessage(Message):
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['sleep_time'] = self.sleep
+        json_dict["sleep_time"] = self.sleep
         return json.dumps(json_dict)
 
     def data_to_binary(self):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            0x00,
-            0x00
-        ])
+        return bytes([COMMAND_CODE, 0x00, 0x00])
 
 
 register_command(COMMAND_CODE, SwitchToComfortMessage)

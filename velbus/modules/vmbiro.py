@@ -5,11 +5,13 @@ from velbus.module import Module
 from velbus.module_registry import register_module
 from velbus.messages.sensor_temperature import SensorTemperatureMessage
 
+
 class VMBIROModule(Module):
     """
     Velbus outdoor PIR sensor
     for now we only support Temperature
     """
+
     def __init__(self, module_type, module_name, module_address, controller):
         Module.__init__(self, module_type, module_name, module_address, controller)
         self._cur = None
@@ -44,7 +46,7 @@ class VMBIROModule(Module):
         self._callbacks.append(callback)
 
     def get_categories(self, channel):
-        return ['sensor']
+        return ["sensor"]
 
     def get_state(self, channel):
         """
@@ -56,13 +58,13 @@ class VMBIROModule(Module):
         """
         Ignore channel
         """
-        return 'temperature'
+        return "temperature"
 
     def get_unit(self, channel):
         """
         Ignore channel
         """
-        return '°C'
+        return "°C"
 
 
-register_module('VMBIRO', VMBIROModule)
+register_module("VMBIRO", VMBIROModule)

@@ -17,7 +17,7 @@ class SetDate(Message):
 
     def __init__(self, address=0x00):
         Message.__init__(self)
-        self.logger = logging.getLogger('velbus')
+        self.logger = logging.getLogger("velbus")
         self._day = None
         self._mon = None
         self._year = None
@@ -44,29 +44,31 @@ class SetDate(Message):
         self.set_attributes(priority, address, rtr)
         self._day = data[0]
         self._mon = data[1]
-        self._year = ((data[2] << 8) + data[3])
+        self._year = (data[2] << 8) + data[3]
 
     def to_json(self):
         """
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['day'] = self._day
-        json_dict['mon'] = self._mon
-        json_dict['year'] = self._year
+        json_dict["day"] = self._day
+        json_dict["mon"] = self._mon
+        json_dict["year"] = self._year
         return json.dumps(json_dict)
 
     def data_to_binary(self):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self._day,
-            self._mon,
-            (self._year >> 8),
-            (self._year & 0x00ff)
-        ])
+        return bytes(
+            [
+                COMMAND_CODE,
+                self._day,
+                self._mon,
+                (self._year >> 8),
+                (self._year & 0x00FF),
+            ]
+        )
 
 
 register_command(COMMAND_CODE, SetDate)

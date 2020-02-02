@@ -4,7 +4,7 @@
 from velbus.message import Message
 from velbus.command_registry import register_command
 
-COMMAND_CODE = 0xf6
+COMMAND_CODE = 0xF6
 
 
 class SetLedMessage(Message):
@@ -33,10 +33,7 @@ class SetLedMessage(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.channels_to_byte(self.leds)
-        ])
+        return bytes([COMMAND_CODE, self.channels_to_byte(self.leds)])
 
 
 register_command(COMMAND_CODE, SetLedMessage)

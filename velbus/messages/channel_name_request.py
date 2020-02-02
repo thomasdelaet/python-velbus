@@ -4,7 +4,7 @@
 from velbus.message import Message
 from velbus.command_registry import register_command
 
-COMMAND_CODE = 0xef
+COMMAND_CODE = 0xEF
 
 
 class ChannelNameRequestMessage(Message):
@@ -62,7 +62,7 @@ class ChannelNameRequestMessage2(ChannelNameRequestMessage):
         if 1 in self.channels:
             tmp += 0x03
         if 2 in self.channels:
-            tmp += 0x0c
+            tmp += 0x0C
         return bytes([COMMAND_CODE, tmp])
 
 

@@ -8,6 +8,7 @@ from velbus.command_registry import register_command
 
 COMMAND_CODE = 0x01
 
+
 class SwitchRelayOffMessage(Message):
     """
     send by:
@@ -17,7 +18,7 @@ class SwitchRelayOffMessage(Message):
     def __init__(self, address=None):
         Message.__init__(self)
         self.relay_channels = []
-        self.logger = logging.getLogger('velbus')
+        self.logger = logging.getLogger("velbus")
         self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
@@ -36,7 +37,7 @@ class SwitchRelayOffMessage(Message):
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['channels'] = self.relay_channels
+        json_dict["channels"] = self.relay_channels
         return json.dumps(json_dict)
 
     def set_defaults(self, address):
@@ -49,9 +50,7 @@ class SwitchRelayOffMessage(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.channels_to_byte(self.relay_channels)
-        ])
+        return bytes([COMMAND_CODE, self.channels_to_byte(self.relay_channels)])
+
 
 register_command(COMMAND_CODE, SwitchRelayOffMessage)

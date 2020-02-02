@@ -4,7 +4,8 @@
 from velbus.message import Message
 from velbus.command_registry import register_command
 
-COMMAND_CODE = 0xe7
+COMMAND_CODE = 0xE7
+
 
 class SensorSettingsRequestMessage(Message):
     """
@@ -32,5 +33,6 @@ class SensorSettingsRequestMessage(Message):
         :return: bytes
         """
         return bytes([])
+
 
 register_command(COMMAND_CODE, SensorSettingsRequestMessage)

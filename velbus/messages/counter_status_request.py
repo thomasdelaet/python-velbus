@@ -4,7 +4,7 @@
 from velbus.message import Message
 from velbus.command_registry import register_command
 
-COMMAND_CODE = 0xbd
+COMMAND_CODE = 0xBD
 
 
 class CounterStatusRequestMessage(Message):
@@ -32,11 +32,7 @@ class CounterStatusRequestMessage(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            0x0f,
-            0x00
-        ])
+        return bytes([COMMAND_CODE, 0x0F, 0x00])
 
 
-register_command(COMMAND_CODE, CounterStatusRequestMessage, 'VMB7IN')
+register_command(COMMAND_CODE, CounterStatusRequestMessage, "VMB7IN")

@@ -32,7 +32,7 @@ class SliderStatusMessage(Message):
         self.set_attributes(priority, address, rtr)
         self.channel = self.byte_to_channel(data[0])
         self.needs_valid_channel(self.channel, 5)
-        self.slider_state = int.from_bytes([data[1]], byteorder='big')
+        self.slider_state = int.from_bytes([data[1]], byteorder="big")
         self.slider_long_pressed = data[2]
 
     def to_json(self):
@@ -40,9 +40,9 @@ class SliderStatusMessage(Message):
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['channel'] = self.channel
-        json_dict['slider_state'] = self.slider_state
-        json_dict['slider_long_pressed'] = self.slider_long_pressed
+        json_dict["channel"] = self.channel
+        json_dict["slider_state"] = self.slider_state
+        json_dict["slider_long_pressed"] = self.slider_long_pressed
         return json.dumps(json_dict)
 
     def cur_slider_state(self):
@@ -55,13 +55,15 @@ class SliderStatusMessage(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.channels_to_byte([self.channel]),
-            self.slider_state,
-            self.slider_long_pressed
-        ])
+        return bytes(
+            [
+                COMMAND_CODE,
+                self.channels_to_byte([self.channel]),
+                self.slider_state,
+                self.slider_long_pressed,
+            ]
+        )
 
 
-register_command(COMMAND_CODE, SliderStatusMessage, 'VMBDME')
-register_command(COMMAND_CODE, SliderStatusMessage, 'VMB4DC')
+register_command(COMMAND_CODE, SliderStatusMessage, "VMBDME")
+register_command(COMMAND_CODE, SliderStatusMessage, "VMB4DC")

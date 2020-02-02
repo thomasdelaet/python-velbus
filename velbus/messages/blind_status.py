@@ -6,7 +6,7 @@ from velbus.message import Message
 from velbus.command_registry import register_command
 
 COMMAND_CODE = 0xEC
-DSTATUS = {0: 'off', 1: 'up', 2: 'down'}
+DSTATUS = {0: "off", 1: "up", 2: "down"}
 
 
 class BlindStatusNgMessage(Message):
@@ -34,7 +34,7 @@ class BlindStatusNgMessage(Message):
         self.set_attributes(priority, address, rtr)
         self.channel = self.byte_to_channel(data[0])
         self.needs_valid_channel(self.channel, 5)
-        self.timeout = data[1] # Omzetter seconden ????
+        self.timeout = data[1]  # Omzetter seconden ????
         self.status = data[2]
         self.position = data[4]
 
@@ -43,9 +43,9 @@ class BlindStatusNgMessage(Message):
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['channel'] = self.channel
-        json_dict['timeout'] = self.timeout
-        json_dict['status'] = DSTATUS[self.status]
+        json_dict["channel"] = self.channel
+        json_dict["timeout"] = self.timeout
+        json_dict["status"] = DSTATUS[self.status]
         return json.dumps(json_dict)
 
     def is_up(self):
@@ -64,16 +64,18 @@ class BlindStatusNgMessage(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.channels_to_byte([self.channel]),
-            self.timeout,
-            self.status,
-            self.led_status,
-            self.blind_position,
-            self.locked_inhibit_forced,
-            self.alarm_auto_mode_selection
-            ])
+        return bytes(
+            [
+                COMMAND_CODE,
+                self.channels_to_byte([self.channel]),
+                self.timeout,
+                self.status,
+                self.led_status,
+                self.blind_position,
+                self.locked_inhibit_forced,
+                self.alarm_auto_mode_selection,
+            ]
+        )
 
 
 class BlindStatusMessage(Message):
@@ -104,18 +106,18 @@ class BlindStatusMessage(Message):
         tmp = (data[0] >> 1) & 0x03
         self.channel = self.byte_to_channel(tmp)
         self.needs_valid_channel(self.channel, 5)
-        self.timeout = data[1] # Omzetter seconden ????
+        self.timeout = data[1]  # Omzetter seconden ????
         # 2 bits per channel used
-        self.status = (data[2] >> ((self.channel - 1) * 2))
+        self.status = data[2] >> ((self.channel - 1) * 2)
 
     def to_json(self):
         """
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['channel'] = self.channel
-        json_dict['timeout'] = self.timeout
-        json_dict['status'] = DSTATUS[self.status]
+        json_dict["channel"] = self.channel
+        json_dict["timeout"] = self.timeout
+        json_dict["status"] = DSTATUS[self.status]
         return json.dumps(json_dict)
 
     def is_up(self):
@@ -131,7 +133,7 @@ class BlindStatusMessage(Message):
         return self.status == 0x02
 
 
-register_command(COMMAND_CODE, BlindStatusNgMessage, 'VMB1BLE')
-register_command(COMMAND_CODE, BlindStatusNgMessage, 'VMB2BLE')
-register_command(COMMAND_CODE, BlindStatusMessage, 'VMB1BL')
-register_command(COMMAND_CODE, BlindStatusMessage, 'VMB2BL')
+register_command(COMMAND_CODE, BlindStatusNgMessage, "VMB1BLE")
+register_command(COMMAND_CODE, BlindStatusNgMessage, "VMB2BLE")
+register_command(COMMAND_CODE, BlindStatusMessage, "VMB1BL")
+register_command(COMMAND_CODE, BlindStatusMessage, "VMB2BL")

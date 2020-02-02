@@ -25,6 +25,7 @@ class VMBGPxModule(Module):
     Velbus input module with 32 input channels and 1 temperature sensor
     Input channel 9 up to 32 are addressable by sub modules
     """
+
     def __init__(self, module_type, module_name, module_address, controller):
         Module.__init__(self, module_type, module_name, module_address, controller)
         self._is_closed = {}
@@ -185,9 +186,9 @@ class VMBGPxModule(Module):
 
     def get_categories(self, channel):
         if channel == self._temperature_channel:
-            return ['sensor']
+            return ["sensor"]
         elif channel in self._is_enabled and self._is_enabled[channel]:
-            return ['binary_sensor', 'light']
+            return ["binary_sensor", "light"]
         else:
             return []
 
@@ -203,14 +204,14 @@ class VMBGPxModule(Module):
         Can only be called for channel 33
         So ignore channel
         """
-        return 'temperature'
+        return "temperature"
 
     def get_unit(self, channel):
         """
         Can only be called for channel 33
         So ignore channel
         """
-        return '°C'
+        return "°C"
 
     def set_memo_text(self, text_message=""):
         """
@@ -229,6 +230,7 @@ class VMBGPxModule(Module):
                 message = MemoTextMessage(self._address)
                 message.start = msgcntr
         self._controller.send(message)
+
 
 class VMBGPxSubModule(VMBGPxModule):
     """
@@ -255,7 +257,7 @@ class VMBGPxSubModule(VMBGPxModule):
 
     def get_categories(self, channel):
         if channel in self._is_enabled and self._is_enabled[channel]:
-            return ['binary_sensor', 'light']
+            return ["binary_sensor", "light"]
         else:
             return []
 
@@ -267,6 +269,7 @@ class VMBGP124Module(VMBGPxModule):
     """
     Velbus VMBGP1, VMBGP2 and VMBGP4 modules
     """
+
     def __init__(self, module_type, module_name, module_address, controller):
         VMBGPxModule.__init__(
             self, module_type, module_name, module_address, controller
@@ -280,7 +283,6 @@ class VMBGP124Module(VMBGPxModule):
 
 
 class VMBGPxDModule(VMBGPxModule):
-
     def __init__(self, module_type, module_name, module_address, controller):
         VMBGPxModule.__init__(
             self, module_type, module_name, module_address, controller
@@ -302,9 +304,9 @@ class VMBGPxDModule(VMBGPxModule):
 
     def get_categories(self, channel):
         if channel == self._temperature_channel:
-            return ['sensor', 'climate']
+            return ["sensor", "climate"]
         elif channel in self._is_enabled and self._is_enabled[channel]:
-            return ['binary_sensor', 'light']
+            return ["binary_sensor", "light"]
         else:
             return []
 
@@ -346,26 +348,26 @@ class VMBGPPirModule(VMBGPxModule):
 
     def get_categories(self, channel):
         if channel == 9:
-            return ['sensor']
+            return ["sensor"]
         elif channel in self._is_enabled and self._is_enabled[channel]:
-            return ['binary_sensor']
+            return ["binary_sensor"]
         else:
             return []
 
 
-register_module('VMBGP1', VMBGP124Module)
-register_module('VMBGP1-2', VMBGP124Module)
-register_module('VMBEL1', VMBGP124Module)
-register_module('VMBGP2', VMBGP124Module)
-register_module('VMBGP2-2', VMBGP124Module)
-register_module('VMBEL2', VMBGP124Module)
-register_module('VMBGP4', VMBGP124Module)
-register_module('VMBGP4-2', VMBGP124Module)
-register_module('VMBEL4', VMBGP124Module)
-register_module('VMBGPO', VMBGPxModule)
-register_module('SUB_VMBGPO', VMBGPxSubModule)
-register_module('VMBELO', VMBGPxDModule)
-register_module('SUB_VMBELO', VMBGPxSubModule)
-register_module('VMBGPOD', VMBGPxDModule)
-register_module('SUB_VMBGPOD', VMBGPxSubModule)
-register_module('VMBGP4PIR', VMBGPPirModule)
+register_module("VMBGP1", VMBGP124Module)
+register_module("VMBGP1-2", VMBGP124Module)
+register_module("VMBEL1", VMBGP124Module)
+register_module("VMBGP2", VMBGP124Module)
+register_module("VMBGP2-2", VMBGP124Module)
+register_module("VMBEL2", VMBGP124Module)
+register_module("VMBGP4", VMBGP124Module)
+register_module("VMBGP4-2", VMBGP124Module)
+register_module("VMBEL4", VMBGP124Module)
+register_module("VMBGPO", VMBGPxModule)
+register_module("SUB_VMBGPO", VMBGPxSubModule)
+register_module("VMBELO", VMBGPxDModule)
+register_module("SUB_VMBELO", VMBGPxSubModule)
+register_module("VMBGPOD", VMBGPxDModule)
+register_module("SUB_VMBGPOD", VMBGPxSubModule)
+register_module("VMBGP4PIR", VMBGPPirModule)

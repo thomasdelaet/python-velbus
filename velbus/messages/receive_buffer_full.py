@@ -4,7 +4,7 @@
 from velbus.message import Message
 from velbus.command_registry import register_command
 
-COMMAND_CODE = 0x0b
+COMMAND_CODE = 0x0B
 
 
 class ReceiveBufferFullMessage(Message):
@@ -12,6 +12,7 @@ class ReceiveBufferFullMessage(Message):
     send by:
     received by: VMB1USB
     """
+
     def set_defaults(self, address):
         if address is not None:
             self.set_address(address)

@@ -18,7 +18,7 @@ class SwitchRelayOnMessage(Message):
     def __init__(self, address=None):
         Message.__init__(self)
         self.relay_channels = []
-        self.logger = logging.getLogger('velbus')
+        self.logger = logging.getLogger("velbus")
         self.set_defaults(address)
 
     def set_defaults(self, address):
@@ -43,16 +43,14 @@ class SwitchRelayOnMessage(Message):
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['channels'] = self.relay_channels
+        json_dict["channels"] = self.relay_channels
         return json.dumps(json_dict)
 
     def data_to_binary(self):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.channels_to_byte(self.relay_channels)
-        ])
+        return bytes([COMMAND_CODE, self.channels_to_byte(self.relay_channels)])
+
 
 register_command(COMMAND_CODE, SwitchRelayOnMessage)
