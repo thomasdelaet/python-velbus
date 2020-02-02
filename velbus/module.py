@@ -2,6 +2,9 @@
 :author: Thomas Delaet <thomas@delaet.org>
 """
 import string
+import struct
+from velbus.messages.read_data_from_memory import ReadDataFromMemoryMessage
+from velbus.messages.memory_data import MemoryDataMessage
 from velbus.messages.channel_name_part1 import ChannelNamePart1Message
 from velbus.messages.channel_name_part1 import ChannelNamePart1Message2
 from velbus.messages.channel_name_part2 import ChannelNamePart2Message
@@ -19,7 +22,8 @@ class Module(object):
     """
     def __init__(self, module_type, module_name, module_address, controller):
         self._type = module_type
-        self._name = module_name
+        self._model_name = module_name
+        self._name = False
         self._address = module_address
         self._master_address = 0xff
         self.sub_module = 0
@@ -37,13 +41,23 @@ class Module(object):
         self._controller = controller
         self._controller.subscribe(self.on_message)
 
+        if not self._is_submodule():
+            self._data = controller._module_data[
+              "0x{:02x}".format(module_type)
+            ]
+        else:
+            self._data = {}
+        self._memoryRead = {}
+
     def get_module_name(self):
         """
         Returns the module model name
 
         :return: str
         """
-        return self._name
+        if self._name:
+            return self._name
+        return self._model_name
 
     def get_module_address(self):
         """
@@ -94,6 +108,23 @@ class Module(object):
                     or (self._is_submodule()
                     and (message.address == self._master_address)):
                 self._process_channel_name_message(3, message)
+        elif isinstance(message, MemoryDataMessage):
+            if message.address == self._address:
+                for typ, item in self._memoryRead.items():
+                    if (message.high_address, message.low_address) in item:
+                        if message.data == 0xFF:
+                            self._memoryRead[typ].remove(
+                              (message.high_address, message.low_address)
+                            )
+                            if typ == "moduleName":
+                                self._moduleName_is_complete()
+                        else:
+                            idx = [
+                              i for i, x in enumerate(self._memoryRead[typ]) 
+                              if x == (message.high_address, message.low_address)
+                            ]
+                            self._memoryRead[typ][idx[0]] = chr(message.data)
+                        break
         else:
             if (message.address == self._address):
                 if isinstance(message, ModuleTypeMessage):
@@ -116,10 +147,16 @@ class Module(object):
                 pass
             callback = callb
         if len(self._loaded_callbacks) == 0:
+            if not self._is_submodule():
+                # load the data from memory ( the stuff that we need)
+                self._load_memory()
+            # load the module status
             self._request_module_status()
             if not self._is_submodule():
+                # load the channel names
                 self._request_channel_name()
         self._loaded_callbacks.append(callback)
+        # load the module specifick stuff
         self._load()
 
     def _load(self):
@@ -162,9 +199,9 @@ class Module(object):
 
     def _process_module_type_message(self, message):
         self.serial = message.serial
-        self.memory_map_version = message.memory_map_version
-        self.build_year = message.build_year
-        self.build_week = message.build_week
+        self.memory_map_version = int(message.memory_map_version)
+        self.build_year = int(message.build_year)
+        self.build_week = int(message.build_week)
 
     def _process_module_subtype_message(self, message):
         self.serial = message.serial
@@ -194,6 +231,13 @@ class Module(object):
                 return False
         return True
 
+    def _moduleName_is_complete(self):
+        self._name = ''
+        for char in self._memoryRead['moduleName']:
+            if type(char) is str:
+                self._name = self._name + char
+        del(self._memoryRead['moduleName'])
+
     def _request_module_status(self):
         message = ModuleStatusRequestMessage(self._address)
         message.channels = list(range(1, self.number_of_channels() + 1))
@@ -203,3 +247,21 @@ class Module(object):
         message = ChannelNameRequestMessage(self._address)
         message.channels = list(range(1, self.number_of_channels() + 1))
         self._controller.send(message)
+
+    def _load_memory(self):
+        if 'memory' not in self._data:
+            return
+
+        for memoryType, matchData in self._data['memory'].items():
+            print("loading module memory: " + memoryType)
+            self._memoryRead[memoryType] = []
+            # TODO matchbuild + matchversion
+            for addrRange in matchData['address'].split(';'):
+                addrR = addrRange.split('-')
+                for addr in range(int(addrR[0], 0), int(addrR[1], 0)):
+                    addr = struct.unpack('>BB', struct.pack('>h', addr))
+                    self._memoryRead[memoryType].append(addr)
+                    message = ReadDataFromMemoryMessage(self._address)
+                    message.high_address = addr[0]
+                    message.low_address = addr[1]
+                    self._controller.send(message)

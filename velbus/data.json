@@ -1,0 +1,427 @@
+{
+    "0x01": {
+        "name"      : "VMB8PB",
+        "channels"  : 8,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x03C0-0x03FF"
+            }
+        }
+    },
+    "0x02": {
+        "name"      : "VMB1RY",
+        "channels"  : 1,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1409",
+                "matchVersion"  : "1",
+                "address"       : "0x00E3-0x00EF;0x01E1-0x01EF;0x02E3-0x02EF;0x03E3-0x03EF;0x04E3-0x04EE"
+            }
+        }
+    },
+    "0x03": {
+        "name"      : "VMB1BL",
+        "channels"  : 1
+    },
+    "0x05": {
+        "name"      : "VMB6IN",
+        "channels"  : 6
+    },
+    "0x07": {
+        "name"      : "VMB1DM",
+        "channels"  : 1
+    },
+    "0x08": {
+        "name"      : "VMB4RY",
+        "channels"  : 4
+    },
+    "0x09": {
+        "name"      : "VMB2BL",
+        "channels"  : 2
+    },
+    "0x0a": {
+        "name"      : "VMB8IR",
+        "channels"  : 8
+    },
+    "0x0b": {
+        "name"      : "VMB4PD",
+        "channels"  : 8
+    },
+    "0x0c": {
+        "name"      : "VMB1TS",
+        "channels"  : 1
+    },
+    "0x0d": {
+        "name"      : "VMB1TH",
+        "channels"  : 1
+    },
+    "0x0e": {
+        "name"      : "VMB1TC",
+        "channels"  : 1,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x00F0-0x00FF"
+            }
+        }
+    },
+    "0x0f": {
+        "name"      : "VMB1LED",
+        "channels"  : 1
+    },
+    "0x10": {
+        "name"      : "VMB4RYLD",
+        "channels"  : 5,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1409",
+                "matchVersion"  : "1",
+                "address"       : "0x00E3-0x00EF;0x01E3-0x01EF;0x02E3-0x02EF;0x03E3-0x03EF;0x04E3-0x04EE"
+            }
+        }
+    },
+    "0x11": {
+        "name"      : "VMB4RYNO",
+        "channels"  : 5,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1409",
+                "matchVersion"  : "1",
+                "address"       : "0x00E3-0x00EF;0x01E3-0x01EF;0x02E3-0x02EF;0x03E3-0x03EF;0x04E3-0x04EE"
+            }
+        }
+    },
+    "0x12": {
+        "name"      : "VMB4DC",
+        "channels"  : 4,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1509",
+                "matchVersion"  : "1",
+                "address"       : "0x00E0-0x00EF;0x01E0-0x01EF"
+            }
+        }
+    },
+    "0x13": {
+        "name"      : "VMBLCDWB"
+    },
+    "0x14": {
+        "name"      : "VMBDME"
+    },
+    "0x15": {
+        "name"      : "VMBDMI",
+        "channels"  : 1
+    },
+    "0x16": {
+        "name"      : "VMB8PBU",
+        "channels"  : 8
+    },
+    "0x17": {
+        "name"      : "VMB6PBN",
+        "channels"  : 6,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1409",
+                "matchVersion"  : "1",
+                "address"       : "0x03C0-0x03FF"
+            }
+        }
+    },
+    "0x18": {
+        "name"      : "VMB2PBN",
+        "channels"  : 2,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1409",
+                "matchVersion"  : "1",
+                "address"       : "0x03C0-0x03FF"
+            }
+        }
+    },
+    "0x19": {
+        "name"      : "VMB6PBB",
+        "channels"  : 8
+    },
+    "0x1a": {
+        "name"      : "VMB4RF",
+        "channels"  : 4,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1409",
+                "matchVersion"  : "1",
+                "address"       : "0x02C0-0x03FF"
+            }
+        }
+    },
+    "0x1b": {
+        "name"      : "VMB1RYNO",
+        "channels"  : 1,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1409",
+                "matchVersion"  : "1",
+                "address"       : "0x00E3-0x00EF;0x01E3-0x01EF;0x02E3-0x02EF;0x03E3-0x03EF;0x04E3-0x04EE"
+            }
+        }
+    },
+    "0x1c": {
+        "name"      : "VMB1BLE",
+        "channels"  : 1
+    },
+    "0x1d": {
+        "name"      : "VMB2BLE",
+        "channels"  : 2,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1409",
+                "matchVersion"  : "1",
+                "address"       : "0x004C-0x008B"
+            }
+        }
+    },
+    "0x1e": {
+        "name"      : "VMBGP1",
+        "channels"  : 1
+    },
+    "0x1f": {
+        "name"      : "VMBGP2",
+        "channels"  : 2
+    },
+    "0x20": {
+        "name"      : "VMBGP4",
+        "channels"  : 4
+    },
+    "0x21": {
+        "name"      : "VMBGPO",
+        "channels"  : 4
+    },
+    "0x22": {
+        "name"      : "VMB7IN",
+        "channels"  : 7,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1424",
+                "matchVersion"  : "1",
+                "address"       : "0x03AC-0x03EB"
+            }
+        }
+    },
+    "0x28": {
+        "name"      : "VMBGPOD",
+        "channels"  : 7,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1640",
+                "matchVersion"  : "1",
+                "address"       : "0x09BE-0x09FD"
+            }
+        }
+    },
+    "0x29": {
+        "name"      : "VMB1RYNOS",
+        "channels"  : 1,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x00E3-0x00EF;0x01E3-0x01EF;0x02E3-0x02EF;0x03E3-0x03EF;0x04E3-0x04EE"
+            }
+        }
+    },
+    "0x2a": {
+        "name"      : "VMBIRM",
+        "channels"  : 1,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1607",
+                "matchVersion"  : "1",
+                "address"       : "0x00B0-0x00EF"
+            }
+        }
+    },
+    "0x2b": {
+        "name"      : "VMBIRC",
+        "channels"  : 1,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x00B0-0x00EF"
+            }
+        }
+    },
+    "0x2c": {
+        "name"      : "VMBIRO",
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1519",
+                "matchVersion"  : "1",
+                "address"       : "0x00B0-0x00EF"
+            }
+        }
+    },
+    "0x2d": {
+        "name"      : "VMBGP4PIR",
+        "channels"  : 4,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x03C0-0x03FF"
+            }
+        }
+    },
+    "0x2e": {
+        "name"      : "VMB1BLS",
+        "channels"  : 1,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x004C-0x008B"
+            }
+        }
+    },
+    "0x2f": {
+        "name"      : "VMBDMI-R",
+        "channels"  : 1
+    },
+    "0x31": {
+        "name"      : "VMBMETEO",
+        "channels"  : 1,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x03C0-0x03FF"
+            }
+        }
+    },
+    "0x32": {
+        "name"      : "VMB4AN",
+        "channels"  : 4,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x0000-0x003F"
+            }
+        }
+    },
+    "0x33": {
+        "name"      : "VMBVP01",
+        "channels"  : 1,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x00B0-0x00EF"
+            }
+        }
+    },
+    "0x34": {
+        "name"      : "VMBEL1",
+        "channels"  : 1,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x06C0-0x06CF"
+            }
+        }
+    },
+    "0x35": {
+        "name"      : "VMBEL2",
+        "channels"  : 2,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x06C0-0x06CF"
+            }
+        }
+    },
+    "0x36": {
+        "name"      : "VMBEL4",
+        "channels"  : 4,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x06C0-0x06CF"
+            }
+        }
+    },
+    "0x37": {
+        "name"      : "VMBELO",
+        "channels"  : 4,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x0F44-0x0F83"
+            }
+        }
+    },
+    "0x39": {
+        "name"      : "VMBSIG"
+    }, 
+    "0x3a": {
+        "name"      : "VMBGP1-2",
+        "channels"  : 1,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x03C0-0x03FF"
+            }
+        }
+    },
+    "0x3b": {
+        "name"      : "VMBGP2-2",
+        "channels"  : 2,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x03C0-0x03FF"
+            }
+        }
+    },
+    "0x3C": {
+        "name"      : "VMBGP4-2",
+        "channels"  : 4,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x03C0-0x03FF"
+            }
+        }
+    },
+    "0x3D": {
+        "name"      : "VMBGPOD-2",
+        "channels"  : 4,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x09BE-0x09FD"
+            }
+        }
+    },
+    "0x3E": {
+        "name"      : "VMBGP4PIR-2",
+        "channels"  : 4,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x03C0-0x03FF"
+            }
+        }
+    }
+}

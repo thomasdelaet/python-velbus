@@ -28,8 +28,9 @@ class VelbusParser(object):
             self.buffer += data
             while len(self.buffer) >= 6:
                 self.next_packet()
-        except Exception:
+        except Exception as e:
             self.logger.error("Error while processing received data")
+            self.logger.error(e)
 
     def valid_header_waiting(self):
         """

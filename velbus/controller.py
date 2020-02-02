@@ -4,6 +4,8 @@
 import logging
 import time
 import threading
+import pkg_resources
+import json
 from velbus.parser import VelbusParser
 from velbus.connections.socket import SocketConnection
 from velbus.connections.serial import VelbusUSBConnection
@@ -32,6 +34,7 @@ class Controller(object):
         self.__subscribers = []
         self.__scan_callback = None
         self._modules = {}
+        self._loadModuleData()
         if ":" in port:
             self.connection = SocketConnection(port, self)
         else:
@@ -129,8 +132,8 @@ class Controller(object):
                         del self._modules[module]
                     callback()
 
-            # 60 second timeout for loading modules
-            self.load_timeout = threading.Timer(60, timeout_expired).start()
+            # 120 second timeout for loading modules
+            self.load_timeout = threading.Timer(120, timeout_expired).start()
             for module in self._modules:
                 self._modules[module].load(module_loaded)
 
@@ -261,3 +264,8 @@ class Controller(object):
         self.send(SetRealtimeClock())
         self.send(SetDate())
         self.send(SetDaylightSaving())
+
+    def _loadModuleData(self):
+        filepath = pkg_resources.resource_filename(__name__, 'data.json')
+        with open(filepath) as json_file:
+            self._module_data = json.load(json_file)
