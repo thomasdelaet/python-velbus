@@ -42,7 +42,9 @@ class Module(object):
         self._controller.subscribe(self.on_message)
 
         if not self._is_submodule():
-            self._data = controller._module_data["0x{:02x}".format(module_type)]
+            self._data = controller._module_data[
+              "0x{:02x}".format(module_type)
+            ]
         else:
             self._data = {}
         self._memoryRead = {}
@@ -111,11 +113,14 @@ class Module(object):
                 for typ, item in self._memoryRead.items():
                     if (message.high_address, message.low_address) in item:
                         if message.data == 0xFF:
-                            self._memoryRead[typ].remove((message.high_address, message.low_address))
+                            self._memoryRead[typ].remove(
+                              (message.high_address, message.low_address)
+                            )
                             if typ == "moduleName":
                                 self._moduleName_is_complete()
                         else:
-                            idx = [i for i, x in enumerate(self._memoryRead[typ]) if x == (message.high_address, message.low_address)]
+                            idx = [i for i, x in enumerate(self._memoryRead[typ]) 
+                              if x == (message.high_address, message.low_address)]
                             self._memoryRead[typ][idx[0]] = chr(message.data)
                         break
         else:
