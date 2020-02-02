@@ -29,7 +29,7 @@ class Controller(object):
     """
 
     def __init__(self, port):
-        self.logger = logging.getLogger('velbus')
+        self.logger = logging.getLogger("velbus")
         self.parser = VelbusParser(self)
         self.__subscribers = []
         self.__scan_callback = None
@@ -99,7 +99,7 @@ class Controller(object):
             Callback when scan is finished
             """
             time.sleep(3)
-            logging.info('Scan finished')
+            logging.info("Scan finished")
             self._nb_of_modules_loaded = 0
             self._load_finished = False
 
@@ -168,15 +168,14 @@ class Controller(object):
             self.logger.error("Velbus receive buffer full message received")
         if isinstance(message, ModuleTypeMessage):
             self.logger.debug(
-                "Module type response received from address "
-                + str(message.address)
+                "Module type response received from address " + str(message.address)
             )
             name = message.module_name()
             address = message.address
             m_type = message.module_type
             if name == "Unknown":
                 self.logger.warning(
-                    "Unknown module (code: " + str(message.module_type) + ')'
+                    "Unknown module (code: " + str(message.module_type) + ")"
                 )
                 return
             if name in ModuleRegistry:
@@ -186,47 +185,31 @@ class Controller(object):
                 self.logger.warning("Module " + name + " is not yet supported")
         if isinstance(message, ModuleSubTypeMessage):
             self.logger.debug(
-                "Module subtype response received from address "
-                + str(message.address)
+                "Module subtype response received from address " + str(message.address)
             )
             name = message.module_name()
             address = message.address
             m_type = message.module_type
             if name == "Unknown":
                 self.logger.warning(
-                    "Unknown module (code: " + str(message.module_type) + ')'
+                    "Unknown module (code: " + str(message.module_type) + ")"
                 )
                 return
             if "SUB_" + name in ModuleRegistry:
                 subname = "SUB_" + name
                 if message.sub_address_1 != 0xFF:
                     module = ModuleRegistry[subname](
-                        m_type,
-                        subname,
-                        message.sub_address_1,
-                        address,
-                        1,
-                        self,
+                        m_type, subname, message.sub_address_1, address, 1, self,
                     )
                     self._modules[message.sub_address_1] = module
                 if message.sub_address_2 != 0xFF:
                     module = ModuleRegistry[subname](
-                        m_type,
-                        subname,
-                        message.sub_address_2,
-                        address,
-                        2,
-                        self,
+                        m_type, subname, message.sub_address_2, address, 2, self,
                     )
                     self._modules[message.sub_address_2] = module
                 if message.sub_address_3 != 0xFF:
                     module = ModuleRegistry[subname](
-                        m_type,
-                        subname,
-                        message.sub_address_3,
-                        address,
-                        3,
-                        self,
+                        m_type, subname, message.sub_address_3, address, 3, self,
                     )
                     self._modules[message.sub_address_3] = module
                 if (
@@ -236,12 +219,7 @@ class Controller(object):
                     and name != "VMBELO"
                 ):
                     module = ModuleRegistry[subname](
-                        m_type,
-                        subname,
-                        message.sub_address_4,
-                        address,
-                        4,
-                        self,
+                        m_type, subname, message.sub_address_4, address, 4, self,
                     )
                     self._modules[message.sub_address_4] = module
             else:
@@ -266,6 +244,6 @@ class Controller(object):
         self.send(SetDaylightSaving())
 
     def _loadModuleData(self):
-        filepath = pkg_resources.resource_filename(__name__, 'data.json')
+        filepath = pkg_resources.resource_filename(__name__, "data.json")
         with open(filepath) as json_file:
             self._module_data = json.load(json_file)

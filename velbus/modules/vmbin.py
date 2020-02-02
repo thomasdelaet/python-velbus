@@ -23,6 +23,7 @@ class VMB6INModule(Module):
     """
     Velbus input module with 6 channels
     """
+
     def __init__(self, module_type, module_name, module_address, controller):
         Module.__init__(self, module_type, module_name, module_address, controller)
         self._is_closed = {}
@@ -67,13 +68,14 @@ class VMB6INModule(Module):
         self._callbacks[channel].append(callback)
 
     def get_categories(self, channel):
-        return ['binary_sensor']
+        return ["binary_sensor"]
 
 
 class VMB7INModule(VMB6INModule):
     """
     Velbus input module with 7 channels
     """
+
     def __init__(self, module_type, module_name, module_address, controller):
         Module.__init__(self, module_type, module_name, module_address, controller)
         self._is_closed = {}
@@ -98,7 +100,7 @@ class VMB7INModule(VMB6INModule):
         # get the unit for the counters
         message = ReadDataFromMemoryMessage(self._address)
         message.high_address = 0x03
-        message.low_address = 0xfe
+        message.low_address = 0xFE
         self._controller.send(message)
 
     def number_of_channels(self):
@@ -148,9 +150,9 @@ class VMB7INModule(VMB6INModule):
 
     def get_categories(self, channel):
         if channel in self._is_counter:
-            return ['sensor']
+            return ["sensor"]
         else:
-            return ['binary_sensor']
+            return ["binary_sensor"]
 
     def get_counter_state(self, channel):
         if channel in self._counter:
@@ -167,11 +169,11 @@ class VMB7INModule(VMB6INModule):
         if channel not in self._unit:
             return val
         if self._unit[channel] == VOLUME_LITERS_HOUR:
-            val = ((1000 * 3600) / (self._delay[channel] * self._pulses[channel]))
+            val = (1000 * 3600) / (self._delay[channel] * self._pulses[channel])
         elif self._unit[channel] == VOLUME_CUBIC_METER_HOUR:
-            val = ((1000 * 3600) / (self._delay[channel] * self._pulses[channel]))
+            val = (1000 * 3600) / (self._delay[channel] * self._pulses[channel])
         elif self._unit[channel] == ENERGY_WATT_HOUR:
-            val = ((1000 * 1000 * 3600) / (self._delay[channel] * self._pulses[channel]))
+            val = (1000 * 1000 * 3600) / (self._delay[channel] * self._pulses[channel])
             if val < 55:
                 val = 0
         return round(val, 2)
@@ -180,7 +182,7 @@ class VMB7INModule(VMB6INModule):
         """
         Ignore channel
         """
-        return 'counter'
+        return "counter"
 
     def get_unit(self, channel):
         if channel in self._unit:
@@ -189,5 +191,5 @@ class VMB7INModule(VMB6INModule):
             return None
 
 
-register_module('VMB7IN', VMB7INModule)
-register_module('VMB6IN', VMB6INModule)
+register_module("VMB7IN", VMB7INModule)
+register_module("VMB6IN", VMB6INModule)

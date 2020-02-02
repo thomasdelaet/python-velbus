@@ -4,7 +4,7 @@
 from velbus.message import Message
 from velbus.command_registry import register_command
 
-COMMAND_CODE = 0xda
+COMMAND_CODE = 0xDA
 
 
 class BusErrorCounterStatusMessage(Message):
@@ -36,7 +36,14 @@ class BusErrorCounterStatusMessage(Message):
         """
         :return: bytes
         """
-        return bytes([COMMAND_CODE, self.transmit_error_counter,
-                      self.receive_error_counter, self.bus_off_counter])
+        return bytes(
+            [
+                COMMAND_CODE,
+                self.transmit_error_counter,
+                self.receive_error_counter,
+                self.bus_off_counter,
+            ]
+        )
+
 
 register_command(COMMAND_CODE, BusErrorCounterStatusMessage)

@@ -5,7 +5,7 @@ import json
 from velbus.message import Message
 from velbus.command_registry import register_command
 
-COMMAND_CODE = 0xbe
+COMMAND_CODE = 0xBE
 
 
 class CounterStatusMessage(Message):
@@ -35,7 +35,7 @@ class CounterStatusMessage(Message):
         self.needs_no_rtr(rtr)
         self.needs_data(data, 7)
         self.set_attributes(priority, address, rtr)
-        self.channel = (data[0] & 0x03) +1 
+        self.channel = (data[0] & 0x03) + 1
         self.pulses = (data[0] >> 2) * 100
         self.counter = (data[1] << 24) + (data[2] << 16) + (data[3] << 8) + data[4]
         self.delay = (data[5] << 8) + data[6]
@@ -45,12 +45,12 @@ class CounterStatusMessage(Message):
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['pulses'] = self.pulses
-        json_dict['counter'] = self.counter
-        json_dict['kwh'] = self.kwh
-        json_dict['delay'] = self.delay
-        json_dict['watt'] = self.watt
-        json_dict['channel'] = self.channel
+        json_dict["pulses"] = self.pulses
+        json_dict["counter"] = self.counter
+        json_dict["kwh"] = self.kwh
+        json_dict["delay"] = self.delay
+        json_dict["watt"] = self.watt
+        json_dict["channel"] = self.channel
         return json.dumps(json_dict)
 
     def get_channels(self):
@@ -60,4 +60,4 @@ class CounterStatusMessage(Message):
         return self.channel
 
 
-register_command(COMMAND_CODE, CounterStatusMessage, 'VMB7IN')
+register_command(COMMAND_CODE, CounterStatusMessage, "VMB7IN")

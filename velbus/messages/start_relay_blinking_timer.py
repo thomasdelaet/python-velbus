@@ -5,7 +5,7 @@ import struct
 from velbus.message import Message
 from velbus.command_registry import register_command
 
-COMMAND_CODE = 0x0d
+COMMAND_CODE = 0x0D
 
 
 class StartRelayBlinkingTimerMessage(Message):
@@ -36,16 +36,16 @@ class StartRelayBlinkingTimerMessage(Message):
         self.needs_data(data, 4)
         self.set_attributes(priority, address, rtr)
         self.relay_channels = self.byte_to_channels(data)
-        (self.delay_time,) = struct.unpack('>L', bytes([0]) + data[1:])
+        (self.delay_time,) = struct.unpack(">L", bytes([0]) + data[1:])
 
     def data_to_binary(self):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.channels_to_byte(self.relay_channels)]) + \
-            struct.pack('>L', self.delay_time)[-3:]
+        return (
+            bytes([COMMAND_CODE, self.channels_to_byte(self.relay_channels)])
+            + struct.pack(">L", self.delay_time)[-3:]
+        )
 
 
 register_command(COMMAND_CODE, StartRelayBlinkingTimerMessage)

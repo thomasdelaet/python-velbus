@@ -10,36 +10,44 @@ from velbus.connections.connection import VelbusConnection
 from velbus.util import VelbusException
 from velbus.message import Message
 
+
 class SocketConnection(VelbusConnection):
     """
     Wrapper for Socket connection configuration
     :author: Maikel Punie <maikel.punie@gmail.com>
     """
+
     SLEEP_TIME = 60 / 1000
 
     def __init__(self, device, controller=None):
         VelbusConnection.__init__(self)
-        self.logger = logging.getLogger('velbus')
+        self.logger = logging.getLogger("velbus")
         self._device = device
         self.controller = controller
         # get the address from a <host>:<port> format
-        addr = device.split(':')
+        addr = device.split(":")
         addr = (addr[0], int(addr[1]))
         try:
             self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self._socket.connect(addr)
         except Exception:
-            self.logger.error("Could not open socket, \
-                              no messages are read or written to the bus")
+            self.logger.error(
+                "Could not open socket, \
+                              no messages are read or written to the bus"
+            )
             raise VelbusException("Could not open socket port")
         # build a read thread
-        self._listen_process = threading.Thread(None, self.read_daemon, "velbus-process-reader", (), {})
+        self._listen_process = threading.Thread(
+            None, self.read_daemon, "velbus-process-reader", (), {}
+        )
         self._listen_process.daemon = True
         self._listen_process.start()
 
         # build a writer thread
         self._write_queue = Queue()
-        self._write_process = threading.Thread(None, self.write_daemon, "velbus-connection-writer", (), {})
+        self._write_process = threading.Thread(
+            None, self.write_daemon, "velbus-connection-writer", (), {}
+        )
         self._write_process.daemon = True
         self._write_process.start()
 

@@ -4,6 +4,7 @@
 from velbus.message import Message
 from velbus.command_registry import register_command
 
+
 class ModuleTypeRequestMessage(Message):
     """
     send by:

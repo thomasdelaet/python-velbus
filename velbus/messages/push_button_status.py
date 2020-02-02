@@ -45,9 +45,9 @@ class PushButtonStatusMessage(Message):
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['closed_channels'] = self.closed
-        json_dict['opened_channels'] = self.opened
-        json_dict['closed_long_channels'] = self.closed_long
+        json_dict["closed_channels"] = self.closed
+        json_dict["opened_channels"] = self.opened
+        json_dict["closed_long_channels"] = self.closed_long
         return json.dumps(json_dict)
 
     def get_channels(self):
@@ -60,12 +60,14 @@ class PushButtonStatusMessage(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.channels_to_byte(self.closed),
-            self.channels_to_byte(self.opened),
-            self.channels_to_byte(self.closed_long)
-        ])
+        return bytes(
+            [
+                COMMAND_CODE,
+                self.channels_to_byte(self.closed),
+                self.channels_to_byte(self.opened),
+                self.channels_to_byte(self.closed_long),
+            ]
+        )
 
 
 register_command(COMMAND_CODE, PushButtonStatusMessage)

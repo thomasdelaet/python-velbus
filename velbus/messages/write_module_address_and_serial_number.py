@@ -6,7 +6,7 @@ from velbus.message import Message
 from velbus.command_registry import register_command
 
 
-COMMAND_CODE = 0x6a
+COMMAND_CODE = 0x6A
 
 
 class WriteModuleAddressAndSerialNumberMessage(Message):
@@ -40,19 +40,21 @@ class WriteModuleAddressAndSerialNumberMessage(Message):
         self.set_attributes(priority, address, rtr)
         self.module_type = data[0]
         prefix = bytes([0, 0])
-        (self.current_serial,) = struct.unpack(
-            '>L', prefix + data[1] + data[2])
+        (self.current_serial,) = struct.unpack(">L", prefix + data[1] + data[2])
         self.module_address = data[3]
-        (self.new_serial,) = struct.unpack('>L', prefix + data[4] + data[5])
+        (self.new_serial,) = struct.unpack(">L", prefix + data[4] + data[5])
 
     def data_to_binary(self):
         """
         :return: bytes
         """
-        return chr(COMMAND_CODE) + chr(self.module_type) + \
-            struct.pack('>L', self.current_serial)[2:] + \
-            chr(self.module_address) + \
-            struct.pack('>L', self.new_serial)[2:]
+        return (
+            chr(COMMAND_CODE)
+            + chr(self.module_type)
+            + struct.pack(">L", self.current_serial)[2:]
+            + chr(self.module_address)
+            + struct.pack(">L", self.new_serial)[2:]
+        )
 
 
 register_command(COMMAND_CODE, WriteModuleAddressAndSerialNumberMessage)

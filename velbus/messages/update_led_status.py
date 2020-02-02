@@ -4,7 +4,7 @@
 from velbus.message import Message
 from velbus.command_registry import register_command
 
-COMMAND_CODE = 0xf4
+COMMAND_CODE = 0xF4
 
 
 class UpdateLedStatusMessage(Message):
@@ -37,12 +37,14 @@ class UpdateLedStatusMessage(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.channels_to_byte(self.led_on),
-            self.channels_to_byte(self.led_slow_blinking),
-            self.channels_to_byte(self.led_fast_blinking)
-        ])
+        return bytes(
+            [
+                COMMAND_CODE,
+                self.channels_to_byte(self.led_on),
+                self.channels_to_byte(self.led_slow_blinking),
+                self.channels_to_byte(self.led_fast_blinking),
+            ]
+        )
 
 
 register_command(COMMAND_CODE, UpdateLedStatusMessage)

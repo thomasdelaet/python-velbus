@@ -15,8 +15,7 @@ class VMB4DCModule(Module):
     """
 
     def __init__(self, module_type, module_name, module_address, controller):
-        Module.__init__(self, module_type, module_name, module_address,
-                        controller)
+        Module.__init__(self, module_type, module_name, module_address, controller)
         self._dimmer_state = {}
         self._callbacks = {}
 
@@ -46,17 +45,18 @@ class VMB4DCModule(Module):
             return self._dimmer_state[channel]
         return 0
 
-    def set_dimmer_state(self, channel, slider, transitiontime=0,
-                         callback=None):
+    def set_dimmer_state(self, channel, slider, transitiontime=0, callback=None):
         """
         Set dimmer to slider
 
         :return: None
         """
         if callback is None:
+
             def callb():
                 """No-op"""
                 pass
+
             callback = callb
         message = SetDimmerMessage(self._address)
         message.dimmer_channels = [channel]
@@ -72,9 +72,11 @@ class VMB4DCModule(Module):
         :return: None
         """
         if callback is None:
+
             def callb():
                 """No-op"""
                 pass
+
             callback = callb
         message = RestoreDimmerMessage(self._address)
         message.dimmer_channels = [channel]
@@ -102,10 +104,10 @@ class VMB4DCModule(Module):
         self._callbacks[channel].append(callback)
 
     def get_categories(self, channel):
-        return ['light']
+        return ["light"]
 
     def light_is_buttonled(self, channel):
         return False
 
 
-register_module('VMB4DC', VMB4DCModule)
+register_module("VMB4DC", VMB4DCModule)

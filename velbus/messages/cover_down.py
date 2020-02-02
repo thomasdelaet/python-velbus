@@ -33,15 +33,15 @@ class CoverDownMessage(Message):
         self.set_attributes(priority, address, rtr)
         self.channel = self.byte_to_channel(data[0])
         self.needs_valid_channel(self.channel, 2)
-        (self.delay_time,) = struct.unpack('>L', bytes([0]) + data[1:])
+        (self.delay_time,) = struct.unpack(">L", bytes([0]) + data[1:])
 
     def to_json(self):
         """
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['channel'] = self.channel
-        json_dict['delay_time'] = self.delay_time
+        json_dict["channel"] = self.channel
+        json_dict["delay_time"] = self.delay_time
         return json.dumps(json_dict)
 
     def set_defaults(self, address):
@@ -54,10 +54,10 @@ class CoverDownMessage(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.channels_to_byte([self.channel])
-        ]) + struct.pack('>L', self.delay_time)[-3:]
+        return (
+            bytes([COMMAND_CODE, self.channels_to_byte([self.channel])])
+            + struct.pack(">L", self.delay_time)[-3:]
+        )
 
 
 class CoverDownMessage2(Message):
@@ -70,7 +70,7 @@ class CoverDownMessage2(Message):
         Message.__init__(self)
         self.channel = 0
         self.delay_time = 0
-        self.logger = logging.getLogger('velbus')
+        self.logger = logging.getLogger("velbus")
         self.set_defaults(address)
 
     def populate(self, priority, address, rtr, data):
@@ -89,15 +89,15 @@ class CoverDownMessage2(Message):
         print(tmp)
         self.channel = self.byte_to_channel(tmp)
         self.needs_valid_channel(self.channel, 2)
-        (self.delay_time,) = struct.unpack('>L', bytes([0]) + data[1:])
+        (self.delay_time,) = struct.unpack(">L", bytes([0]) + data[1:])
 
     def to_json(self):
         """
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['channel'] = self.channel
-        json_dict['delay_time'] = self.delay_time
+        json_dict["channel"] = self.channel
+        json_dict["delay_time"] = self.delay_time
         return json.dumps(json_dict)
 
     def set_defaults(self, address):
@@ -115,12 +115,10 @@ class CoverDownMessage2(Message):
         else:
             tmp = 0x0C
 
-        return bytes([
-            COMMAND_CODE,
-            tmp
-        ]) + struct.pack('>L', self.delay_time)[-3:]
+        return bytes([COMMAND_CODE, tmp]) + struct.pack(">L", self.delay_time)[-3:]
 
-register_command(COMMAND_CODE, CoverDownMessage, 'VMB1BLE')
-register_command(COMMAND_CODE, CoverDownMessage, 'VMB2BLE')
-register_command(COMMAND_CODE, CoverDownMessage2, 'VMB1BL')
-register_command(COMMAND_CODE, CoverDownMessage2, 'VMB2BL')
+
+register_command(COMMAND_CODE, CoverDownMessage, "VMB1BLE")
+register_command(COMMAND_CODE, CoverDownMessage, "VMB2BLE")
+register_command(COMMAND_CODE, CoverDownMessage2, "VMB1BL")
+register_command(COMMAND_CODE, CoverDownMessage2, "VMB2BL")

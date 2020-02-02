@@ -10,10 +10,12 @@ from velbus.messages.cover_position import CoverPosMessage
 from velbus.messages.blind_status import BlindStatusMessage, BlindStatusNgMessage
 from velbus.messages.channel_name_request import ChannelNameRequestMessage2
 
+
 class VMB1BLModule(Module):
     """
     Velbus input module with 6 channels
     """
+
     def __init__(self, module_type, module_name, module_address, controller):
         Module.__init__(self, module_type, module_name, module_address, controller)
         self._state = {}
@@ -48,7 +50,7 @@ class VMB1BLModule(Module):
         self._callbacks[channel].append(callback)
 
     def get_categories(self, channel):
-        return ['cover']
+        return ["cover"]
 
     def _request_channel_name(self):
         message = ChannelNameRequestMessage2(self._address)
@@ -114,19 +116,20 @@ class VMB1BLEModule(VMB1BLModule):
         message = CoverOffMessage(self._address)
         message.channel = channel
         self._controller.send(message)
-    
+
     def set(self, channel, position):
         message = CoverPosMessage(self._address)
         message.channel = channel
         message.position = position
         self._controller.send(message)
 
+
 class VMB2BLEModule(VMB1BLEModule):
     def number_of_channels(self):
         return 2
 
 
-register_module('VMB1BL', VMB1BLModule)
-register_module('VMB2BL', VMB2BLModule)
-register_module('VMB1BLE', VMB1BLEModule)
-register_module('VMB2BLE', VMB2BLEModule)
+register_module("VMB1BL", VMB1BLModule)
+register_module("VMB2BL", VMB2BLModule)
+register_module("VMB1BLE", VMB1BLEModule)
+register_module("VMB2BLE", VMB2BLEModule)

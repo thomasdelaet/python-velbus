@@ -5,7 +5,7 @@ from velbus.message import Message
 from velbus.command_registry import register_command
 import json
 
-COMMAND_CODE = 0xf0
+COMMAND_CODE = 0xF0
 
 
 class ChannelNamePart1Message(Message):
@@ -38,25 +38,25 @@ class ChannelNamePart1Message(Message):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self.channels_to_byte([self.channel])
-            ]) + bytes(self.name, 'utf-8')
+        return bytes([COMMAND_CODE, self.channels_to_byte([self.channel])]) + bytes(
+            self.name, "utf-8"
+        )
 
     def to_json(self):
         """
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['channel'] = self.channel
+        json_dict["channel"] = self.channel
         return json.dumps(json_dict)
 
- 
+
 class ChannelNamePart1Message2(ChannelNamePart1Message):
     """
     send by: VMBGP*
     received by:
     """
+
     def populate(self, priority, address, rtr, data):
         """
         :return: None
@@ -75,6 +75,7 @@ class ChannelNamePart1Message3(ChannelNamePart1Message):
     send by: VMBGP*
     received by:
     """
+
     def populate(self, priority, address, rtr, data):
         """
         :return: None
@@ -87,21 +88,20 @@ class ChannelNamePart1Message3(ChannelNamePart1Message):
         self.channel = (data[0] >> 1) & 0x03
         self.name = "".join([chr(x) for x in data[1:]])
 
- 
-register_command(COMMAND_CODE, ChannelNamePart1Message)
-register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP1')
-register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBEL1')
-register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP1-2')
-register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP2')
-register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBEL2')
-register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP2-2')
-register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP4')
-register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBEL4')
-register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP4-2')
-register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGPO')
-register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGPOD')
-register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBELO')
-register_command(COMMAND_CODE, ChannelNamePart1Message2, 'VMBGP4PIR')
-register_command(COMMAND_CODE, ChannelNamePart1Message3, 'VMB1BL')
-register_command(COMMAND_CODE, ChannelNamePart1Message3, 'VMB2BL')
 
+register_command(COMMAND_CODE, ChannelNamePart1Message)
+register_command(COMMAND_CODE, ChannelNamePart1Message2, "VMBGP1")
+register_command(COMMAND_CODE, ChannelNamePart1Message2, "VMBEL1")
+register_command(COMMAND_CODE, ChannelNamePart1Message2, "VMBGP1-2")
+register_command(COMMAND_CODE, ChannelNamePart1Message2, "VMBGP2")
+register_command(COMMAND_CODE, ChannelNamePart1Message2, "VMBEL2")
+register_command(COMMAND_CODE, ChannelNamePart1Message2, "VMBGP2-2")
+register_command(COMMAND_CODE, ChannelNamePart1Message2, "VMBGP4")
+register_command(COMMAND_CODE, ChannelNamePart1Message2, "VMBEL4")
+register_command(COMMAND_CODE, ChannelNamePart1Message2, "VMBGP4-2")
+register_command(COMMAND_CODE, ChannelNamePart1Message2, "VMBGPO")
+register_command(COMMAND_CODE, ChannelNamePart1Message2, "VMBGPOD")
+register_command(COMMAND_CODE, ChannelNamePart1Message2, "VMBELO")
+register_command(COMMAND_CODE, ChannelNamePart1Message2, "VMBGP4PIR")
+register_command(COMMAND_CODE, ChannelNamePart1Message3, "VMB1BL")
+register_command(COMMAND_CODE, ChannelNamePart1Message3, "VMB2BL")

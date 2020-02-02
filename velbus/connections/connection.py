@@ -2,6 +2,7 @@
 :author: Thomas Delaet <thomas@delaet.org>
 """
 
+
 class VelbusConnection(object):
     """
     Generic Velbus connection

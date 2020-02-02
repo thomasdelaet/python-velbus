@@ -3,13 +3,24 @@
 """
 import json
 import base64
-from velbus.constants import HIGH_PRIORITY, LOW_PRIORITY, LOW_ADDRESS, HIGH_ADDRESS, END_BYTE, START_BYTE, RTR, FIRMWARE_PRIORITY
+from velbus.constants import (
+    HIGH_PRIORITY,
+    LOW_PRIORITY,
+    LOW_ADDRESS,
+    HIGH_ADDRESS,
+    END_BYTE,
+    START_BYTE,
+    RTR,
+    FIRMWARE_PRIORITY,
+)
 from velbus.util import checksum
+
 
 class ParserError(Exception):
     """
     Error when invalid message is received
     """
+
     pass
 
 
@@ -89,8 +100,7 @@ class Message(object):
             rtr_and_size = RTR | len(data_bytes)
         else:
             rtr_and_size = len(data_bytes)
-        prefix = bytes([START_BYTE, self.priority, self.address,
-                        rtr_and_size])
+        prefix = bytes([START_BYTE, self.priority, self.address, rtr_and_size])
         return prefix + data_bytes
 
     def data_to_binary(self):
@@ -105,8 +115,12 @@ class Message(object):
 
         :return: dict
         """
-        return {'name': self.__class__.__name__, 'priority': self.priority,
-                'address': self.address, 'rtr': self.rtr}
+        return {
+            "name": self.__class__.__name__,
+            "priority": self.priority,
+            "address": self.address,
+            "rtr": self.rtr,
+        }
 
     def to_json(self):
         """
@@ -255,7 +269,9 @@ class Message(object):
         """
         assert isinstance(data, bytes)
         if len(data) < length:
-            self.parser_error("needs " + str(length) + " bytes of data have " + str(len(data)))
+            self.parser_error(
+                "needs " + str(length) + " bytes of data have " + str(len(data))
+            )
 
     def needs_fixed_byte(self, byte, value):
         """
@@ -264,7 +280,7 @@ class Message(object):
         assert isinstance(byte, int)
         assert isinstance(value, int)
         assert byte >= 0 and value >= 0
-        assert byte <= 0xff and value <= 0xff
+        assert byte <= 0xFF and value <= 0xFF
         if byte != value:
             self.parser_error("expects " + chr(value) + " in byte " + chr(byte))
 
@@ -273,6 +289,10 @@ class Message(object):
         :return: None
         """
         assert isinstance(channels, list)
-        if len(channels) != 1 or not isinstance(channels[0], int) or \
-                not channels[0] > 0 or not channels[0] <= 8:
+        if (
+            len(channels) != 1
+            or not isinstance(channels[0], int)
+            or not channels[0] > 0
+            or not channels[0] <= 8
+        ):
             self.parser_error("needs exactly one bit set in channel byte")

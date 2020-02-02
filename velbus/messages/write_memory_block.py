@@ -4,7 +4,7 @@
 from velbus.message import Message
 from velbus.command_registry import register_command
 
-COMMAND_CODE = 0xca
+COMMAND_CODE = 0xCA
 
 
 class WriteMemoryBlockMessage(Message):

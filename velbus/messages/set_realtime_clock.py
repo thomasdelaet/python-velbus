@@ -17,7 +17,7 @@ class SetRealtimeClock(Message):
 
     def __init__(self, address=0x00):
         Message.__init__(self)
-        self.logger = logging.getLogger('velbus')
+        self.logger = logging.getLogger("velbus")
         self._wday = None
         self._hour = None
         self._min = None
@@ -51,20 +51,16 @@ class SetRealtimeClock(Message):
         :return: str
         """
         json_dict = self.to_json_basic()
-        json_dict['wday'] = self._wday
-        json_dict['hour'] = self._hour 
-        json_dict['min'] = self._min
+        json_dict["wday"] = self._wday
+        json_dict["hour"] = self._hour
+        json_dict["min"] = self._min
         return json.dumps(json_dict)
 
     def data_to_binary(self):
         """
         :return: bytes
         """
-        return bytes([
-            COMMAND_CODE,
-            self._wday,
-            self._hour,
-            self._min
-        ])
+        return bytes([COMMAND_CODE, self._wday, self._hour, self._min])
+
 
 register_command(COMMAND_CODE, SetRealtimeClock)
