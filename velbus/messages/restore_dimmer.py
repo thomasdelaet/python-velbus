@@ -54,7 +54,7 @@ class RestoreDimmerMessage(Message):
         :return: bytes
         """
         return bytes(
-            [COMMAND_CODE, self.channels_to_byte(self.dimmer_channels), 0,]
+            [COMMAND_CODE, self.channels_to_byte(self.dimmer_channels), 0, ]
         ) + self.dimmer_transitiontime.to_bytes(2, byteorder="big", signed=False)
 
 
