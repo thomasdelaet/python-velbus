@@ -13,18 +13,18 @@ def scan_finished():
     """
     Callback for finished scan
     """
-    logging.info(controller.get_modules('switch'))
-    logging.info(controller.get_modules('binary_sensor'))
+    logging.info(controller.get_modules("switch"))
+    logging.info(controller.get_modules("binary_sensor"))
 
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
-#pylint: disable-msg=C0103
-port = '/dev/ttyACM0'
-logging.info('Configuring controller')
+# pylint: disable-msg=C0103
+port = "/dev/ttyACM0"
+logging.info("Configuring controller")
 controller = velbus.Controller(port)
-logging.info('Starting scan')
+logging.info("Starting scan")
 controller.scan(scan_finished)
-logging.info('Starting sleep')
+logging.info("Starting sleep")
 time.sleep(30)
-logging.info('Exiting ...')
+logging.info("Exiting ...")
 controller.stop()
