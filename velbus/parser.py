@@ -77,7 +77,7 @@ class VelbusParser(object):
                 self.logger.warning("End byte not recognized")
             result = (
                 result
-                and checksum(self.buffer[0:packet_size - 2])[0]
+                and checksum(self.buffer[0 : packet_size - 2])[0]
                 == self.buffer[packet_size - 2]
             )
             if not result:
@@ -98,7 +98,7 @@ class VelbusParser(object):
             self.buffer = self.buffer[start_byte_index:]
         if self.valid_header_waiting() and self.valid_body_waiting():
             next_packet = self.extract_packet()
-            self.buffer = self.buffer[len(next_packet):]
+            self.buffer = self.buffer[len(next_packet) :]
             message = self.parse(next_packet)
             if isinstance(message, Message):
                 self.controller.new_message(message)
