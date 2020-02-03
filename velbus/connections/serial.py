@@ -10,6 +10,7 @@ import serial.threaded
 from velbus.connections.connection import VelbusConnection
 from velbus.util import VelbusException
 from velbus.message import Message
+from velbus.constants import SLEEP_TIME
 
 
 class Protocol(serial.threaded.Protocol):
@@ -36,8 +37,6 @@ class VelbusUSBConnection(VelbusConnection):
     XONXOFF = 0
 
     RTSCTS = 1
-
-    SLEEP_TIME = 60 / 1000
 
     def __init__(self, device, controller=None):
         VelbusConnection.__init__(self)
@@ -98,6 +97,6 @@ class VelbusUSBConnection(VelbusConnection):
             self.logger.info("Sending message on USB bus: %s", str(message))
             self.logger.debug("Sending binary message:  %s", str(message.to_binary()))
             self._reader.write(message.to_binary())
-            time.sleep(self.SLEEP_TIME)
+            time.sleep(SLEEP_TIME)
             if callback:
                 callback()
