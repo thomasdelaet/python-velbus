@@ -11,6 +11,7 @@ from velbus.util import VelbusException
 from velbus.message import Message
 from velbus.constants import SLEEP_TIME
 
+
 class SocketConnection(VelbusConnection):
     """
     Wrapper for Socket connection configuration

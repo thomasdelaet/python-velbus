@@ -12,6 +12,7 @@ from velbus.util import VelbusException
 from velbus.message import Message
 from velbus.constants import SLEEP_TIME
 
+
 class Protocol(serial.threaded.Protocol):
     """Serial protocol."""
 
