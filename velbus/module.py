@@ -261,7 +261,6 @@ class Module(object):
             return
 
         for memoryType, matchData in self._data["memory"].items():
-            print("loading module memory: " + memoryType)
             self._memoryRead[memoryType] = []
             # TODO matchbuild + matchversion
             for addrRange in matchData["address"].split(";"):

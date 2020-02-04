@@ -17,3 +17,4 @@ from velbus.modules.vmbbl import (
 from velbus.modules.vmbmeteo import VMBMETEOModule
 from velbus.modules.vmbdme import VMBDMEModule
 from velbus.modules.vmb4dc import VMB4DCModule
+from velbus.modules.vmbdmi import VMBDMIModule

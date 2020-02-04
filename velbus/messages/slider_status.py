@@ -67,3 +67,5 @@ class SliderStatusMessage(Message):
 
 register_command(COMMAND_CODE, SliderStatusMessage, "VMBDME")
 register_command(COMMAND_CODE, SliderStatusMessage, "VMB4DC")
+register_command(COMMAND_CODE, SliderStatusMessage, "VMBDMI")
+register_command(COMMAND_CODE, SliderStatusMessage, "VMBDMI-R")

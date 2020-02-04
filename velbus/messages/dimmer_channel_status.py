@@ -119,3 +119,5 @@ class DimmerChannelStatusMessage(Message):
 
 
 register_command(COMMAND_CODE, DimmerChannelStatusMessage, "VMB4DC")
+register_command(COMMAND_CODE, DimmerChannelStatusMessage, "VMBDMI")
+register_command(COMMAND_CODE, DimmerChannelStatusMessage, "VMBDMI-R")
