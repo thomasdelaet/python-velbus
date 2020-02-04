@@ -69,3 +69,5 @@ class SetDimmerMessage(Message):
 
 register_command(COMMAND_CODE, SetDimmerMessage, "VMBDME")
 register_command(COMMAND_CODE, SetDimmerMessage, "VMB4DC")
+register_command(COMMAND_CODE, SetDimmerMessage, "VMBDMI")
+register_command(COMMAND_CODE, SetDimmerMessage, "VMBDMI-R")

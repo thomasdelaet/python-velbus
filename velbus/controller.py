@@ -158,14 +158,6 @@ class Controller(object):
         :return: None
         """
         self.logger.info("New message: " + str(message))
-        if isinstance(message, BusActiveMessage):
-            self.logger.info("Velbus active message received")
-        if isinstance(message, ReceiveReadyMessage):
-            self.logger.info("Velbus receive ready message received")
-        if isinstance(message, BusOffMessage):
-            self.logger.error("Velbus bus off message received")
-        if isinstance(message, ReceiveBufferFullMessage):
-            self.logger.error("Velbus receive buffer full message received")
         if isinstance(message, ModuleTypeMessage):
             self.logger.debug(
                 "Module type response received from address " + str(message.address)
@@ -183,7 +175,7 @@ class Controller(object):
                 self._modules[address] = module
             else:
                 self.logger.warning("Module " + name + " is not yet supported")
-        if isinstance(message, ModuleSubTypeMessage):
+        elif isinstance(message, ModuleSubTypeMessage):
             self.logger.debug(
                 "Module subtype response received from address " + str(message.address)
             )
@@ -226,6 +218,15 @@ class Controller(object):
                 self.logger.warning(
                     "Module " + name + " does not yet support sub modules"
                 )
+        elif isinstance(message, BusActiveMessage):
+            self.logger.info("Velbus active message received")
+        elif isinstance(message, ReceiveReadyMessage):
+            self.logger.info("Velbus receive ready message received")
+        elif isinstance(message, BusOffMessage):
+            self.logger.error("Velbus bus off message received")
+        elif isinstance(message, ReceiveBufferFullMessage):
+            self.logger.error("Velbus receive buffer full message received")
+        # notify everyone who requests it
         for subscriber in self.__subscribers:
             subscriber(message)
 

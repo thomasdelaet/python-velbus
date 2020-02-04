@@ -73,6 +73,8 @@ The following Velbus modules are currently supported by this library:
 | VMB7IN | 7 channel input module | SUPPORTED | All messages are supported |
 | VMB8PBU | 8 channel input module | SUPPORTED | All messages are supported |
 | VMBDME | 1 channel dimmer module | SUPPORTED | All messages are supported |
+| VMBDMI | 1 channel dimmer module | SUPPORTED | All messages are supported |
+| VMBDMI-R | 1 channel dimmer module | SUPPORTED | All messages are supported |
 | VMBGP1 | 1 channel glass panel | SUPPORTED | Input and Temperature supported |
 | VMBGP1-2 | 1 channel glass panel | SUPPORTED | Input and Temperature supported |
 | VMBGP2 | 2 channel glass panel | SUPPORTED | Input and Temperature supported |
