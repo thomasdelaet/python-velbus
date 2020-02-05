@@ -52,44 +52,44 @@ You can install the library with pip (*pip install python-velbus*) or by checkin
 
 The following Velbus modules are currently supported by this library:
 
-| Module name | Description | Status | Comments |
-| ----------- | ----------- | ------ | -------- |
-| VMB1BL | 1 channel blind module | SUPPORTED | All messages are supported |
-| VMB1RS | Serial interface | SUPPORTED | All messages are supported |
-| VMB1RY | 1 channel relay module | SUPPORTED | All messages are supported |
-| VMB1RYNO | 1 channel relay module | SUPPORTED | All messages are supported |
-| VMB1RYNOS | 1 channel relay module | SUPPORTED | All messages are supported |
-| VMB1TS | 1 channel temperatue sensor | SUPPORTED | Temperature supported |
-| VMB1USB | USB configuration module | SUPPORTED | All messages are supported |
-| VMB2BL | 2 channel blind module | SUPPORTED | All messages are supported |
-| VMB2BLE | 2 channel blind module | SUPPORTED | All messages are supported |
-| VMB2PBN | 2 channel input module | SUPPORTED | All messages are supported |
-| VMB4DC | 4 channel 0-10 dimmer module | SUPPORTED | All messages are supported |
-| VMB4RY | 4 channel relay module | SUPPORTED | All messages are supported |
-| VMB4RYLD | 4 channel relay module | SUPPORTED | All messages are supported |
-| VMB4RYNO | 4 channel relay module | SUPPORTED | All messages are supported |
-| VMB6IN | 6 channel input module | SUPPORTED | All messages are supported |
-| VMB6PBN | 6 channel input module | SUPPORTED | All messages are supported |
-| VMB7IN | 7 channel input module | SUPPORTED | All messages are supported |
-| VMB8PBU | 8 channel input module | SUPPORTED | All messages are supported |
-| VMBDME | 1 channel dimmer module | SUPPORTED | All messages are supported |
-| VMBDMI | 1 channel dimmer module | SUPPORTED | All messages are supported |
-| VMBDMI-R | 1 channel dimmer module | SUPPORTED | All messages are supported |
-| VMBGP1 | 1 channel glass panel | SUPPORTED | Input and Temperature supported |
-| VMBGP1-2 | 1 channel glass panel | SUPPORTED | Input and Temperature supported |
-| VMBGP2 | 2 channel glass panel | SUPPORTED | Input and Temperature supported |
-| VMBGP2-2 | 2 channel glass panel | SUPPORTED | Input and Temperature supported |
-| VMBGP4 | 4 channel glass panel | SUPPORTED | Input and Temperature supported |
-| VMBGP4-2 | 4 channel glass panel | SUPPORTED | Input and Temperature supported |
-| VMBGPO | 72 channel glass panel with oled | SUPPORTED | Input and Temperature supported |
-| VMBGPOD | 72 channel glass panel with oled and thermostat | SUPPORTED | Input and Temperature supported |
-| VMBMETEO | meteo modules | SUPPORTED | Temperature, wind, rain and light sensor supported |
-| VMBRSUSB | Configuration module with USB and RS-232 interface | SUPPORTED | All messages are supported |
-| VMBEL1 | 1 channel glass panel Edge Lit | SUPPORTED | Input and Temperature supported |
-| VMBEL2 | 2 channel glass panel Edge Lit | SUPPORTED | Input and Temperature supported |
-| VMBEL2 | 2 channel glass panel Edge Lit | SUPPORTED | Input and Temperature supported |
-| VMBEL4 | 4 channel glass panel Edge Lit | SUPPORTED | Input and Temperature supported |
-| VMBELO | 72 channel glass panel Edge Lit with thermostat and oled screen | SUPPORTED | Input and Temperature supported |
+| Module name | Description | Comments |
+| ----------- | ----------- | -------- |
+| VMB1BL | 1 channel blind module | All messages are supported |
+| VMB1RS | Serial interface | All messages are supported |
+| VMB1RY | 1 channel relay module | All messages are supported |
+| VMB1RYNO | 1 channel relay module | All messages are supported |
+| VMB1RYNOS | 1 channel relay module | All messages are supported |
+| VMB1TS | 1 channel temperatue sensor | Temperature supported |
+| VMB1USB | USB configuration module | All messages are supported |
+| VMB2BL | 2 channel blind module | All messages are supported |
+| VMB2BLE | 2 channel blind module | All messages are supported |
+| VMB2PBN | 2 channel input module | All messages are supported |
+| VMB4DC | 4 channel 0-10 dimmer module |All messages are supported |
+| VMB4RY | 4 channel relay module | All messages are supported |
+| VMB4RYLD | 4 channel relay module | All messages are supported |
+| VMB4RYNO | 4 channel relay module | All messages are supported |
+| VMB6IN | 6 channel input module | All messages are supported |
+| VMB6PBN | 6 channel input module | All messages are supported |
+| VMB7IN | 7 channel input module | All messages are supported |
+| VMB8PBU | 8 channel input module | All messages are supported |
+| VMBDME | 1 channel dimmer module | All messages are supported |
+| VMBDMI | 1 channel dimmer module | All messages are supported |
+| VMBDMI-R | 1 channel dimmer module | All messages are supported |
+| VMBGP1 | 1 channel glass panel | Input and Temperature supported |
+| VMBGP1-2 | 1 channel glass panel | Input and Temperature supported |
+| VMBGP2 | 2 channel glass panel | Input and Temperature supported |
+| VMBGP2-2 | 2 channel glass panel | Input and Temperature supported |
+| VMBGP4 | 4 channel glass panel | Input and Temperature supported |
+| VMBGP4-2 | 4 channel glass panel | Input and Temperature supported |
+| VMBGPO | 72 channel glass panel with oled | Input and Temperature supported |
+| VMBGPOD | 72 channel glass panel with oled and thermostat | Input and Temperature supported |
+| VMBMETEO | meteo modules | Temperature, wind, rain and light sensor supported |
+| VMBRSUSB | Configuration module with USB and RS-232 interface | All messages are supported |
+| VMBEL1 | 1 channel glass panel Edge Lit | Input and Temperature supported |
+| VMBEL2 | 2 channel glass panel Edge Lit | Input and Temperature supported |
+| VMBEL2 | 2 channel glass panel Edge Lit | Input and Temperature supported |
+| VMBEL4 | 4 channel glass panel Edge Lit | Input and Temperature supported |
+| VMBELO | 72 channel glass panel Edge Lit with thermostat and oled screen | Input and Temperature supported |
 
 # Adding support for other modules
 
