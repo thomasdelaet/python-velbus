@@ -14,7 +14,7 @@ from velbus.messages.clear_led import ClearLedMessage
 
 class VMB2PBNModule(Module):
     """
-    Velbus input module with 6 channels
+    Velbus input module with 2 channels
     """
 
     def __init__(self, module_type, module_name, module_address, controller):
@@ -153,7 +153,7 @@ class VMB2PBNModule(Module):
 
 class VMB6PBNModule(VMB2PBNModule):
     """
-    Velbus input module with 7 channels
+    Velbus input module with 6 channels
     """
 
     def number_of_channels(self):
@@ -162,11 +162,11 @@ class VMB6PBNModule(VMB2PBNModule):
 
 class VMB8PBUModule(VMB2PBNModule):
     """
-    Velbus input module with 7 channels
+    Velbus input module with 8 channels
     """
 
     def number_of_channels(self):
-        return 6
+        return 8
 
 
 register_module("VMB2PBN", VMB2PBNModule)
