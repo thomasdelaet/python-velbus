@@ -75,6 +75,9 @@ class Module(object):
         """
         return self._channel_names[channel]
 
+    def get_module_type_name(self):
+        return self._model_name
+
     def get_type(self):
         return self._type
 

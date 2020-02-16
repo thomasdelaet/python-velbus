@@ -165,17 +165,25 @@ class VMB7INModule(VMB6INModule):
         return None
 
     def get_state(self, channel):
-        val = None
-        if channel not in self._unit:
-            return val
+        val = 0
+        # if we don't know the delay
+        # or we don't know the unit
+        # or the daly is the max value
+        #   we always return 0
+        if (
+            channel not in self._delay
+            or channel not in self._unit
+            or self._delay[channel] == 0xFFFF
+        ):
+            return round(0, 2)
         if self._unit[channel] == VOLUME_LITERS_HOUR:
             val = (1000 * 3600) / (self._delay[channel] * self._pulses[channel])
         elif self._unit[channel] == VOLUME_CUBIC_METER_HOUR:
             val = (1000 * 3600) / (self._delay[channel] * self._pulses[channel])
         elif self._unit[channel] == ENERGY_WATT_HOUR:
             val = (1000 * 1000 * 3600) / (self._delay[channel] * self._pulses[channel])
-            if val < 55:
-                val = 0
+        else:
+            val = 0
         return round(val, 2)
 
     def get_class(self, channel):
