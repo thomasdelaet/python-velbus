@@ -21,27 +21,20 @@ import time
 # serial (or USB over serial) device connected to Velbus controller
 port = "/dev/ttyACM0"
 
-connection = velbus.VelbusUSBConnection(port)
-controller = velbus.Controller(connection)
-controller.subscribe(_on_message)
+controller = velbus.Controller(port)
 
 # set module address
 module_address = 0xdc
 message = velbus.SwitchRelayOnMessage(module_address)
 
 channel_number = 1
-
 message.relay_channels = [channel_number]
 
 controller.send(message)
 
-def _on_message(received_message):
-    print("Velbus message received")
-    print(received_message.address)
-
 time.sleep(5)
 
-connection.stop()
+controller.stop()
 ```
 
 # Installation
