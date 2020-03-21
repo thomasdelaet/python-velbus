@@ -29,7 +29,7 @@ class VelbusMQTTConnection(VelbusConnection):
         self.client.loop_start()
 
     def _on_connect(self, client, userdata, flags, rc):
-        self.client.subscribe('velbus')
+        self.client.subscribe("velbus")
 
     def _on_message(self, client, userdata, msg):
         self.feed_parser(bytes(base64.b64decode(msg.payload)))
@@ -48,4 +48,4 @@ class VelbusMQTTConnection(VelbusConnection):
     def send(self, message, callback=None):
         """Add message to write queue."""
         assert isinstance(message, Message)
-        self.client.publish('velbus/send', payload=message.to_base64())
+        self.client.publish("velbus/send", payload=message.to_base64())

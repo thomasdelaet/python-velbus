@@ -28,10 +28,10 @@ class MQTTServer(object):
         self.client.loop_forever()
 
     def _on_connect(self, client, userdata, flags, rc):
-        self.client.subscribe('velbus/send')
+        self.client.subscribe("velbus/send")
 
     def _on_message(self, client, userdata, msg):
-        print(msg.topic + ' ' + str(msg.payload))
+        print(msg.topic + " " + str(msg.payload))
 
     def feed_parser(self, data):
         """
@@ -44,7 +44,7 @@ class MQTTServer(object):
 
     def new_message(self, message):
         self.logger.info("New message: " + str(message))
-        self.client.publish('velbus', payload=message.to_base64())
+        self.client.publish("velbus", payload=message.to_base64())
 
 
 if __name__ == "__main__":
