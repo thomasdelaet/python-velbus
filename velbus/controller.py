@@ -9,6 +9,7 @@ import json
 from velbus.parser import VelbusParser
 from velbus.connections.socket import SocketConnection
 from velbus.connections.serial import VelbusUSBConnection
+from velbus.connections.mqtt import VelbusMQTTConnection
 from velbus.messages.module_type_request import ModuleTypeRequestMessage
 from velbus.message import Message
 from velbus.messages.bus_active import BusActiveMessage
@@ -36,7 +37,11 @@ class Controller(object):
         self._modules = {}
         self._loadModuleData()
         if ":" in port:
-            self.connection = SocketConnection(port, self)
+            if port.startswith('mqtt://'):
+                port = port.lstrip('mqtt://')
+                self.connection = VelbusMQTTConnection(port, self)
+            else:
+                self.connection = SocketConnection(port, self)
         else:
             self.connection = VelbusUSBConnection(port, self)
 
