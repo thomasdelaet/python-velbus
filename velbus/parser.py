@@ -11,7 +11,6 @@ from velbus.constants import (
     RTR,
 )
 from velbus.util import checksum
-from velbus.message import Message
 from velbus.messages.module_type import ModuleTypeMessage
 from velbus.messages.module_subtype import ModuleSubTypeMessage
 from velbus.messages.module_type_request import ModuleTypeRequestMessage
@@ -100,8 +99,8 @@ class VelbusParser(object):
             next_packet = self.extract_packet()
             self.buffer = self.buffer[len(next_packet) :]
             message = self.parse(next_packet)
-            if isinstance(message, Message):
-                self.controller.new_message(message)
+            if message is not None:
+                self.controller.new_binary_message(message)
 
     def extract_packet(self):
         """
@@ -135,8 +134,6 @@ class VelbusParser(object):
         if priority not in PRIORITY:
             self.logger.warning("unrecognized priority")
             return
-        address = data[2]
-        rtr = data[3] & RTR == RTR
         data_size = data[3] & 0x0F
         if data_size + MINIMUM_MESSAGE_SIZE != len(data):
             self.logger.warning(
@@ -146,6 +143,15 @@ class VelbusParser(object):
         if not checksum(data[:-2])[0] == data[-2]:
             self.logger.warning("Packet has no valid checksum")
             return
+        if data_size >= 1:
+            return data
+
+    def parse_binary_message(self, data):
+        assert isinstance(data, bytes)
+        priority = data[1]
+        address = data[2]
+        rtr = data[3] & RTR == RTR
+        data_size = data[3] & 0x0F
         if data_size >= 1:
             if data[4] == 0xFF:
                 message = ModuleTypeMessage()

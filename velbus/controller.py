@@ -6,6 +6,7 @@ import time
 import threading
 import pkg_resources
 import json
+import functools
 from velbus.parser import VelbusParser
 from velbus.connections.socket import SocketConnection
 from velbus.connections.serial import VelbusUSBConnection
@@ -32,7 +33,8 @@ class Controller(object):
     def __init__(self, port):
         self.logger = logging.getLogger("velbus")
         self.parser = VelbusParser(self)
-        self.__subscribers = []
+        self.__message_subscribers = []
+        self.__module_subscribers = {}
         self.__scan_callback = None
         self._modules = {}
         self._loadModuleData()
@@ -58,7 +60,15 @@ class Controller(object):
         """
         :return: None
         """
-        self.__subscribers.append(subscriber)
+        self.__message_subscribers.append(subscriber)
+
+    def subscribe_module(self, subscriber, category):
+        """
+        :return: None
+        """
+        if category not in self.__module_subscribers:
+            self.__module_subscribers[category] = []
+        self.__module_subscribers[category].append(subscriber)
 
     def parse(self, binary_message):
         """
@@ -70,7 +80,13 @@ class Controller(object):
         """
         :return: None
         """
-        self.__subscribers.remove(subscriber)
+        self.__message_subscribers.remove(subscriber)
+
+    def unsubscribe_module(self, subscriber, category):
+        """
+        :return: None
+        """
+        self.__module_subscribers[category].remove(subscriber)
 
     def send(self, message, callback=None):
         """
@@ -80,11 +96,23 @@ class Controller(object):
 
     def get_modules(self):
         """
-        Returns a list of modules from a specific category
+        Returns a list of modules
 
         :return: list
         """
         return self._modules.values()
+
+    def get_modules_loaded(self):
+        """
+        Returns a list of loaded modules
+
+        :return: list
+        """
+        result = []
+        for module in self.get_modules():
+            if module.loaded:
+                result.append(module)
+        return result
 
     def get_module(self, address):
         """
@@ -149,6 +177,11 @@ class Controller(object):
             else:
                 self.send(message)
 
+    def async_scan(self):
+        for address in range(0, 256):
+            message = ModuleTypeRequestMessage(address)
+            self.send(message)
+
     def send_binary(self, binary_message, callback=None):
         """
         :return: None
@@ -157,6 +190,12 @@ class Controller(object):
         message = self.parser.parse(binary_message)
         if isinstance(message, Message):
             self.send(message, callback)
+
+    def new_binary_message(self, message):
+        assert isinstance(message, bytes)
+        message = self.parser.parse_binary_message(message)
+        if isinstance(message, Message):
+            self.new_message(message)
 
     def new_message(self, message):
         """
@@ -177,7 +216,7 @@ class Controller(object):
                 return
             if name in ModuleRegistry:
                 module = ModuleRegistry[name](m_type, name, address, self)
-                self._modules[address] = module
+                self._add_module(address, module)
             else:
                 self.logger.warning("Module " + name + " is not yet supported")
         elif isinstance(message, ModuleSubTypeMessage):
@@ -198,17 +237,17 @@ class Controller(object):
                     module = ModuleRegistry[subname](
                         m_type, subname, message.sub_address_1, address, 1, self,
                     )
-                    self._modules[message.sub_address_1] = module
+                    self._add_module(message.sub_address_1, module)
                 if message.sub_address_2 != 0xFF:
                     module = ModuleRegistry[subname](
                         m_type, subname, message.sub_address_2, address, 2, self,
                     )
-                    self._modules[message.sub_address_2] = module
+                    self._add_module(message.sub_address_2, module)
                 if message.sub_address_3 != 0xFF:
                     module = ModuleRegistry[subname](
                         m_type, subname, message.sub_address_3, address, 3, self,
                     )
-                    self._modules[message.sub_address_3] = module
+                    self._add_module(message.sub_address_3, module)
                 if (
                     message.sub_address_4 != 0xFF
                     and name != "VMBGPOD"
@@ -218,7 +257,7 @@ class Controller(object):
                     module = ModuleRegistry[subname](
                         m_type, subname, message.sub_address_4, address, 4, self,
                     )
-                    self._modules[message.sub_address_4] = module
+                    self._add_module(message.sub_address_4, module)
             else:
                 self.logger.warning(
                     "Module " + name + " does not yet support sub modules"
@@ -232,8 +271,31 @@ class Controller(object):
         elif isinstance(message, ReceiveBufferFullMessage):
             self.logger.error("Velbus receive buffer full message received")
         # notify everyone who requests it
-        for subscriber in self.__subscribers:
+        for subscriber in self.__message_subscribers:
             subscriber(message)
+
+    def _add_module(self, address, module):
+        callback = functools.partial(self._module_loaded, module)
+        if address not in self._modules:
+            self.logger.info("adding module at address %s", address)
+            self._modules[address] = module
+            module.load(callback)
+        else:
+            if self._modules[address].loaded:
+                self.logger.info(
+                    "module already in registry at address %s and loaded", address
+                )
+            else:
+                self.logger.info("loading module at address %s", address)
+                module.load(callback)
+
+    def _module_loaded(self, module):
+        for channel in range(1, module.number_of_channels() + 1):
+            categories = module.get_categories(channel)
+            for category in categories:
+                if category in self.__module_subscribers:
+                    for subscriber in self.__module_subscribers[category]:
+                        subscriber(module, channel)
 
     def stop(self):
         """
