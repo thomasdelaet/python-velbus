@@ -165,8 +165,11 @@ class Module(object):
                 # load the channel names
                 self._request_channel_name()
         self._loaded_callbacks.append(callback)
-        # load the module specifick stuff
+        # load the module specific stuff
         self._load()
+
+    def loading_in_progress(self):
+        return len(self._loaded_callbacks) != 0
 
     def _load(self):
         pass
