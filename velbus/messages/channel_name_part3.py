@@ -39,7 +39,7 @@ class ChannelNamePart3Message(Message):
         :return: bytes
         """
         return bytes([COMMAND_CODE, self.channels_to_byte([self.channel])]) + bytes(
-            self.name, "utf-8"
+            self.name, "ascii", 'ignore'
         )
 
     def to_json(self):
