@@ -86,7 +86,6 @@ class CoverDownMessage2(Message):
         # 00001100 = channel 2
         # so shift 1 bit to the right + and with 03
         tmp = (data[0] >> 1) & 0x03
-        print(tmp)
         self.channel = self.byte_to_channel(tmp)
         self.needs_valid_channel(self.channel, 2)
         (self.delay_time,) = struct.unpack(">L", bytes([0]) + data[1:])
