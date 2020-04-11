@@ -10,9 +10,8 @@ import functools
 from velbus.parser import VelbusParser
 from velbus.connections.socket import SocketConnection
 from velbus.connections.serial import VelbusUSBConnection
-from velbus.connections.mqtt import VelbusMQTTConnection
-from velbus.messages.module_type_request import ModuleTypeRequestMessage
 from velbus.message import Message
+from velbus.messages.module_type_request import ModuleTypeRequestMessage
 from velbus.messages.bus_active import BusActiveMessage
 from velbus.messages.receive_ready import ReceiveReadyMessage
 from velbus.messages.bus_off import BusOffMessage
@@ -47,6 +46,13 @@ class Controller(object):
         else:
             self.connection = VelbusUSBConnection(port, self)
 
+    def _loadModuleData(self):
+        filepath = pkg_resources.resource_filename(__name__, "data.json")
+        with open(filepath) as json_file:
+            self._module_data = json.load(json_file)
+
+    # interface towards connection objects
+
     def feed_parser(self, data):
         """
         Feed parser with new data
@@ -55,6 +61,8 @@ class Controller(object):
         """
         assert isinstance(data, bytes)
         self.parser.feed(data)
+
+    # event interface
 
     def subscribe(self, subscriber):
         """
@@ -70,12 +78,6 @@ class Controller(object):
             self.__module_subscribers[category] = []
         self.__module_subscribers[category].append(subscriber)
 
-    def parse(self, binary_message):
-        """
-        :return: velbus.Message or None
-        """
-        return self.parser.parse(binary_message)
-
     def unsubscribe(self, subscriber):
         """
         :return: None
@@ -87,6 +89,8 @@ class Controller(object):
         :return: None
         """
         self.__module_subscribers[category].remove(subscriber)
+
+    # command interface
 
     def send(self, message, callback=None):
         """
@@ -182,20 +186,21 @@ class Controller(object):
             message = ModuleTypeRequestMessage(address)
             self.send(message)
 
-    def send_binary(self, binary_message, callback=None):
+    def stop(self):
         """
-        :return: None
+        Stop velbus
         """
-        assert isinstance(binary_message, str)
-        message = self.parser.parse(binary_message)
-        if isinstance(message, Message):
-            self.send(message, callback)
+        self.connection.stop()
 
-    def new_binary_message(self, message):
-        assert isinstance(message, bytes)
-        message = self.parser.parse_binary_message(message)
-        if isinstance(message, Message):
-            self.new_message(message)
+    def sync_clock(self):
+        """
+        This will send all the needed messages to sync the clock
+        """
+        self.send(SetRealtimeClock())
+        self.send(SetDate())
+        self.send(SetDaylightSaving())
+
+    # messaging and module loading logic
 
     def new_message(self, message):
         """
@@ -203,65 +208,9 @@ class Controller(object):
         """
         self.logger.info("New message: " + str(message))
         if isinstance(message, ModuleTypeMessage):
-            self.logger.debug(
-                "Module type response received from address " + str(message.address)
-            )
-            name = message.module_name()
-            address = message.address
-            m_type = message.module_type
-            if name == "Unknown":
-                self.logger.warning(
-                    "Unknown module (code: " + str(message.module_type) + ")"
-                )
-                return
-            if name in ModuleRegistry:
-                module = ModuleRegistry[name](m_type, name, address, self)
-                self._add_module(address, module)
-            else:
-                self.logger.warning("Module " + name + " is not yet supported")
+            self._process_module_type_message(message)
         elif isinstance(message, ModuleSubTypeMessage):
-            self.logger.debug(
-                "Module subtype response received from address " + str(message.address)
-            )
-            name = message.module_name()
-            address = message.address
-            m_type = message.module_type
-            if name == "Unknown":
-                self.logger.warning(
-                    "Unknown module (code: " + str(message.module_type) + ")"
-                )
-                return
-            if "SUB_" + name in ModuleRegistry:
-                subname = "SUB_" + name
-                if message.sub_address_1 != 0xFF:
-                    module = ModuleRegistry[subname](
-                        m_type, subname, message.sub_address_1, address, 1, self,
-                    )
-                    self._add_module(message.sub_address_1, module)
-                if message.sub_address_2 != 0xFF:
-                    module = ModuleRegistry[subname](
-                        m_type, subname, message.sub_address_2, address, 2, self,
-                    )
-                    self._add_module(message.sub_address_2, module)
-                if message.sub_address_3 != 0xFF:
-                    module = ModuleRegistry[subname](
-                        m_type, subname, message.sub_address_3, address, 3, self,
-                    )
-                    self._add_module(message.sub_address_3, module)
-                if (
-                    message.sub_address_4 != 0xFF
-                    and name != "VMBGPOD"
-                    and name != "VMBGPO"
-                    and name != "VMBELO"
-                ):
-                    module = ModuleRegistry[subname](
-                        m_type, subname, message.sub_address_4, address, 4, self,
-                    )
-                    self._add_module(message.sub_address_4, module)
-            else:
-                self.logger.warning(
-                    "Module " + name + " does not yet support sub modules"
-                )
+            self._process_module_subtype_message(message)
         elif isinstance(message, BusActiveMessage):
             self.logger.info("Velbus active message received")
         elif isinstance(message, ReceiveReadyMessage):
@@ -273,6 +222,72 @@ class Controller(object):
         # notify everyone who requests it
         for subscriber in self.__message_subscribers:
             subscriber(message)
+
+    def _process_module_type_message(self, message):
+        """
+        Process ModuleType message and if new module: add to module repository
+        """
+        self.logger.debug(
+            "Module type response received from address " + str(message.address)
+        )
+        name = message.module_name()
+        address = message.address
+        m_type = message.module_type
+        if name == "Unknown":
+            self.logger.warning(
+                "Unknown module (code: " + str(message.module_type) + ")"
+            )
+            return
+        if name in ModuleRegistry:
+            module = ModuleRegistry[name](m_type, name, address, self)
+            self._add_module(address, module)
+        else:
+            self.logger.warning("Module " + name + " is not yet supported")
+
+    def _process_module_subtype_message(self, message):
+        """
+        Process ModuleSubType message and if new module: add to module repository
+        """
+        self.logger.debug(
+            "Module subtype response received from address " + str(message.address)
+        )
+        name = message.module_name()
+        address = message.address
+        m_type = message.module_type
+        if name == "Unknown":
+            self.logger.warning(
+                "Unknown module (code: " + str(message.module_type) + ")"
+            )
+            return
+        if "SUB_" + name in ModuleRegistry:
+            subname = "SUB_" + name
+            if message.sub_address_1 != 0xFF:
+                module = ModuleRegistry[subname](
+                    m_type, subname, message.sub_address_1, address, 1, self,
+                )
+                self._add_module(message.sub_address_1, module)
+            if message.sub_address_2 != 0xFF:
+                module = ModuleRegistry[subname](
+                    m_type, subname, message.sub_address_2, address, 2, self,
+                )
+                self._add_module(message.sub_address_2, module)
+            if message.sub_address_3 != 0xFF:
+                module = ModuleRegistry[subname](
+                    m_type, subname, message.sub_address_3, address, 3, self,
+                )
+                self._add_module(message.sub_address_3, module)
+            if (
+                message.sub_address_4 != 0xFF
+                and name != "VMBGPOD"
+                and name != "VMBGPO"
+                and name != "VMBELO"
+            ):
+                module = ModuleRegistry[subname](
+                    m_type, subname, message.sub_address_4, address, 4, self,
+                )
+                self._add_module(message.sub_address_4, module)
+        else:
+            self.logger.warning("Module " + name + " does not yet support sub modules")
 
     def _add_module(self, address, module):
         callback = functools.partial(self._module_loaded, module)
@@ -297,21 +312,25 @@ class Controller(object):
                     for subscriber in self.__module_subscribers[category]:
                         subscriber(module, channel)
 
-    def stop(self):
-        """
-        Stop velbus
-        """
-        self.connection.stop()
+    # probably not used
 
-    def sync_clock(self):
+    def parse(self, binary_message):
         """
-        This will send all the needed messages to sync the clock
+        :return: velbus.Message or None
         """
-        self.send(SetRealtimeClock())
-        self.send(SetDate())
-        self.send(SetDaylightSaving())
+        return self.parser.parse(binary_message)
 
-    def _loadModuleData(self):
-        filepath = pkg_resources.resource_filename(__name__, "data.json")
-        with open(filepath) as json_file:
-            self._module_data = json.load(json_file)
+    def send_binary(self, binary_message, callback=None):
+        """
+        :return: None
+        """
+        assert isinstance(binary_message, str)
+        message = self.parser.parse(binary_message)
+        if isinstance(message, Message):
+            self.send(message, callback)
+
+    def new_binary_message(self, message):
+        assert isinstance(message, bytes)
+        message = self.parser.parse_binary_message(message)
+        if isinstance(message, Message):
+            self.new_message(message)
