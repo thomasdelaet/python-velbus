@@ -148,28 +148,21 @@ class Module(object):
         """
         Retrieve names of channels
         """
-        if callback is None:
-
-            def callb():
-                """No-op"""
-                pass
-
-            callback = callb
-        if len(self._loaded_callbacks) == 0:
-            if not self._is_submodule():
-                # load the data from memory ( the stuff that we need)
-                self._load_memory()
-            # load the module status
-            self._request_module_status()
-            if not self._is_submodule():
-                # load the channel names
-                self._request_channel_name()
-        self._loaded_callbacks.append(callback)
+        if not self._is_submodule():
+            # load the data from memory ( the stuff that we need)
+            self._load_memory()
+        # load the module status
+        self._request_module_status()
+        if not self._is_submodule():
+            # load the channel names
+            self._request_channel_name()
+        if callback:
+            self._loaded_callbacks.append(callback)
         # load the module specific stuff
         self._load()
 
     def loading_in_progress(self):
-        return len(self._loaded_callbacks) != 0
+        return not self._name_messages_complete()
 
     def _load(self):
         pass
@@ -241,7 +234,7 @@ class Module(object):
                 for name_index in range(1, 4):
                     if not isinstance(self._name_data[channel][name_index], str):
                         return False
-            except Exception:
+            except KeyError:
                 return False
         return True
 
