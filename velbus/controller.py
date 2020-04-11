@@ -38,11 +38,7 @@ class Controller(object):
         self._modules = {}
         self._loadModuleData()
         if ":" in port:
-            if port.startswith("mqtt://"):
-                port = port.lstrip("mqtt://")
-                self.connection = VelbusMQTTConnection(port, self)
-            else:
-                self.connection = SocketConnection(port, self)
+            self.connection = SocketConnection(port, self)
         else:
             self.connection = VelbusUSBConnection(port, self)
 
