@@ -259,17 +259,32 @@ class Controller(object):
             subname = "SUB_" + name
             if message.sub_address_1 != 0xFF:
                 module = ModuleRegistry[subname](
-                    m_type, subname, message.sub_address_1, address, 1, self,
+                    m_type,
+                    subname,
+                    message.sub_address_1,
+                    address,
+                    1,
+                    self,
                 )
                 self._add_module(message.sub_address_1, module)
             if message.sub_address_2 != 0xFF:
                 module = ModuleRegistry[subname](
-                    m_type, subname, message.sub_address_2, address, 2, self,
+                    m_type,
+                    subname,
+                    message.sub_address_2,
+                    address,
+                    2,
+                    self,
                 )
                 self._add_module(message.sub_address_2, module)
             if message.sub_address_3 != 0xFF:
                 module = ModuleRegistry[subname](
-                    m_type, subname, message.sub_address_3, address, 3, self,
+                    m_type,
+                    subname,
+                    message.sub_address_3,
+                    address,
+                    3,
+                    self,
                 )
                 self._add_module(message.sub_address_3, module)
             if (
@@ -279,7 +294,12 @@ class Controller(object):
                 and name != "VMBELO"
             ):
                 module = ModuleRegistry[subname](
-                    m_type, subname, message.sub_address_4, address, 4, self,
+                    m_type,
+                    subname,
+                    message.sub_address_4,
+                    address,
+                    4,
+                    self,
                 )
                 self._add_module(message.sub_address_4, module)
         else:
