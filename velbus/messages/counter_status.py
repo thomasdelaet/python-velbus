@@ -28,7 +28,7 @@ class CounterStatusMessage(Message):
         -DB1    last 2 bits   = channel
         -DB1    first 6 bist  = pulses
         -DB2-5                = pulse counter
-        -DB6-7                = ms/pulse               
+        -DB6-7                = ms/pulse
         :return: None
         """
         assert isinstance(data, bytes)
