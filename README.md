@@ -55,6 +55,7 @@ The following Velbus modules are currently supported by this library:
 | Module name | Description | Comments |
 | ----------- | ----------- | -------- |
 | VMB1BL | 1 channel blind module | All messages are supported |
+| VMB1LED | 1 channel LED dimmer module | All messages are supported |
 | VMB1RS | Serial interface | All messages are supported |
 | VMB1RY | 1 channel relay module | All messages are supported |
 | VMB1RYNO | 1 channel relay module | All messages are supported |

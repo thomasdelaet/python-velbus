@@ -110,3 +110,4 @@ class VMBDMEModule(Module):
 
 
 register_module("VMBDME", VMBDMEModule)
+register_module("VMB1LED", VMBDMEModule)

@@ -15,6 +15,7 @@ MODULES_WITHOUT_SERIAL = {
     0x07: "VMB1DM",
     0x08: "VMB4RY",
     0x09: "VMB2BL",
+    0x0F: "VMB1LED",
     0x14: "VMBDME",
 }
 

@@ -146,3 +146,4 @@ class DimmerStatusMessage(Message):
 
 
 register_command(COMMAND_CODE, DimmerStatusMessage, "VMBDME")
+register_command(COMMAND_CODE, DimmerStatusMessage, "VMB1LED")
