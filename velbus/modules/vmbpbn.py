@@ -168,7 +168,19 @@ class VMB8PBUModule(VMB2PBNModule):
     def number_of_channels(self):
         return 8
 
+class VMB8PBModule(VMB2PBNModule):
+    """
+    Velbus input module with 8 channels
+    """
+    def __init__(self, module_type, module_name, module_address, controller):
+       super().__init__(module_type, module_name, module_address, controller)
+       for channel in list(range(1, self.number_of_channels() + 1)):
+          self._is_enabled[channel] = True
+
+    def number_of_channels(self):
+        return 8
 
 register_module("VMB2PBN", VMB2PBNModule)
 register_module("VMB6PBN", VMB6PBNModule)
 register_module("VMB8PBU", VMB8PBUModule)
+register_module("VMB8PB", VMB8PBModule)
