@@ -13,6 +13,7 @@ from velbus.modules.vmbbl import (
     VMB2BLModule,
     VMB1BLEModule,
     VMB2BLEModule,
+    VMB1BLSModule,
 )
 from velbus.modules.vmbmeteo import VMBMETEOModule
 from velbus.modules.vmbdme import VMBDMEModule
