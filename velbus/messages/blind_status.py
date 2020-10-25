@@ -135,5 +135,6 @@ class BlindStatusMessage(Message):
 
 register_command(COMMAND_CODE, BlindStatusNgMessage, "VMB1BLE")
 register_command(COMMAND_CODE, BlindStatusNgMessage, "VMB2BLE")
+register_command(COMMAND_CODE, BlindStatusNgMessage, "VMB1BLS")
 register_command(COMMAND_CODE, BlindStatusMessage, "VMB1BL")
 register_command(COMMAND_CODE, BlindStatusMessage, "VMB2BL")
