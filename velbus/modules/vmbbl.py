@@ -128,7 +128,7 @@ class VMB2BLEModule(VMB1BLEModule):
     def number_of_channels(self):
         return 2
 
-    
+
 class VMB1BLSModule(VMB1BLEModule):
     def number_of_channels(self):
         return 1
