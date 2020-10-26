@@ -10,39 +10,12 @@ I would like to extend this module to support all Velbus modules, so feel free t
 
 API documentation is available [here](http://python-velbus.readthedocs.io/en/latest/)
 
-# Example usage
+# Port format
 
-The library currently only supports a serial connection to the Velbus controller (either through USB module or through RS-232 interface). In order to use the library, you need to first initialize the controller and can then send and receive messages on the Velbus. The library currently does not validate if a message is supported by a certain module (e.g., you can send a blind up message to a relay)
-
-```python
-import velbus
-import time
-
-# serial (or USB over serial) device connected to Velbus controller
-port = "/dev/ttyACM0"
-
-connection = velbus.VelbusUSBConnection(port)
-controller = velbus.Controller(connection)
-controller.subscribe(_on_message)
-
-# set module address
-module_address = 0xdc
-message = velbus.SwitchRelayOnMessage(module_address)
-
-channel_number = 1
-
-message.relay_channels = [channel_number]
-
-controller.send(message)
-
-def _on_message(received_message):
-    print("Velbus message received")
-    print(received_message.address)
-
-time.sleep(5)
-
-connection.stop()
-```
+There are 3 possible port formats:
+- /dev/ttyACME0             = A direct connection to a serial device (for vmbusb for example)
+- <ip>:<port>               = A connection to a TCP/IP port
+- tls://<signum ip>:27015   = A connection to a signum ip
 
 # Installation
 
