@@ -34,7 +34,10 @@ class SocketConnection(VelbusConnection):
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self._socket = ctx.wrap_socket(sock)
             else:
-                self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self._socket = socket.socket(
+                        socket.AF_INET,
+                        socket.SOCK_STREAM
+                )
             self._socket.connect(addr)
         except Exception:
             self.logger.error(
