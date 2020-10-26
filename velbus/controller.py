@@ -38,7 +38,13 @@ class Controller(object):
         self._modules = {}
         self._loadModuleData()
         if ":" in port:
-            self.connection = SocketConnection(port, self)
+            print(port)
+            if port.startswith('tls://'):
+                print('tls')
+                print(port.replace('tls://', ''))
+                self.connection = SocketConnection(port.replace('tls://', ''), self, True)
+            else:
+                self.connection = SocketConnection(port, self, False)
         else:
             self.connection = VelbusUSBConnection(port, self)
 
