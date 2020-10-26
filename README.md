@@ -14,8 +14,8 @@ API documentation is available [here](http://python-velbus.readthedocs.io/en/lat
 
 There are 3 possible port formats:
 - /dev/ttyACME0             = A direct connection to a serial device (for vmbusb for example)
-- <ip>:<port>               = A connection to a TCP/IP port
-- tls://<signum ip>:27015   = A connection to a signum ip
+- ip:port               = A connection to a TCP/IP port
+- tls://signum ip:27015   = A connection to a signum ip
 
 # Installation
 
