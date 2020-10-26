@@ -39,10 +39,12 @@ class Controller(object):
         self._loadModuleData()
         if ":" in port:
             print(port)
-            if port.startswith('tls://'):
-                print('tls')
-                print(port.replace('tls://', ''))
-                self.connection = SocketConnection(port.replace('tls://', ''), self, True)
+            if port.startswith("tls://"):
+                print("tls")
+                print(port.replace("tls://", ""))
+                self.connection = SocketConnection(
+                    port.replace("tls://", ""), self, True
+                )
             else:
                 self.connection = SocketConnection(port, self, False)
         else:
