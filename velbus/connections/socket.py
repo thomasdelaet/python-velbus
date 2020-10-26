@@ -34,9 +34,7 @@ class SocketConnection(VelbusConnection):
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self._socket = ctx.wrap_socket(sock)
             else:
-                self._socket = socket.socket(
-                    socket.AF_INET, socket.SOCK_STREAM
-                )
+                self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self._socket.connect(addr)
         except Exception:
             self.logger.error(
@@ -90,9 +88,7 @@ class SocketConnection(VelbusConnection):
         while True:
             (message, callback) = self._write_queue.get(block=True)
             self.logger.info("Sending message on USB bus: %s", str(message))
-            self.logger.debug(
-                "Sending binary message:  %s", str(message.to_binary())
-            )
+            self.logger.debug("Sending binary message:  %s", str(message.to_binary()))
             self._socket.send(message.to_binary())
             time.sleep(SLEEP_TIME)
             if callback:
