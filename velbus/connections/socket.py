@@ -28,18 +28,14 @@ class SocketConnection(VelbusConnection):
         addr = device.split(":")
         addr = (addr[0], int(addr[1]))
         try:
-            self._socket = socket.socket(
-                    socket.AF_INET,
-                    socket.SOCK_STREAM
-            )
+            self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             if tls:
                 ctx = ssl._create_unverified_context()
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self._socket = ctx.wrap_socket(sock)
             else:
                 self._socket = socket.socket(
-                        socket.AF_INET,
-                        socket.SOCK_STREAM
+                    socket.AF_INET, socket.SOCK_STREAM
                 )
             self._socket.connect(addr)
         except Exception:
@@ -94,7 +90,9 @@ class SocketConnection(VelbusConnection):
         while True:
             (message, callback) = self._write_queue.get(block=True)
             self.logger.info("Sending message on USB bus: %s", str(message))
-            self.logger.debug("Sending binary message:  %s", str(message.to_binary()))
+            self.logger.debug(
+                "Sending binary message:  %s", str(message.to_binary())
+            )
             self._socket.send(message.to_binary())
             time.sleep(SLEEP_TIME)
             if callback:
