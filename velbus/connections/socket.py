@@ -28,7 +28,10 @@ class SocketConnection(VelbusConnection):
         addr = device.split(":")
         addr = (addr[0], int(addr[1]))
         try:
-            self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self._socket = socket.socket(
+                    socket.AF_INET,
+                    socket.SOCK_STREAM
+            )
             if tls:
                 ctx = ssl._create_unverified_context()
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
