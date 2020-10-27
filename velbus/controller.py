@@ -38,10 +38,7 @@ class Controller(object):
         self._modules = {}
         self._loadModuleData()
         if ":" in port:
-            print(port)
             if port.startswith("tls://"):
-                print("tls")
-                print(port.replace("tls://", ""))
                 self.connection = SocketConnection(
                     port.replace("tls://", ""), self, True
                 )
