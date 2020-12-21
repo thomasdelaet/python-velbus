@@ -242,6 +242,8 @@ class Controller(object):
         if name in ModuleRegistry:
             module = ModuleRegistry[name](m_type, name, address, self)
             self._add_module(address, module)
+        elif name in ["VMBSIG", "VMBUSBIP"]:
+            self.logger.info("Module " + name + " is a config module, ignoring")
         else:
             self.logger.warning("Module " + name + " is not yet supported")
 
