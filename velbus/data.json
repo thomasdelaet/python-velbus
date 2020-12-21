@@ -423,5 +423,25 @@
                 "address"       : "0x03C0-0x03FF"
             }
         }
+    },
+    "0x3F": {
+        "name"      : "VMCM3"
+    },
+    "0x40": {
+        "name"      : "VMBUSBIP"
+    },
+    "0x41": {
+        "name"      : "VMB1RYS",
+        "channels"  : 1,
+        "memory"    : {
+            "moduleName"    : {
+                "matchBuild"    : ">= 1",
+                "matchVersion"  : "1",
+                "address"       : "0x00DD-0x00E9;0x01DD-0x01E9;0x02DD-0x02E9;0x03DD-0x03E9;0x04DD-0x04E8"
+            }
+        }
+    },
+    "0x42": {
+        "name"      : "VMBKP"
     }
 }
