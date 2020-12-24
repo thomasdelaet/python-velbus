@@ -185,8 +185,8 @@ class Module(object):
     def _is_submodule(self):
         return False
 
-# def _name_count_needed(self):
-#    return self.number_of_channels() * 3
+    # def _name_count_needed(self):
+    #    return self.number_of_channels() * 3
 
     def _process_channel_name_message(self, part, message):
         channel = message.channel
