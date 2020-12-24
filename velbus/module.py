@@ -156,10 +156,10 @@ class Module(object):
         if not self._is_submodule():
             # load default channels
             self._load_default_channels()
-            # load the data from memory ( the stuff that we need)
-            #self._load_memory()
             # load the channel names
             self._request_channel_name()
+            # load the data from memory ( the stuff that we need)
+            self._load_memory()
         if callback:
             self._loaded_callbacks.append(callback)
         # load the module specific stuff
@@ -185,8 +185,8 @@ class Module(object):
     def _is_submodule(self):
         return False
 
-    #def _name_count_needed(self):
-    #    return self.number_of_channels() * 3
+# def _name_count_needed(self):
+#    return self.number_of_channels() * 3
 
     def _process_channel_name_message(self, part, message):
         channel = message.channel
@@ -265,7 +265,7 @@ class Module(object):
 
         self._memoryRead["ModuleName"] = []
 
-        for memoryKey, memoryPart in self._data["Memory"].items():
+        for _memoryKey, memoryPart in self._data["Memory"].items():
             if "Address" in memoryPart:
                 for addrAddr, addrData in memoryPart["Address"].items():
                     addr = struct.unpack(
