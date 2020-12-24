@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2.0.0
+      - name: Checkout submodules
+        uses: textbook/git-checkout-submodule-action@2.1.1
       - name: Black Code Formatter
         uses: lgeiger/black-action@master
         with:

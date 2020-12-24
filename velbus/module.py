@@ -36,6 +36,7 @@ class Module(object):
 
         self._channel_names = {}
         self._name_data = {}
+        self._channel_data = {}
 
         self._loaded_callbacks = []
         self.loaded = False
@@ -44,7 +45,7 @@ class Module(object):
         self._controller.subscribe(self.on_message)
 
         if not self._is_submodule():
-            self._data = controller._module_data["0x{:02x}".format(module_type)]
+            self._data = controller._module_data["ModuleTypes"]["{:02X}".format(module_type)]
         else:
             self._data = {}
         self._memoryRead = {}
@@ -122,7 +123,7 @@ class Module(object):
                             self._memoryRead[typ].remove(
                                 (message.high_address, message.low_address)
                             )
-                            if typ == "moduleName":
+                            if typ == "ModuleName":
                                 self._moduleName_is_complete()
                         else:
                             idx = [
@@ -148,12 +149,13 @@ class Module(object):
         """
         Retrieve names of channels
         """
-        if not self._is_submodule():
-            # load the data from memory ( the stuff that we need)
-            self._load_memory()
         # load the module status
         self._request_module_status()
         if not self._is_submodule():
+            # load default channels
+            self._load_default_channels()
+            # load the data from memory ( the stuff that we need)
+            #self._load_memory()
             # load the channel names
             self._request_channel_name()
         if callback:
@@ -181,8 +183,8 @@ class Module(object):
     def _is_submodule(self):
         return False
 
-    def _name_count_needed(self):
-        return self.number_of_channels() * 3
+    #def _name_count_needed(self):
+    #    return self.number_of_channels() * 3
 
     def _process_channel_name_message(self, part, message):
         channel = message.channel
@@ -240,10 +242,10 @@ class Module(object):
 
     def _moduleName_is_complete(self):
         self._name = ""
-        for char in self._memoryRead["moduleName"]:
+        for char in self._memoryRead["ModuleName"]:
             if type(char) is str:
                 self._name = self._name + char
-        del self._memoryRead["moduleName"]
+        del self._memoryRead["ModuleName"]
 
     def _request_module_status(self):
         message = ModuleStatusRequestMessage(self._address)
@@ -256,18 +258,26 @@ class Module(object):
         self._controller.send(message)
 
     def _load_memory(self):
-        if "memory" not in self._data:
+        if "Memory" not in self._data:
             return
 
-        for memoryType, matchData in self._data["memory"].items():
-            self._memoryRead[memoryType] = []
-            # TODO matchbuild + matchversion
-            for addrRange in matchData["address"].split(";"):
-                addrR = addrRange.split("-")
-                for addr in range(int(addrR[0], 0), int(addrR[1], 0)):
-                    addr = struct.unpack(">BB", struct.pack(">h", addr))
-                    self._memoryRead[memoryType].append(addr)
+        self._memoryRead["ModuleName"] = []
+
+        for memoryKey, memoryPart in self._data["Memory"].items():
+            if "Address" in memoryPart:
+                for addrAddr, addrData in memoryPart["Address"].items():
+                    addr = struct.unpack(">BB", struct.pack(">h", int("0x" + addrAddr, 0)))
+                    if "ModuleName" in addrData:
+                        self._memoryRead["ModuleName"].append(addr)
                     message = ReadDataFromMemoryMessage(self._address)
                     message.high_address = addr[0]
                     message.low_address = addr[1]
                     self._controller.send(message)
+
+
+    def _load_default_channels(self):
+        if "Channels" not in self._data:
+            return
+
+        for chan, chanData in self._data["Channels"].items():
+            self._channel_data[int(chan)] = chanData

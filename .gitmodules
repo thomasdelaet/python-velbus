@@ -1,0 +1,3 @@
+[submodule "velbus/moduleprotocol"]
+	path = velbus/moduleprotocol
+	url = https://github.com/StefCoene/moduleprotocol.git
