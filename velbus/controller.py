@@ -48,7 +48,9 @@ class Controller(object):
             self.connection = VelbusUSBConnection(port, self)
 
     def _loadModuleData(self):
-        filepath = pkg_resources.resource_filename(__name__, "moduleprotocol/protocol.json")
+        filepath = pkg_resources.resource_filename(
+            __name__, "moduleprotocol/protocol.json"
+        )
         with open(filepath) as json_file:
             self._module_data = json.load(json_file)
 

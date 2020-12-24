@@ -45,7 +45,9 @@ class Module(object):
         self._controller.subscribe(self.on_message)
 
         if not self._is_submodule():
-            self._data = controller._module_data["ModuleTypes"]["{:02X}".format(module_type)]
+            self._data = controller._module_data["ModuleTypes"][
+                "{:02X}".format(module_type)
+            ]
         else:
             self._data = {}
         self._memoryRead = {}
@@ -266,7 +268,9 @@ class Module(object):
         for memoryKey, memoryPart in self._data["Memory"].items():
             if "Address" in memoryPart:
                 for addrAddr, addrData in memoryPart["Address"].items():
-                    addr = struct.unpack(">BB", struct.pack(">h", int("0x" + addrAddr, 0)))
+                    addr = struct.unpack(
+                        ">BB", struct.pack(">h", int("0x" + addrAddr, 0))
+                    )
                     if "ModuleName" in addrData:
                         self._memoryRead["ModuleName"].append(addr)
                     message = ReadDataFromMemoryMessage(self._address)
@@ -274,10 +278,13 @@ class Module(object):
                     message.low_address = addr[1]
                     self._controller.send(message)
 
-
     def _load_default_channels(self):
         if "Channels" not in self._data:
             return
 
         for chan, chanData in self._data["Channels"].items():
-            self._channel_data[int(chan)] = chanData
+            self._channel_data[int(chan)] = {
+                "Type": chanData["Type"],
+                "Name": chanData["Name"],
+                "NameParts": False,
+            }
