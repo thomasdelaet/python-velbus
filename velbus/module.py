@@ -193,18 +193,46 @@ class Module(object):
 
     def _handle_match(self, matchDict, data):
         mResult = {}
-        data = "{:08b}".format(int(data))
+        bData = "{:08b}".format(int(data))
         for _num, matchD in matchDict.items():
             tmp = {}
             for match, res in matchD.items():
-                if re.fullmatch(match[1:], data):
+                if re.fullmatch(match[1:], bData):
                     res2 = res.copy()
-                    res2["Data"] = data
+                    res2["Data"] = int(data)
                     tmp.update(res2)
             mResult[_num] = tmp
-        # TODO rework mresult to be per channel,
-        # so we can just append everything to the _channel_data dict
-        return mResult
+        result = {}
+        for res in mResult.values():
+            if "Channel" in res:
+                result[int(res["Channel"])] = {}
+                if (
+                    "SubName" in res
+                    and "Value" in res
+                    and res["Value"] != "PulsePerUnits"
+                ):
+                    result[int(res["Channel"])] = {res["SubName"]: res["Value"]}
+                else:
+                    # Very specifick for vmb7in
+                    # a = bit 0 to 5 = 0 to 63
+                    # b = a * 100
+                    b = (data & 0x3F) * 100
+                    # c = bit 6 + 7
+                    #   00 = x1
+                    #   01 = x2,5
+                    #   10 = x0.05
+                    #   11 = x0.01
+                    # d = b * c
+                    if data >> 5 == 3:
+                        d = b * 0.01
+                    elif data >> 5 == 2:
+                        d = b * 0.05
+                    elif data >> 5 == 1:
+                        d = b * 2.5
+                    else:
+                        d = b
+                    result[int(res["Channel"])] = {res["Value"]: d}
+        return result
 
     def _process_memory_data_message(self, message):
         addr = "{high:02X}{low:02X}".format(
@@ -222,7 +250,11 @@ class Module(object):
                     char = mdata["ModuleName"].split(":")[0]
                     self._name[int(char)] = chr(message.data)
             elif "Match" in mdata:
-                print(self._handle_match(mdata["Match"], message.data))
+                for chan, cData in self._handle_match(
+                    mdata["Match"], message.data
+                ).items():
+                    data = cData.copy()
+                    self._channel_data[chan].update(data)
         except KeyError:
             pass
 
