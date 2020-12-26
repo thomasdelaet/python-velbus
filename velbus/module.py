@@ -223,7 +223,7 @@ class Module(object):
                     self._name[int(char)] = chr(message.data)
             elif "Match" in mdata:
                 print(self._handle_match(mdata["Match"], message.data))
-        except KeyError as err:
+        except KeyError:
             pass
 
     def _process_channel_name_message(self, part, message):
@@ -271,8 +271,8 @@ class Module(object):
         """
         if self.loaded:
             return
-        for channel, data in self._channel_data.items():
-            if isinstance(data["NameParts"], dict) or data["NameParts"] == False:
+        for data in self._channel_data.values):
+            if isinstance(data["NameParts"], dict) or not data["NameParts"]:
                 return
         # set that  we finished the module loading
         self.loaded = True
@@ -301,7 +301,7 @@ class Module(object):
 
         for _memoryKey, memoryPart in self._data["Memory"].items():
             if "Address" in memoryPart:
-                for addrAddr, addrData in memoryPart["Address"].items():
+                for addrAddr in memoryPart["Address"].keys():
                     addr = struct.unpack(
                         ">BB", struct.pack(">h", int("0x" + addrAddr, 0))
                     )
@@ -320,5 +320,5 @@ class Module(object):
                 "Name": chanData["Name"],
                 "NameParts": False,
             }
-            if "Editable" not in chanData or chanData["Editable"] is not "yes":
+            if "Editable" not in chanData or chanData["Editable"] != "yes":
                 self._channel_data[int(chan)]["NameParts"] = True
