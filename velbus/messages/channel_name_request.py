@@ -1,6 +1,8 @@
 """
 :author: Thomas Delaet <thomas@delaet.org> and Maikel Punie <maikel.punie@gmail.com>
 """
+import json
+
 from velbus.message import Message
 from velbus.command_registry import register_command
 
@@ -34,6 +36,14 @@ class ChannelNameRequestMessage(Message):
         :return: bytes
         """
         return bytes([COMMAND_CODE, self.channels_to_byte(self.channels)])
+
+    def to_json(self):
+        """
+        :return: str
+        """
+        json_dict = self.to_json_basic()
+        json_dict["channels"] = self.channels
+        return json.dumps(json_dict)
 
 
 class ChannelNameRequestMessage2(ChannelNameRequestMessage):

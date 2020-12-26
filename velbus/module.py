@@ -3,6 +3,7 @@
 """
 import string
 import struct
+import re
 from velbus.messages.read_data_from_memory import ReadDataFromMemoryMessage
 from velbus.messages.memory_data import MemoryDataMessage
 from velbus.messages.channel_name_part1 import ChannelNamePart1Message
@@ -25,17 +26,28 @@ class Module(object):
     def __init__(self, module_type, module_name, module_address, controller):
         self._type = module_type
         self._model_name = module_name
-        self._name = False
+        self._name = {}
         self._address = module_address
         self._master_address = 0xFF
+        self._sub_address = {}
         self.sub_module = 0
         self.serial = 0
         self.memory_map_version = 0
         self.build_year = 0
         self.build_week = 0
+        self._is_loading = False
 
-        self._channel_names = {}
-        self._name_data = {}
+        """
+        _channel_data holds info per channel
+
+        keys:
+        - Type          => the channelType
+        - Name          => the channel Name
+        - NameParts
+            - dict      => parts of the received channel name
+            - True      => This channel is lmeParts"]oaded
+            - False     => No channel data received (yet)
+        """
         self._channel_data = {}
 
         self._loaded_callbacks = []
@@ -44,21 +56,13 @@ class Module(object):
         self._controller = controller
         self._controller.subscribe(self.on_message)
 
-        if not self._is_submodule():
-            self._data = controller._module_data["ModuleTypes"][
-                "{:02X}".format(module_type)
-            ]
-        else:
-            self._data = {}
-        self._memoryRead = {}
-
     def get_module_name(self):
         """
         Returns the module model name
 
         :return: str
         """
-        if self._name:
+        if isinstance(self._name, str):
             return self._name
         return self._model_name
 
@@ -70,13 +74,22 @@ class Module(object):
         """
         return self._address
 
+    def get_module_addresses(self):
+        """
+        Returns the module addresses
+        This will be the master and all subaddresses
+
+        :return: list
+        """
+        return [self._address] + list(self._sub_address.values())
+
     def get_name(self, channel):
         """
         Get name for one of the channels
 
         :return: str
         """
-        return self._channel_names[channel]
+        return self._channel_data[channel]["Name"]
 
     def get_module_type_name(self):
         return self._model_name
@@ -92,57 +105,45 @@ class Module(object):
         """
         return []
 
+    def get_addressChannel_from_channel(self, channel):
+        """
+        Get the address and channel
+
+        :return: tuple(address, channel)
+        """
+        if len(self._sub_address) == 0:
+            return int(channel)
+        if int(channel) < 9:
+            return self._address
+
     def on_message(self, message):
         """
         Process received message
         """
+        # only if the message is send to this module handle it
+        if message.address not in self.get_module_addresses():
+            return
+        # handle the messages
         if isinstance(message, ChannelNamePart1Message) or isinstance(
             message, ChannelNamePart1Message2
         ):
-            if (message.address == self._address) or (
-                self._is_submodule() and (message.address == self._master_address)
-            ):
-                self._process_channel_name_message(1, message)
+            self._process_channel_name_message(1, message)
         elif isinstance(message, ChannelNamePart2Message) or isinstance(
             message, ChannelNamePart2Message2
         ):
-            if (message.address == self._address) or (
-                self._is_submodule() and (message.address == self._master_address)
-            ):
-                self._process_channel_name_message(2, message)
+            self._process_channel_name_message(2, message)
         elif isinstance(message, ChannelNamePart3Message) or isinstance(
             message, ChannelNamePart3Message2
         ):
-            if (message.address == self._address) or (
-                self._is_submodule() and (message.address == self._master_address)
-            ):
-                self._process_channel_name_message(3, message)
+            self._process_channel_name_message(3, message)
         elif isinstance(message, MemoryDataMessage):
-            if message.address == self._address:
-                for typ, item in self._memoryRead.items():
-                    if (message.high_address, message.low_address) in item:
-                        if message.data == 0xFF:
-                            self._memoryRead[typ].remove(
-                                (message.high_address, message.low_address)
-                            )
-                            if typ == "ModuleName":
-                                self._moduleName_is_complete()
-                        else:
-                            idx = [
-                                i
-                                for i, x in enumerate(self._memoryRead[typ])
-                                if x == (message.high_address, message.low_address)
-                            ]
-                            self._memoryRead[typ][idx[0]] = chr(message.data)
-                        break
+            self._process_memory_data_message(message)
+        elif isinstance(message, ModuleTypeMessage):
+            self._process_module_type_message(message)
+        elif isinstance(message, ModuleSubTypeMessage):
+            self._process_module_subtype_message(message)
         else:
-            if message.address == self._address:
-                if isinstance(message, ModuleTypeMessage):
-                    self._process_module_type_message(message)
-                elif isinstance(message, ModuleSubTypeMessage):
-                    self._process_module_subtype_message(message)
-                else:
-                    self._on_message(message)
+            self._on_message(message)
 
     def _on_message(self, message):
         pass
@@ -151,22 +152,30 @@ class Module(object):
         """
         Retrieve names of channels
         """
-        # load the module status
-        self._request_module_status()
-        if not self._is_submodule():
-            # load default channels
-            self._load_default_channels()
-            # load the channel names
-            self._request_channel_name()
-            # load the data from memory ( the stuff that we need)
-            self._load_memory()
+        # did we already start the loading?
+        # this is needed for the submodules,
+        # as the submodule address maps to the main module
+        # this method can be called multiple times
+        if self._is_loading:
+            return
         if callback:
             self._loaded_callbacks.append(callback)
+        # start the loading
+        self._is_loading = True
+        # load the data from the protocol desciption
+        self._data = self._controller._module_data["ModuleTypes"][
+            "{:02X}".format(self._type)
+        ]
+        # load the module status
+        self._request_module_status()
+        # load default channels
+        self._load_default_channels()
+        # load the data from memory ( the stuff that we need)
+        self._load_memory()
+        # load the channel names
+        self._request_channel_name()
         # load the module specific stuff
         self._load()
-
-    def loading_in_progress(self):
-        return not self._name_messages_complete()
 
     def _load(self):
         pass
@@ -182,29 +191,61 @@ class Module(object):
     def light_is_buttonled(self, channel):
         return False
 
-    def _is_submodule(self):
-        return False
+    def _handle_match(self, matchDict, data):
+        mResult = {}
+        data = "{:08b}".format(int(data))
+        for _num, matchD in matchDict.items():
+            tmp = {}
+            for match, res in matchD.items():
+                if re.fullmatch(match[1:], data):
+                    res2 = res.copy()
+                    res2["Data"] = data
+                    tmp.update(res2)
+            mResult[_num] = tmp
+        # TODO rework mresult to be per channel,
+        # so we can just append everything to the _channel_data dict
+        return mResult
 
-    # def _name_count_needed(self):
-    #    return self.number_of_channels() * 3
+    def _process_memory_data_message(self, message):
+        addr = "{high:02X}{low:02X}".format(
+            high=message.high_address, low=message.low_address
+        )
+        try:
+            mdata = self._data["Memory"]["1"]["Address"][addr]
+            if "ModuleName" in mdata and isinstance(self._name, dict):
+                # if self._name is a dict we are still loading
+                # if its a string it was already complete
+                if message.data == 0xFF:
+                    # modulename is complete
+                    self._name = "".join(str(x) for x in self._name.values())
+                else:
+                    char = mdata["ModuleName"].split(":")[0]
+                    self._name[int(char)] = chr(message.data)
+            elif "Match" in mdata:
+                print(self._handle_match(mdata["Match"], message.data))
+        except KeyError as err:
+            pass
 
     def _process_channel_name_message(self, part, message):
-        channel = message.channel
-        if self._is_submodule():
-            channel = channel - (self.number_of_channels() * self.sub_module)
-            if 1 <= channel <= self.number_of_channels():
-                if channel not in self._name_data:
-                    self._name_data[channel] = {}
-                self._name_data[channel][part] = message.name
-                if self._name_messages_complete():
-                    self._generate_names()
-        else:
-            if channel <= self.number_of_channels():
-                if channel not in self._name_data:
-                    self._name_data[channel] = {}
-                self._name_data[channel][part] = message.name
-                if self._name_messages_complete():
-                    self._generate_names()
+        channel = int(message.channel)
+        # some modules need a remap of the channel number
+        if (
+            channel not in self._channel_data
+            and "ChannelNumbers" in self._data
+            and "Name" in self._data["ChannelNumbers"]
+            and "Map" in self._data["ChannelNumbers"]["Name"]
+            and "{:02X}".format(channel) in self._data["ChannelNumbers"]["Name"]["Map"]
+        ):
+            channel = int(
+                self._data["ChannelNumbers"]["Name"]["Map"]["{:02X}".format(channel)]
+            )
+        # if the nameParts key is no started, build it
+        if not isinstance(self._channel_data[channel]["NameParts"], dict):
+            self._channel_data[channel]["NameParts"] = {}
+        self._channel_data[channel]["NameParts"][part] = message.name
+        # if we have all 3 parts, generate the name
+        if all(part in self._channel_data[channel]["NameParts"] for part in [1, 2, 3]):
+            self._generate_name(channel)
 
     def _process_module_type_message(self, message):
         self.serial = message.serial
@@ -215,39 +256,29 @@ class Module(object):
     def _process_module_subtype_message(self, message):
         self.serial = message.serial
 
-    def _generate_names(self):
-        assert self._name_messages_complete()
-        for channel in range(1, self.number_of_channels() + 1):
-            name_parts = self._name_data[channel]
-            name = name_parts[1] + name_parts[2] + name_parts[3]
-            self._channel_names[channel] = "".join(
-                filter(lambda x: x in string.printable, name)
-            )
-        self._name_data = {}
-        self.loaded = True
-        for callback in self._loaded_callbacks:
-            callback()
-        self._loaded_callbacks = []
+    def _generate_name(self, channel):
+        name_parts = self._channel_data[channel]["NameParts"]
+        name = name_parts[1] + name_parts[2] + name_parts[3]
+        self._channel_data[channel]["Name"] = "".join(
+            filter(lambda x: x in string.printable, name)
+        )
+        self._channel_data[channel]["NameParts"] = True
+        self._name_messages_complete()
 
     def _name_messages_complete(self):
         """
         Check if all name messages have been received
         """
-        for channel in range(1, self.number_of_channels() + 1):
-            try:
-                for name_index in range(1, 4):
-                    if not isinstance(self._name_data[channel][name_index], str):
-                        return False
-            except KeyError:
-                return False
-        return True
-
-    def _moduleName_is_complete(self):
-        self._name = ""
-        for char in self._memoryRead["ModuleName"]:
-            if type(char) is str:
-                self._name = self._name + char
-        del self._memoryRead["ModuleName"]
+        if self.loaded:
+            return
+        for channel, data in self._channel_data.items():
+            if isinstance(data["NameParts"], dict) or data["NameParts"] == False:
+                return
+        # set that  we finished the module loading
+        self.loaded = True
+        for callback in self._loaded_callbacks:
+            callback()
+        self._loaded_callbacks = []
 
     def _request_module_status(self):
         message = ModuleStatusRequestMessage(self._address)
@@ -255,15 +286,18 @@ class Module(object):
         self._controller.send(message)
 
     def _request_channel_name(self):
-        message = ChannelNameRequestMessage(self._address)
-        message.channels = list(range(1, self.number_of_channels() + 1))
-        self._controller.send(message)
+        if "AllChannelStatus" in self._data:
+            message = ChannelNameRequestMessage(self._address)
+            message.channels = list(range(1, 9))
+            self._controller.send(message)
+        else:
+            message = ChannelNameRequestMessage(self._address)
+            message.channels = list(range(1, max(self._channel_data) + 1))
+            self._controller.send(message)
 
     def _load_memory(self):
         if "Memory" not in self._data:
             return
-
-        self._memoryRead["ModuleName"] = []
 
         for _memoryKey, memoryPart in self._data["Memory"].items():
             if "Address" in memoryPart:
@@ -271,8 +305,6 @@ class Module(object):
                     addr = struct.unpack(
                         ">BB", struct.pack(">h", int("0x" + addrAddr, 0))
                     )
-                    if "ModuleName" in addrData:
-                        self._memoryRead["ModuleName"].append(addr)
                     message = ReadDataFromMemoryMessage(self._address)
                     message.high_address = addr[0]
                     message.low_address = addr[1]
@@ -288,3 +320,5 @@ class Module(object):
                 "Name": chanData["Name"],
                 "NameParts": False,
             }
+            if "Editable" not in chanData or chanData["Editable"] is not "yes":
+                self._channel_data[int(chan)]["NameParts"] = True

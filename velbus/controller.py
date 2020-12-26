@@ -54,8 +54,6 @@ class Controller(object):
         with open(filepath) as json_file:
             self._module_data = json.load(json_file)
 
-    # interface towards connection objects
-
     def feed_parser(self, data):
         """
         Feed parser with new data
@@ -64,8 +62,6 @@ class Controller(object):
         """
         assert isinstance(data, bytes)
         self.parser.feed(data)
-
-    # event interface
 
     def subscribe(self, subscriber):
         """
@@ -92,8 +88,6 @@ class Controller(object):
         :return: None
         """
         self.__module_subscribers[category].remove(subscriber)
-
-    # command interface
 
     def send(self, message, callback=None):
         """
@@ -173,7 +167,7 @@ class Controller(object):
                     callback()
 
             # 180 second timeout for loading modules
-            self.load_timeout = threading.Timer(180, timeout_expired).start()
+            self.load_timeout = threading.Timer(240, timeout_expired).start()
             for module in self._modules:
                 self._modules[module].load(module_loaded)
 
@@ -257,62 +251,24 @@ class Controller(object):
             "Module subtype response received from address " + str(message.address)
         )
         name = message.module_name()
-        address = message.address
-        m_type = message.module_type
         if name == "Unknown":
             self.logger.warning(
                 "Unknown module (code: " + str(message.module_type) + ")"
             )
             return
-        if "SUB_" + name in ModuleRegistry:
-            subname = "SUB_" + name
+        if message.address in self._modules:
             if message.sub_address_1 != 0xFF:
-                module = ModuleRegistry[subname](
-                    m_type,
-                    subname,
-                    message.sub_address_1,
-                    address,
-                    1,
-                    self,
-                )
-                self._add_module(message.sub_address_1, module)
+                self._modules[message.address]._sub_address[1] = message.sub_address_1
+                self._add_module(message.sub_address_1, self._modules[message.address])
             if message.sub_address_2 != 0xFF:
-                module = ModuleRegistry[subname](
-                    m_type,
-                    subname,
-                    message.sub_address_2,
-                    address,
-                    2,
-                    self,
-                )
-                self._add_module(message.sub_address_2, module)
+                self._modules[message.address]._sub_address[2] = message.sub_address_2
+                self._add_module(message.sub_address_2, self._modules[message.address])
             if message.sub_address_3 != 0xFF:
-                module = ModuleRegistry[subname](
-                    m_type,
-                    subname,
-                    message.sub_address_3,
-                    address,
-                    3,
-                    self,
-                )
-                self._add_module(message.sub_address_3, module)
-            if (
-                message.sub_address_4 != 0xFF
-                and name != "VMBGPOD"
-                and name != "VMBGPO"
-                and name != "VMBELO"
-            ):
-                module = ModuleRegistry[subname](
-                    m_type,
-                    subname,
-                    message.sub_address_4,
-                    address,
-                    4,
-                    self,
-                )
-                self._add_module(message.sub_address_4, module)
-        else:
-            self.logger.warning("Module " + name + " does not yet support sub modules")
+                self._modules[message.address]._sub_address[3] = message.sub_address_3
+                self._add_module(message.sub_address_3, self._modules[message.address])
+            if message.sub_address_4 != 0xFF:
+                self._modules[message.address]._sub_address[4] = message.sub_address_4
+                self._add_module(message.sub_address_4, self._modules[message.address])
 
     def _add_module(self, address, module):
         callback = functools.partial(self._module_loaded, module)
