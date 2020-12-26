@@ -158,7 +158,9 @@ class Controller(object):
                                 "Failed to completely load module "
                                 + str(self._modules[module].get_module_name())
                                 + " at address "
-                                + str(self._modules[module].get_module_address())
+                                + str(
+                                    self._modules[module].get_module_address()
+                                )
                                 + " before timeout expired."
                             )
                             modules_not_loaded.append(module)
@@ -248,7 +250,8 @@ class Controller(object):
         Process ModuleSubType message and if new module: add to module repository
         """
         self.logger.debug(
-            "Module subtype response received from address " + str(message.address)
+            "Module subtype response received from address "
+            + str(message.address)
         )
         name = message.module_name()
         if name == "Unknown":
@@ -258,17 +261,33 @@ class Controller(object):
             return
         if message.address in self._modules:
             if message.sub_address_1 != 0xFF:
-                self._modules[message.address]._sub_address[1] = message.sub_address_1
-                self._add_module(message.sub_address_1, self._modules[message.address])
+                self._modules[message.address]._sub_address[
+                    1
+                ] = message.sub_address_1
+                self._add_module(
+                    message.sub_address_1, self._modules[message.address]
+                )
             if message.sub_address_2 != 0xFF:
-                self._modules[message.address]._sub_address[2] = message.sub_address_2
-                self._add_module(message.sub_address_2, self._modules[message.address])
+                self._modules[message.address]._sub_address[
+                    2
+                ] = message.sub_address_2
+                self._add_module(
+                    message.sub_address_2, self._modules[message.address]
+                )
             if message.sub_address_3 != 0xFF:
-                self._modules[message.address]._sub_address[3] = message.sub_address_3
-                self._add_module(message.sub_address_3, self._modules[message.address])
+                self._modules[message.address]._sub_address[
+                    3
+                ] = message.sub_address_3
+                self._add_module(
+                    message.sub_address_3, self._modules[message.address]
+                )
             if message.sub_address_4 != 0xFF:
-                self._modules[message.address]._sub_address[4] = message.sub_address_4
-                self._add_module(message.sub_address_4, self._modules[message.address])
+                self._modules[message.address]._sub_address[
+                    4
+                ] = message.sub_address_4
+                self._add_module(
+                    message.sub_address_4, self._modules[message.address]
+                )
 
     def _add_module(self, address, module):
         callback = functools.partial(self._module_loaded, module)
@@ -279,7 +298,8 @@ class Controller(object):
         else:
             if self._modules[address].loaded:
                 self.logger.info(
-                    "module already in registry at address %s and loaded", address
+                    "module already in registry at address %s and loaded",
+                    address,
                 )
             else:
                 self.logger.info("loading module at address %s", address)
