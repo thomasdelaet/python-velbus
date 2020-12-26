@@ -234,23 +234,17 @@ class Module(object):
             and "ChannelNumbers" in self._data
             and "Name" in self._data["ChannelNumbers"]
             and "Map" in self._data["ChannelNumbers"]["Name"]
-            and "{:02X}".format(channel)
-            in self._data["ChannelNumbers"]["Name"]["Map"]
+            and "{:02X}".format(channel) in self._data["ChannelNumbers"]["Name"]["Map"]
         ):
             channel = int(
-                self._data["ChannelNumbers"]["Name"]["Map"][
-                    "{:02X}".format(channel)
-                ]
+                self._data["ChannelNumbers"]["Name"]["Map"]["{:02X}".format(channel)]
             )
         # if the nameParts key is no started, build it
         if not isinstance(self._channel_data[channel]["NameParts"], dict):
             self._channel_data[channel]["NameParts"] = {}
         self._channel_data[channel]["NameParts"][part] = message.name
         # if we have all 3 parts, generate the name
-        if all(
-            part in self._channel_data[channel]["NameParts"]
-            for part in [1, 2, 3]
-        ):
+        if all(part in self._channel_data[channel]["NameParts"] for part in [1, 2, 3]):
             self._generate_name(channel)
 
     def _process_module_type_message(self, message):
