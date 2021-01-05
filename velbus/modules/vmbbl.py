@@ -129,7 +129,13 @@ class VMB2BLEModule(VMB1BLEModule):
         return 2
 
 
+class VMB1BLSModule(VMB1BLEModule):
+    def number_of_channels(self):
+        return 1
+
+
 register_module("VMB1BL", VMB1BLModule)
 register_module("VMB2BL", VMB2BLModule)
 register_module("VMB1BLE", VMB1BLEModule)
 register_module("VMB2BLE", VMB2BLEModule)
+register_module("VMB1BLS", VMB1BLSModule)

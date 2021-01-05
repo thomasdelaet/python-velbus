@@ -38,7 +38,12 @@ class Controller(object):
         self._modules = {}
         self._loadModuleData()
         if ":" in port:
-            self.connection = SocketConnection(port, self)
+            if port.startswith("tls://"):
+                self.connection = SocketConnection(
+                    port.replace("tls://", ""), self, True
+                )
+            else:
+                self.connection = SocketConnection(port, self, False)
         else:
             self.connection = VelbusUSBConnection(port, self)
 
@@ -237,6 +242,8 @@ class Controller(object):
         if name in ModuleRegistry:
             module = ModuleRegistry[name](m_type, name, address, self)
             self._add_module(address, module)
+        elif name in ["VMBSIG", "VMBUSBIP"]:
+            self.logger.info("Module " + name + " is a config module, ignoring")
         else:
             self.logger.warning("Module " + name + " is not yet supported")
 

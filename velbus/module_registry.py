@@ -56,6 +56,10 @@ MODULE_DIRECTORY = {
     0x3C: "VMBGP4-2",
     0x3D: "VMBGPOD-2",
     0x3E: "VMBGP4PIR-2",
+    0x3F: "VMCM3",
+    0x40: "VMBUSBIP",
+    0x41: "VMB1RYS",
+    0x42: "VMBKP",
 }
 
 ModuleRegistry = {}

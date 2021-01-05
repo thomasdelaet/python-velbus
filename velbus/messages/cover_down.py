@@ -119,5 +119,6 @@ class CoverDownMessage2(Message):
 
 register_command(COMMAND_CODE, CoverDownMessage, "VMB1BLE")
 register_command(COMMAND_CODE, CoverDownMessage, "VMB2BLE")
+register_command(COMMAND_CODE, CoverDownMessage, "VMB1BLS")
 register_command(COMMAND_CODE, CoverDownMessage2, "VMB1BL")
 register_command(COMMAND_CODE, CoverDownMessage2, "VMB2BL")

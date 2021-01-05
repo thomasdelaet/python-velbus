@@ -116,3 +116,4 @@ class CoverUpMessage2(Message):
 
 register_command(COMMAND_CODE, CoverPosMessage, "VMB1BLE")
 register_command(COMMAND_CODE, CoverPosMessage, "VMB2BLE")
+register_command(COMMAND_CODE, CoverPosMessage, "VMB1BLS")
