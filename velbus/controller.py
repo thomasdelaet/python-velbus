@@ -171,7 +171,7 @@ class Controller(object):
                     callback()
 
             # 180 second timeout for loading modules
-            self.load_timeout = threading.Timer(180, timeout_expired).start()
+            self.load_timeout = threading.Timer(360, timeout_expired).start()
             for module in self._modules:
                 self._modules[module].load(module_loaded)
 
