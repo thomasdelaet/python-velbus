@@ -175,6 +175,7 @@ class Controller(object):
             self.load_timeout = threading.Timer(_timeout + 1, timeout_expired).start()
             for module in self._modules:
                 self._modules[module].load(module_loaded)
+                time.sleep(1)  # Throttle loading modules
 
         for address in range(0, 256):
             message = ModuleTypeRequestMessage(address)
