@@ -1,6 +1,7 @@
 """
 :author: Thomas Delaet <thomas@delaet.org>
 """
+import datetime
 import string
 import struct
 from velbus.messages.read_data_from_memory import ReadDataFromMemoryMessage
@@ -41,6 +42,7 @@ class Module(object):
         self.loaded = False
         self._loading_triggered = False
 
+        self._last_channel_name_msg = datetime.datetime.utcnow()
         self._controller = controller
         self._controller.subscribe(self.on_message)
 
@@ -162,6 +164,15 @@ class Module(object):
                     self._request_channel_name()
                 # load the module specific stuff
                 self._load()
+            else:
+                # Request channel names if last received
+                if (
+                    not self._is_submodule()
+                    and not self._name_messages_complete()
+                    and self._last_channel_name_msg
+                    < datetime.datetime.utcnow() - datetime.timedelta(seconds=10)
+                ):
+                    self._request_channel_name()
             if callback:
                 self._loaded_callbacks.append(callback)
         else:
@@ -192,6 +203,7 @@ class Module(object):
         return self.number_of_channels() * 3
 
     def _process_channel_name_message(self, part, message):
+        self._last_channel_name_msg = datetime.datetime.utcnow()
         channel = message.channel
         if self._is_submodule():
             channel = channel - (self.number_of_channels() * self.sub_module)
