@@ -191,7 +191,7 @@ class Controller(object):
                         (_missing_modules * 10) + 1, final_timeout_expired
                     ).start()
 
-            # Set first timeout (10 second for each module to load) to trigger a retry
+            # Set first timeout to 10 second for each module to trigger a retry
             threading.Timer((len(self._modules) * 10) + 1, first_retry).start()
 
             for module in self._modules:
