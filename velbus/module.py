@@ -39,7 +39,7 @@ class Module(object):
 
         self._loaded_callbacks = []
         self.loaded = False
-        self._load_in_progress = False
+        self._loading_triggered = False
 
         self._controller = controller
         self._controller.subscribe(self.on_message)
@@ -150,8 +150,8 @@ class Module(object):
         Retrieve names of channels
         """
         if not self.loaded:
-            if not self._load_in_progress:
-                self._load_in_progress = True
+            if not self._loading_triggered:
+                self._loading_triggered = True
                 if not self._is_submodule():
                     # load the data from memory ( the stuff that we need)
                     self._load_memory()
