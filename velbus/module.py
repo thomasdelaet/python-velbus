@@ -1,10 +1,10 @@
 """
 :author: Thomas Delaet <thomas@delaet.org>
 """
-import datetime
 import string
 import struct
 from velbus.messages.read_data_from_memory import ReadDataFromMemoryMessage
+from datetime import datetime, timedelta
 from velbus.messages.memory_data import MemoryDataMessage
 from velbus.messages.channel_name_part1 import ChannelNamePart1Message
 from velbus.messages.channel_name_part1 import ChannelNamePart1Message2
@@ -42,7 +42,7 @@ class Module(object):
         self.loaded = False
         self._loading_triggered = False
 
-        self._last_channel_name_msg = datetime.datetime.utcnow()
+        self._last_channel_name_msg = datetime.utcnow()
         self._controller = controller
         self._controller.subscribe(self.on_message)
 
@@ -170,7 +170,7 @@ class Module(object):
                     not self._is_submodule()
                     and not self._name_messages_complete()
                     and self._last_channel_name_msg
-                    < datetime.datetime.utcnow() - datetime.timedelta(seconds=10)
+                    < datetime.utcnow() - timedelta(seconds=10)
                 ):
                     self._request_channel_name()
             if callback:
@@ -203,7 +203,7 @@ class Module(object):
         return self.number_of_channels() * 3
 
     def _process_channel_name_message(self, part, message):
-        self._last_channel_name_msg = datetime.datetime.utcnow()
+        self._last_channel_name_msg = datetime.utcnow()
         channel = message.channel
         if self._is_submodule():
             channel = channel - (self.number_of_channels() * self.sub_module)
