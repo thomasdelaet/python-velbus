@@ -153,7 +153,7 @@ class Controller(object):
                     self._load_finished = True
                     callback()
 
-            def timeout_expired():
+            def final_timeout_expired():
                 if not self._load_finished:
                     modules_not_loaded = []
                     for module in self._modules:
@@ -170,9 +170,30 @@ class Controller(object):
                         del self._modules[module]
                     callback()
 
-            # 10 second timeout for each module to load
-            _timeout = len(self._modules) * 10
-            self.load_timeout = threading.Timer(_timeout + 1, timeout_expired).start()
+            def first_retry():
+                if not self._load_finished:
+                    # First load failed, do 2nd retry for failed modules
+                    _missing_modules = 0
+                    for module in self._modules:
+                        if not self._modules[module].loaded:
+                            self.logger.warning(
+                                "Failed to load module "
+                                + str(self._modules[module].get_module_name())
+                                + " at address "
+                                + str(self._modules[module].get_module_address())
+                                + ", retry initiated."
+                            )
+                            # Trigger load without callback
+                            self._modules[module].load(None)
+                            _missing_modules += 1
+                    # Set final timeout
+                    threading.Timer(
+                        (_missing_modules * 10) + 1, final_timeout_expired
+                    ).start()
+
+            # Set first timeout (10 second for each module to load) to trigger a retry
+            threading.Timer((len(self._modules) * 10) + 1, first_retry).start()
+
             for module in self._modules:
                 self._modules[module].load(module_loaded)
                 time.sleep(1)  # Throttle loading modules
