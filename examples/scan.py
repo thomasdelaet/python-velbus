@@ -8,23 +8,20 @@ import logging
 import sys
 import velbus
 
+def new_module(module, channel):
+    print(module)
+    print(channel)
 
-def scan_finished():
-    """
-    Callback for finished scan
-    """
-    logging.info(controller.get_modules("switch"))
-    logging.info(controller.get_modules("binary_sensor"))
-
-
-logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logging.basicConfig(stream=sys.stdout, level=logging.WARNING)
 # pylint: disable-msg=C0103
-port = "/dev/ttyACM0"
+port = "/dev/velbus"
 logging.info("Configuring controller")
 controller = velbus.Controller(port)
+controller.subscribe_module(new_module, 'switch')
+controller.subscribe_module(new_module, 'binary_sensor')
 logging.info("Starting scan")
-controller.scan(scan_finished)
+controller.async_scan()
 logging.info("Starting sleep")
-time.sleep(30)
+time.sleep(60*10)
 logging.info("Exiting ...")
 controller.stop()
