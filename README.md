@@ -1,8 +1,10 @@
 ## python-velbus: A python library to control the Velbus home automation system
 
-This library was created to support the Velbus protocol in my home automation efforts.
+| :warning: WARNING                                                                                                                                         |
+|:----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| This Library was used as the backend for home-assistant, but it has been replaced with the [velbus-aio](https://github.com/Cereal2nd/velbus-aio) library. |
 
-It is currently being used by the Velbus component in [home assisstant](http://home-assistant.io) but can also be used indepenently.
+This library was created to support the Velbus protocol in my home automation efforts.
 
 The latest version of the library is published as a python package on [pypi](https://pypi.python.org/pypi/python-velbus)
 
