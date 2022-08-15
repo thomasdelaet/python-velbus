@@ -10,7 +10,7 @@ from velbus.constants import (
     MAXIMUM_MESSAGE_SIZE,
     RTR,
 )
-from velbus.util import checksum
+from velbus.util import checksum, VelbusException
 from velbus.messages.module_type import ModuleTypeMessage
 from velbus.messages.module_subtype import ModuleSubTypeMessage
 from velbus.messages.module_type_request import ModuleTypeRequestMessage
@@ -101,6 +101,8 @@ class VelbusParser(object):
             message = self.parse(next_packet)
             if message is not None:
                 self.controller.new_binary_message(message)
+        else:
+            raise VelbusException('No valid next packet found')
 
     def extract_packet(self):
         """
