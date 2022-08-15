@@ -153,7 +153,7 @@ class Controller(object):
                     self._load_finished = True
                     callback()
 
-            def timeout_expired():
+            def final_timeout_expired():
                 if not self._load_finished:
                     modules_not_loaded = []
                     for module in self._modules:
@@ -170,10 +170,33 @@ class Controller(object):
                         del self._modules[module]
                     callback()
 
-            # 180 second timeout for loading modules
-            self.load_timeout = threading.Timer(360, timeout_expired).start()
+            def first_retry():
+                if not self._load_finished:
+                    # First load failed, do 2nd retry for failed modules
+                    _missing_modules = 0
+                    for module in self._modules:
+                        if not self._modules[module].loaded:
+                            self.logger.warning(
+                                "Failed to load module "
+                                + str(self._modules[module].get_module_name())
+                                + " at address "
+                                + str(self._modules[module].get_module_address())
+                                + ", retry initiated."
+                            )
+                            # Trigger load without callback
+                            self._modules[module].load(None)
+                            _missing_modules += 1
+                    # Set final timeout
+                    threading.Timer(
+                        (_missing_modules * 10) + 1, final_timeout_expired
+                    ).start()
+
+            # Set first timeout to 10 second for each module to trigger a retry
+            threading.Timer((len(self._modules) * 10) + 1, first_retry).start()
+
             for module in self._modules:
                 self._modules[module].load(module_loaded)
+                time.sleep(1)  # Throttle loading modules
 
         for address in range(0, 256):
             message = ModuleTypeRequestMessage(address)

@@ -4,6 +4,7 @@
 import string
 import struct
 from velbus.messages.read_data_from_memory import ReadDataFromMemoryMessage
+from datetime import datetime, timedelta
 from velbus.messages.memory_data import MemoryDataMessage
 from velbus.messages.channel_name_part1 import ChannelNamePart1Message
 from velbus.messages.channel_name_part1 import ChannelNamePart1Message2
@@ -39,7 +40,9 @@ class Module(object):
 
         self._loaded_callbacks = []
         self.loaded = False
+        self._loading_triggered = False
 
+        self._last_channel_name_msg = datetime.utcnow()
         self._controller = controller
         self._controller.subscribe(self.on_message)
 
@@ -148,18 +151,33 @@ class Module(object):
         """
         Retrieve names of channels
         """
-        if not self._is_submodule():
-            # load the data from memory ( the stuff that we need)
-            self._load_memory()
-        # load the module status
-        self._request_module_status()
-        if not self._is_submodule():
-            # load the channel names
-            self._request_channel_name()
-        if callback:
-            self._loaded_callbacks.append(callback)
-        # load the module specific stuff
-        self._load()
+        if not self.loaded:
+            if not self._loading_triggered:
+                self._loading_triggered = True
+                if not self._is_submodule():
+                    # load the data from memory ( the stuff that we need)
+                    self._load_memory()
+                # load the module status
+                self._request_module_status()
+                if not self._is_submodule():
+                    # load the channel names
+                    self._request_channel_name()
+                # load the module specific stuff
+                self._load()
+            else:
+                # Request channel names if last received
+                if (
+                    not self._is_submodule()
+                    and not self._name_messages_complete()
+                    and self._last_channel_name_msg
+                    < datetime.utcnow() - timedelta(seconds=10)
+                ):
+                    self._request_channel_name()
+            if callback:
+                self._loaded_callbacks.append(callback)
+        else:
+            if callback:
+                callback()
 
     def loading_in_progress(self):
         return not self._name_messages_complete()
@@ -185,6 +203,7 @@ class Module(object):
         return self.number_of_channels() * 3
 
     def _process_channel_name_message(self, part, message):
+        self._last_channel_name_msg = datetime.utcnow()
         channel = message.channel
         if self._is_submodule():
             channel = channel - (self.number_of_channels() * self.sub_module)
