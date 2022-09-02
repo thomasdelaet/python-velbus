@@ -51,6 +51,9 @@ class VelbusParser(object):
             result = result and self.buffer[0] == START_BYTE
             if not result:
                 self.logger.warning("Start byte not recognized")
+            if self.buffer[1] == START_BYTE:
+                self.buffer = self.buffer[1:]
+                self.logger.debug('Duplicate start byte found, discarding first one')
             result = result and (self.buffer[1] in PRIORITY)
             if not result:
                 self.logger.warning("Priority not recognized")
