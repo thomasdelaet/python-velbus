@@ -20,6 +20,8 @@ class Protocol(serial.threaded.Protocol):
         # pylint: disable-msg=E1101
         self.parser(data)
 
+    def connection_lost(self, exc):
+        raise exc
 
 class VelbusUSBConnection(VelbusConnection):
     """
