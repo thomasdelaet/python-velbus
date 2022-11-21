@@ -36,7 +36,7 @@ class VelbusParser(object):
             while len(self.buffer) >= 6:
                 self.next_packet()
         except Exception as e:
-            self.logger.error("Error while processing received data")
+            self.logger.error("Error while processing received data (%s)", str(self.buffer))
             self.logger.error(e)
 
     def valid_header_waiting(self):
@@ -50,16 +50,16 @@ class VelbusParser(object):
             result = True
             result = result and self.buffer[0] == START_BYTE
             if not result:
-                self.logger.warning("Start byte not recognized")
-            if self.buffer[1] == START_BYTE:
-                self.buffer = self.buffer[1:]
-                self.logger.debug('Duplicate start byte found, discarding first one')
+                self.logger.warning("Start byte not recognized (%s)", str(self.buffer))
+            # if self.buffer[1] == START_BYTE:
+            #     self.buffer = self.buffer[1:]
+            #     self.logger.debug('Duplicate start byte found, discarding first one')
             result = result and (self.buffer[1] in PRIORITY)
             if not result:
-                self.logger.warning("Priority not recognized")
+                self.logger.warning("Priority not recognized (%s)", str(self.buffer))
             result = result and (self.buffer[3] & 0x0F <= 8)
             if not result:
-                self.logger.warning("Message size not recognized")
+                self.logger.warning("Message size not recognized (%s)", str(self.buffer))
         self.logger.debug("Valid Header Waiting: %s(%s)", result, str(self.buffer))
         return result
 
@@ -70,20 +70,20 @@ class VelbusParser(object):
         # 0f f8 be 04 00 08 00 00 2f 04
         packet_size = MINIMUM_MESSAGE_SIZE + (self.buffer[3] & 0x0F)
         if len(self.buffer) < packet_size:
-            self.logger.debug("Buffer does not yet contain full message")
+            self.logger.debug("Buffer does not yet contain full message (%s)", str(self.buffer))
             result = False
         else:
             result = True
             result = result and self.buffer[packet_size - 1] == END_BYTE
             if not result:
-                self.logger.warning("End byte not recognized")
+                self.logger.warning("End byte not recognized (%s)", str(self.buffer))
             result = (
                 result
                 and checksum(self.buffer[0 : packet_size - 2])[0]
                 == self.buffer[packet_size - 2]
             )
             if not result:
-                self.logger.warning("Checksum not recognized")
+                self.logger.warning("Checksum not recognized (%s)", str(self.buffer))
         self.logger.debug("Valid Body Waiting: %s (%s)", result, str(self.buffer))
         return result
 
@@ -105,6 +105,7 @@ class VelbusParser(object):
             if message is not None:
                 self.controller.new_binary_message(message)
         else:
+            self.logger.debug("no valid next packet found (%s)", str(self.buffer))
             raise VelbusException('No valid next packet found')
 
     def extract_packet(self):
@@ -133,11 +134,11 @@ class VelbusParser(object):
             )
             return
         if data[-1] != END_BYTE:
-            self.logger.warning("end byte not correct")
+            self.logger.warning("end byte not correct (%s)", str(data))
             return
         priority = data[1]
         if priority not in PRIORITY:
-            self.logger.warning("unrecognized priority")
+            self.logger.warning("unrecognized priority (%s)", str(data))
             return
         data_size = data[3] & 0x0F
         if data_size + MINIMUM_MESSAGE_SIZE != len(data):
@@ -146,7 +147,7 @@ class VelbusParser(object):
             )
             return
         if not checksum(data[:-2])[0] == data[-2]:
-            self.logger.warning("Packet has no valid checksum")
+            self.logger.warning("Packet has no valid checksum (%s)", str(data))
             return
         if data_size >= 1:
             return data

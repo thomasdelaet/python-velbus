@@ -11,6 +11,7 @@ from velbus.connections.connection import VelbusConnection
 from velbus.util import VelbusException
 from velbus.message import Message
 from velbus.constants import SLEEP_TIME
+import sys
 
 
 class Protocol(serial.threaded.Protocol):
@@ -21,6 +22,8 @@ class Protocol(serial.threaded.Protocol):
         self.parser(data)
 
     def connection_lost(self, exc):
+        print('connection lost')
+        sys.exit(1)
         raise exc
 
 class VelbusUSBConnection(VelbusConnection):
