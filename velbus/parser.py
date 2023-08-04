@@ -94,10 +94,17 @@ class VelbusParser(object):
         try:
             start_byte_index = self.buffer.index(START_BYTE)
         except ValueError:
+            self.logger.debug("no start byte discovered, resetting buffer (%s)", str(self.buffer))
             self.buffer = bytes([])
             return
         if start_byte_index >= 0:
+            self.logger.debug("start byte discovered at position other than 0, discarding first bytes (%s)", str(self.buffer))
             self.buffer = self.buffer[start_byte_index:]
+            return
+        if self.buffer[0] == START_BYTE and self.buffer[1] == START_BYTE:
+            self.logger.debug("duplicate start byte discovered, discarding first start byte (%s)", str(self.buffer))
+            self.buffer = self.buffer[1:]
+            return
         if self.valid_header_waiting() and self.valid_body_waiting():
             next_packet = self.extract_packet()
             self.buffer = self.buffer[len(next_packet) :]
