@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="python-velbus",
-    version="2.1.13",
+    version="2.1.14",
     url="https://github.com/thomasdelaet/python-velbus",
     license="MIT",
     author="Thomas Delaet",

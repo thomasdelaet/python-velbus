@@ -5,13 +5,13 @@ import time
 import threading
 import logging
 from queue import Queue
+import os
 import serial
 import serial.threaded
 from velbus.connections.connection import VelbusConnection
 from velbus.util import VelbusException
 from velbus.message import Message
 from velbus.constants import SLEEP_TIME
-import sys
 
 
 class Protocol(serial.threaded.Protocol):
@@ -23,8 +23,7 @@ class Protocol(serial.threaded.Protocol):
 
     def connection_lost(self, exc):
         print('connection lost')
-        sys.exit(1)
-        raise exc
+        os._exit(1)
 
 class VelbusUSBConnection(VelbusConnection):
     """
