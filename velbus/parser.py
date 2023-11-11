@@ -63,27 +63,35 @@ class VelbusParser(object):
         self.logger.debug("Valid Header Waiting: %s(%s)", result, str(self.buffer))
         return result
 
-    def valid_body_waiting(self):
+    def buffer_contains_full_message(self):
         """
-        Check if a valid body is waiting in buffer
+        Check if buffer has enough bytes for full message
         """
-        # 0f f8 be 04 00 08 00 00 2f 04
         packet_size = MINIMUM_MESSAGE_SIZE + (self.buffer[3] & 0x0F)
         if len(self.buffer) < packet_size:
             self.logger.debug("Buffer does not yet contain full message (%s)", str(self.buffer))
             result = False
         else:
             result = True
-            result = result and self.buffer[packet_size - 1] == END_BYTE
-            if not result:
-                self.logger.warning("End byte not recognized (%s)", str(self.buffer))
-            result = (
-                result
-                and checksum(self.buffer[0 : packet_size - 2])[0]
-                == self.buffer[packet_size - 2]
-            )
-            if not result:
-                self.logger.warning("Checksum not recognized (%s)", str(self.buffer))
+        return result
+
+    def valid_body_waiting(self):
+        """
+        Check if a valid body is waiting in buffer
+        """
+        # 0f f8 be 04 00 08 00 00 2f 04
+        packet_size = MINIMUM_MESSAGE_SIZE + (self.buffer[3] & 0x0F)
+        result = True
+        result = result and self.buffer[packet_size - 1] == END_BYTE
+        if not result:
+            self.logger.warning("End byte not recognized (%s)", str(self.buffer))
+        result = (
+            result
+            and checksum(self.buffer[0 : packet_size - 2])[0]
+            == self.buffer[packet_size - 2]
+        )
+        if not result:
+            self.logger.warning("Checksum not recognized (%s)", str(self.buffer))
         self.logger.debug("Valid Body Waiting: %s (%s)", result, str(self.buffer))
         return result
 
@@ -105,12 +113,15 @@ class VelbusParser(object):
             self.logger.debug("duplicate start byte discovered, discarding first start byte (%s)", str(self.buffer))
             self.buffer = self.buffer[1:]
             return
-        if self.valid_header_waiting() and self.valid_body_waiting():
+        if self.valid_header_waiting() and self.buffer_contains_full_message() and self.valid_body_waiting():
             next_packet = self.extract_packet()
             self.buffer = self.buffer[len(next_packet) :]
             message = self.parse(next_packet)
             if message is not None:
                 self.controller.new_binary_message(message)
+        elif self.valid_header_waiting() and self.buffer_contains_full_message() and not self.valid_body_waiting():
+            self.logger.debug("no valid body waiting, discarding buffer (%s)", str(self.buffer))
+            self.buffer = bytes([])
         else:
             self.logger.debug("no valid next packet found (%s)", str(self.buffer))
             raise VelbusException('No valid next packet found')
